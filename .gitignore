@@ -1,0 +1,8 @@
+data/raw/
+*.keras
+*.npy
+*.npz
+*.pkl
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
