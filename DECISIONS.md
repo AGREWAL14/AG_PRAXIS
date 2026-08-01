@@ -88,3 +88,35 @@ CICIoMT2024. A second corpus is not introduced.
 from rather than which attack it represents, reproducing the same problem at a higher
 level. Leave-one-family-out tests generalisation within a controlled setting and is
 achievable in the available time. Cross-dataset transfer is listed as future work.
+
+---
+
+## 2026-08-01 — Six-class task added to NB09 and NB10
+
+**Decision:** The baseline reproduction and capture-disjoint comparison run the
+six-class task in addition to the nineteen-class task.
+
+**Reasoning:** Prior work in this program (Bogan, 2025) reports macro-averaged
+precision and recall for the six-class categorisation task only. A like-for-like
+comparison requires results at that granularity. The nineteen-class task remains
+primary.
+
+---
+
+## 2026-08-01 — NB11 baseline specified as stratified k-fold Random Forest
+
+**Decision:** The non-sequence baseline is a Random Forest with stratified k-fold
+cross-validation, evaluated under capture-disjoint splits.
+
+**Reasoning:** This matches the best-performing model reported in prior work in this
+program, allowing that approach to be evaluated under the split protocol adopted here.
+
+---
+
+## 2026-08-01 — Timing measurements recorded for all runs
+
+**Decision:** Training time and inference time are recorded in metrics.json for every
+run.
+
+**Reasoning:** Supports comparison of deployment feasibility. Instrumenting now avoids
+re-running experiments to obtain the measurement later.
