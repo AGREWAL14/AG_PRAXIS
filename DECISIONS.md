@@ -157,3 +157,49 @@ trailing digits is unambiguous.
 
 **Consequence:** capture_id is retained separately from label, as capture identity is
 required for split construction and for the leakage diagnostic.
+
+---
+
+## 2026-08-02 — Tier A split construction
+
+**Decision:** For DDoS-ICMP and DDoS-UDP the shipped test files are discarded, and
+splits are built from the eight training chunks alone. For DDoS-TCP, DDoS-SYN, and
+the four DoS classes, one training chunk is held out and the unnumbered shipped test
+capture is retained as an additional held-out capture.
+
+**Evidence:** NB02 found fifteen capture identifiers present in both partitions.
+Eleven are Tier B classes, where train and test are halves of a single recording.
+Four are Tier A chunks — ICMP1, ICMP2, UDP1, UDP2 — whose shipped test portions
+carry the same chunk number as their training portions.
+
+**Consequence:** Tier A remains capture-disjoint for all eight classes. No class is
+lost from Tier A.
+
+---
+
+## 2026-08-02 — Imbalance ratio measured
+
+**Decision:** The nineteen-class imbalance ratio is recorded as 2,157.7 to 1, not the
+figure implied by the published class distribution.
+
+**Evidence:** NB02 counted 1,998,026 rows for DDoS-UDP against 926 for
+Recon-Ping_Sweep across 8,775,013 total rows. Six-class ratio is 328.6 to 1;
+two-class is 37.1 to 1.
+
+**Consequence:** Recon-Ping_Sweep has too few rows for resampling-based remedies to
+be meaningful. Reported as a limitation on H2.
+
+---
+
+## 2026-08-02 — No capture-constant columns found
+
+**Decision:** No feature column is constant within a capture while varying across
+captures.
+
+**Evidence:** NB02 per-capture constancy screen, run at FAST=1. Two columns are
+constant across the entire dataset.
+
+**Consequence:** The crudest form of capture-identity encoding is ruled out. If
+provenance signal exists it is carried in distributions rather than constants, which
+is what the NB04 timing diagnostic tests. The screen is repeated at FAST=0 before
+this is treated as final.
