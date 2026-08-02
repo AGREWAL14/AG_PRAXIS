@@ -1,0 +1,67 @@
+{
+  "final_outcome": "ZERO_SHOT_GENERALIZATION_FAILED",
+  "summary_inputs": {
+    "integrity_ok": true,
+    "has_verified_feature_space": true,
+    "source_only_verified": true,
+    "predictions_reproduced": true,
+    "both_directions_complete": true,
+    "dir_macro_f1": {
+      "CICIoMT2024_to_IoMT_IND2026": 0.47690273483334233,
+      "IoMT_IND2026_to_CICIoMT2024": 0.40966631153649735
+    },
+    "dir_attack_recall": {
+      "CICIoMT2024_to_IoMT_IND2026": 0.49944604475958343,
+      "IoMT_IND2026_to_CICIoMT2024": 0.6817785389213961
+    },
+    "dir_beats_majority": {
+      "CICIoMT2024_to_IoMT_IND2026": true,
+      "IoMT_IND2026_to_CICIoMT2024": false
+    },
+    "stable_across_seeds": false,
+    "has_limitations": true,
+    "asymmetry_gap": 0.15,
+    "good_f1": 0.7,
+    "good_recall": 0.7,
+    "useful_f1": 0.55
+  },
+  "best_model_by_direction": {
+    "CICIoMT2024_to_IoMT_IND2026": {
+      "feature_space": "verified",
+      "model": "xgb",
+      "target_macro_f1": 0.47690273483334233,
+      "target_balanced_accuracy": 0.49771729172076595,
+      "target_attack_recall": 0.49944604475958343,
+      "attack_to_benign_errors": 4518.0,
+      "seed_f1_std": 0.0,
+      "source_to_target_abs_drop": 0.030482210928543307
+    },
+    "IoMT_IND2026_to_CICIoMT2024": {
+      "feature_space": "verified",
+      "model": "mlp",
+      "target_macro_f1": 0.15173372770706176,
+      "target_balanced_accuracy": 0.4691531076360649,
+      "target_attack_recall": 0.22725951297379868,
+      "attack_to_benign_errors": 1218283.3333333333,
+      "seed_f1_std": 0.22337617006005056,
+      "source_to_target_abs_drop": 0.28877008210892224
+    }
+  },
+  "asymmetry_verdict": "approximately_symmetric",
+  "verified_features": [
+    "protocol"
+  ],
+  "primary_feature_space": [
+    "protocol"
+  ],
+  "exploratory_excluded_from_outcome": true,
+  "decided_utc": "2026-07-30T14:56:15.818565+00:00",
+  "allowed_outcomes": [
+    "ZERO_SHOT_GENERALIZATION_SUPPORTED",
+    "ZERO_SHOT_GENERALIZATION_SUPPORTED_WITH_LIMITATIONS",
+    "ZERO_SHOT_GENERALIZATION_ASYMMETRIC",
+    "ZERO_SHOT_GENERALIZATION_WEAK",
+    "ZERO_SHOT_GENERALIZATION_FAILED",
+    "EXPERIMENT_INVALID"
+  ]
+}

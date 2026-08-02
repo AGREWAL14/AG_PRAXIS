@@ -1,0 +1,171 @@
+{
+  "generated_by": "AG_PRAXIS_NB04_leakage_diagnostic.ipynb",
+  "generated_on": "2026-08-02",
+  "git_sha": "60f3240",
+  "fast_mode": false,
+  "read_fraction": 1.0,
+  "seed": 42,
+  "rows_per_capture_for_models": 5000,
+  "rule": {
+    "recoverable_if_accuracy_above": 0.5,
+    "and_multiple_of_chance_above": 5.0,
+    "fixed_before_running": true
+  },
+  "capture_identity_recoverable": true,
+  "capture_identification": {
+    "n_captures": 50,
+    "accuracy": 0.933984,
+    "macro_f1": 0.9338278916876243,
+    "chance_rate": 0.02,
+    "multiple_of_chance": 46.6992,
+    "top_features": [
+      "IAT",
+      "Srate",
+      "Rate",
+      "Header_Length",
+      "syn_count",
+      "syn_flag_number",
+      "Protocol Type",
+      "rst_count",
+      "UDP",
+      "Magnitue",
+      "ICMP",
+      "AVG",
+      "TCP",
+      "Tot sum",
+      "Tot size"
+    ]
+  },
+  "capture_identification_within_class": {
+    "mean_accuracy": 0.94275,
+    "per_class": {
+      "DDoS-ICMP": {
+        "recordings": 10,
+        "accuracy": 0.9484,
+        "chance_rate": 0.1
+      },
+      "DDoS-SYN": {
+        "recordings": 5,
+        "accuracy": 0.9448,
+        "chance_rate": 0.2
+      },
+      "DDoS-TCP": {
+        "recordings": 5,
+        "accuracy": 0.9384,
+        "chance_rate": 0.2
+      },
+      "DDoS-UDP": {
+        "recordings": 10,
+        "accuracy": 0.90704,
+        "chance_rate": 0.1
+      },
+      "DoS-ICMP": {
+        "recordings": 5,
+        "accuracy": 0.9328,
+        "chance_rate": 0.2
+      },
+      "DoS-SYN": {
+        "recordings": 5,
+        "accuracy": 0.9448,
+        "chance_rate": 0.2
+      },
+      "DoS-TCP": {
+        "recordings": 5,
+        "accuracy": 0.9744,
+        "chance_rate": 0.2
+      },
+      "DoS-UDP": {
+        "recordings": 5,
+        "accuracy": 0.95136,
+        "chance_rate": 0.2
+      }
+    }
+  },
+  "carrying_family": "timing",
+  "family_accuracy": {
+    "timing": {
+      "n_features": 4,
+      "accuracy": 0.936416,
+      "macro_f1": 0.936413790552645
+    },
+    "protocol": {
+      "n_features": 27,
+      "accuracy": 0.186608,
+      "macro_f1": 0.15708833518149357
+    },
+    "statistical": {
+      "n_features": 12,
+      "accuracy": 0.114784,
+      "macro_f1": 0.0782320313337883
+    }
+  },
+  "named_features": {
+    "five": {
+      "features": [
+        "IAT",
+        "Rate",
+        "Srate",
+        "Header_Length",
+        "rst_count"
+      ],
+      "accuracy": 0.944448,
+      "macro_f1": 0.9442659375712655
+    },
+    "timing_three": {
+      "features": [
+        "IAT",
+        "Rate",
+        "Srate"
+      ],
+      "accuracy": 0.92632,
+      "macro_f1": 0.9262951269137514
+    }
+  },
+  "attack_classification_tier_a": {
+    "classes": 8,
+    "capture_holdout": {
+      "macro_f1": 0.9993001445562768,
+      "weighted_f1": 0.9993001445562768,
+      "accuracy": 0.9993,
+      "holdout_captures": {
+        "DDoS-ICMP": "TCP_IP-DDoS-ICMP8_train",
+        "DDoS-SYN": "TCP_IP-DDoS-SYN_test",
+        "DDoS-TCP": "TCP_IP-DDoS-TCP_test",
+        "DDoS-UDP": "TCP_IP-DDoS-UDP8_train",
+        "DoS-ICMP": "TCP_IP-DoS-ICMP_test",
+        "DoS-SYN": "TCP_IP-DoS-SYN_test",
+        "DoS-TCP": "TCP_IP-DoS-TCP_test",
+        "DoS-UDP": "TCP_IP-DoS-UDP_test"
+      }
+    },
+    "random_pooled": {
+      "macro_f1": 0.9995155644191764,
+      "weighted_f1": 0.9995749562222552,
+      "accuracy": 0.999575,
+      "test_fraction": 0.16
+    },
+    "macro_f1_difference": 0.0002154198628996351
+  },
+  "variance_ranking_top_5": [
+    "ICMP",
+    "Protocol Type",
+    "UDP",
+    "TCP",
+    "syn_flag_number"
+  ],
+  "variance_ranking_top_5_within_class": [
+    "Variance",
+    "UDP",
+    "Srate",
+    "Rate",
+    "Protocol Type"
+  ],
+  "statement": [
+    "Capture identity is recoverable from the features. A forest given all 43 features names which of 50 recordings a row came from with 93.4% accuracy and 0.934 macro-F1, against a chance rate of 2.0%, which is 47 times chance.",
+    "With the attack class already known, the recording is still identifiable at 94.3% accuracy averaged over the eight tier A classes, so this is about the recording and not only about the attack.",
+    "Of the three families, timing is the one that carries it: 93.6% accuracy from its 4 features alone, against 93.4% from all 43. The others reach protocol 18.7%, statistical 11.5%.",
+    "The five features published work reports as most important reach 94.4% on the same task, and IAT, Rate and Srate on their own reach 92.6%.",
+    "Classifying the attack on the eight tier A classes, macro-F1 is 0.9993 when a whole recording is held out and 0.9995 when the same rows are pooled and split at random. The difference of 0.0002 is what the pooled protocol is worth on the classes where a clean comparison is possible.",
+    "By between-capture variance the leading features are ICMP, Protocol Type, UDP, TCP, syn_flag_number. Holding the class fixed, so that only recordings of the same attack are compared, they are Variance, UDP, Srate, Rate, Protocol Type."
+  ]
+}

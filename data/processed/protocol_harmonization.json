@@ -1,0 +1,66 @@
+{
+  "CICIoMT2024_to_IoMT_IND2026|verified": {
+    "iomt_distribution": {
+      "OTHER": 0.4984,
+      "UDP": 0.2514,
+      "TCP": 0.2502
+    },
+    "cic_distribution": {
+      "TCP": 0.4155,
+      "UDP": 0.3105,
+      "ICMP": 0.2735,
+      "OTHER": 0.0006
+    },
+    "iomt_other_pct": 49.836999999999996,
+    "cic_other_pct": 0.05514521744868071,
+    "warning": false
+  },
+  "CICIoMT2024_to_IoMT_IND2026|exploratory_unverified": {
+    "iomt_distribution": {
+      "OTHER": 0.4984,
+      "UDP": 0.2514,
+      "TCP": 0.2502
+    },
+    "cic_distribution": {
+      "TCP": 0.4155,
+      "UDP": 0.3105,
+      "ICMP": 0.2735,
+      "OTHER": 0.0006
+    },
+    "iomt_other_pct": 49.836999999999996,
+    "cic_other_pct": 0.05514521744868071,
+    "warning": false
+  },
+  "IoMT_IND2026_to_CICIoMT2024|verified": {
+    "iomt_distribution": {
+      "OTHER": 0.4984,
+      "UDP": 0.2514,
+      "TCP": 0.2502
+    },
+    "cic_distribution": {
+      "TCP": 0.4155,
+      "UDP": 0.3105,
+      "ICMP": 0.2735,
+      "OTHER": 0.0006
+    },
+    "iomt_other_pct": 49.836999999999996,
+    "cic_other_pct": 0.05514521744868071,
+    "warning": false
+  },
+  "IoMT_IND2026_to_CICIoMT2024|exploratory_unverified": {
+    "iomt_distribution": {
+      "OTHER": 0.4984,
+      "UDP": 0.2514,
+      "TCP": 0.2502
+    },
+    "cic_distribution": {
+      "TCP": 0.4155,
+      "UDP": 0.3105,
+      "ICMP": 0.2735,
+      "OTHER": 0.0006
+    },
+    "iomt_other_pct": 49.836999999999996,
+    "cic_other_pct": 0.05514521744868071,
+    "warning": false
+  }
+}
