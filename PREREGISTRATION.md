@@ -116,3 +116,49 @@ negligible relative to documented incident rates.
 - Every run logged, including runs that made results worse.
 - The ledger is append-only. Corrections are appended, never overwritten.
 - Negative results are reported as findings.
+
+---
+
+# Amendment 1 — 2026-08-02
+
+Made before any model was trained. Prompted by the capture inventory in NB01, which
+established that eleven of nineteen classes are represented by a single capture and
+cannot be evaluated under a fully capture-disjoint split.
+
+## H1 — replaces the original statement
+
+**H1.** Macro-F1 under the strictest disjoint split each class permits will fall
+below the value obtained under the shipped within-capture split by more than 0.05.
+
+- Test: identical model and configuration, only the split protocol changes.
+- Fails if: the difference is 0.05 or less.
+
+## H1c — new
+
+**H1c.** Within a single evaluation under the two-tier protocol, Tier B classes
+(single capture, contiguous block split) will show higher F1 relative to their class
+support than Tier A classes (multiple captures, whole chunks held out).
+
+- Rationale: Tier B retains within-capture continuity between training and test
+  partitions that Tier A does not. If capture provenance carries signal, that
+  advantage should be visible.
+- Test: per-class F1 regressed on log class support, separately by tier. Compare
+  residuals between tiers.
+- Fails if: Tier B shows no advantage once support is accounted for, indicating
+  within-capture continuity confers no benefit.
+- If it fails: reported as evidence that residual within-capture splitting does not
+  materially inflate performance, which narrows but does not eliminate the leakage
+  argument.
+
+## Tier definitions, fixed here
+
+**Tier A** — eight classes, whole capture chunks held out:
+DDoS-ICMP, DDoS-SYN, DDoS-TCP, DDoS-UDP, DoS-ICMP, DoS-SYN, DoS-TCP, DoS-UDP.
+
+**Tier B** — eleven classes, contiguous block split 70/15/15 within the single
+capture:
+Benign, Spoofing, MQTT-DDoS-Connect_Flood, MQTT-DDoS-Publish_Flood,
+MQTT-DoS-Connect_Flood, MQTT-DoS-Publish_Flood, MQTT-Malformed_Data,
+Recon-OS_Scan, Recon-Ping_Sweep, Recon-Port_Scan, Recon-VulScan.
+
+Macro-F1 is reported overall and separately by tier in all experiments.
