@@ -120,3 +120,40 @@ run.
 
 **Reasoning:** Supports comparison of deployment feasibility. Instrumenting now avoids
 re-running experiments to obtain the measurement later.
+
+---
+
+## 2026-08-02 — Two-tier split protocol
+
+**Decision:** Splits are constructed per class according to how many captures exist.
+
+Tier A, eight classes with multiple captures (DDoS-ICMP, DDoS-SYN, DDoS-TCP,
+DDoS-UDP, DoS-ICMP, DoS-SYN, DoS-TCP, DoS-UDP): whole capture chunks are held out.
+
+Tier B, eleven classes with a single capture (Benign, Spoofing, five MQTT, four
+Recon): contiguous block split within the capture, 70/15/15 by row position. The
+shipped test file is discarded for these classes as it is the second half of the
+same recording.
+
+**Evidence:** NB01 capture inventory. Eight classes have 4 to 8 training captures;
+eleven classes have exactly one training and one test file bearing the same base
+name.
+
+**Consequence:** Full capture-disjoint evaluation is not achievable for eleven of
+nineteen classes. This is a property of the dataset and is reported as a limitation.
+Results are reported separately by tier, and the difference between tiers serves as
+a within-experiment measure of residual leakage.
+
+---
+
+## 2026-08-02 — Label parsing rule
+
+**Decision:** The class label is the capture filename with the partition suffix
+removed, trailing chunk digits stripped, the TCP_IP prefix removed, and ARP_Spoofing
+mapped to Spoofing. This yields nineteen classes from seventy-two files.
+
+**Evidence:** NB01 filename inventory. No class name ends in a digit, so stripping
+trailing digits is unambiguous.
+
+**Consequence:** capture_id is retained separately from label, as capture identity is
+required for split construction and for the leakage diagnostic.
