@@ -164,3 +164,88 @@ Recon-OS_Scan, Recon-Ping_Sweep, Recon-Port_Scan, Recon-VulScan.
 Macro-F1 is reported overall and separately by tier in all experiments.
 
 
+---
+
+# Amendment 2 — 2026-08-02
+
+Made before any model was trained. All three hypotheses restated with explicit numeric thresholds.
+
+## H1
+
+Under a capture-disjoint split, a sequence-based detector will achieve macro-F1 at least 0.03 above a single-record baseline, while the same protocol reduces macro-F1 by more than 0.05 relative to the shipped within-capture split.
+
+- Fails if: the sequence gain is below 0.03 or within one standard deviation, or the protocol difference is 0.05 or less.
+
+## H2
+
+At least one class-imbalance intervention will raise macro-F1 by at least 0.05 over baseline and lift at least three of the four lowest-scoring classes to F1 of 0.40 or above, while reducing mean majority-class F1 by no more than 0.02.
+
+The four target classes are fixed here as Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, and Spoofing. The majority set is the eight classes with highest support.
+
+- Independent: intervention type, one per run — logit adjustment, class-weighted loss, focal loss, window-level resampling, per-class threshold tuning.
+- Dependent: macro-F1; per-class F1 for the four target classes; mean F1 across the eight majority classes.
+- Testable: five seeds per intervention; gain must exceed the across-seed standard deviation; McNemar with Holm-Bonferroni correction.
+- Fails if: no intervention meets all three conditions.
+
+## H3
+
+Feature attributions will show Kendall's tau of 0.70 or above across five seeds, SHAP profiles will separate by STRIDE category at p below 0.05, and fewer than one percent of matched MAUDE records will be attributable to cyberattack.
+
+- Fails if: tau falls below 0.70, or the permutation test returns p of 0.05 or greater.
+
+The denominator for the MAUDE proportion is defined before searching as records matching the device categories represented in CICIoMT2024.
+
+---
+
+# Amendment 3 — 2026-08-02
+
+Made after NB04, before any detector was trained.
+
+## Test result: H1 second clause not supported
+
+Amendment 2 stated that a capture-disjoint split would reduce macro-F1 by more than 0.05 relative to the shipped within-capture split.
+
+NB04 measured this on the eight Tier A classes, the only classes where the comparison is possible, using the full dataset. Macro-F1 with a whole capture held out was 0.9993; with rows pooled across captures it was 0.9995. The difference is 0.0002. The result is stable: the same comparison at one percent sampling gave 0.0004.
+
+The clause is not supported and cannot be tested elsewhere. The eleven Tier B classes have a single capture each, so no capture can be held out.
+
+Interpretation: capture identity is recoverable, but on multi-capture classes the detector does not depend on it. Both figures sit at ceiling. This null is retained and reported as a finding, since the leakage literature assumes identifiability implies score inflation.
+
+## Test result: capture identifiability supported
+
+NB04 also measured whether the features identify the source recording. Across fifty captures against a chance baseline of 0.02, a RandomForest reached 0.9340 using all 43 features and 0.9427 with the attack class held fixed. Four timing features — Duration, Rate, Srate, IAT — reached 0.9364 alone. The five features named as most important by prior work reached 0.9444. Protocol features reached 0.2471 and statistical features 0.1280.
+
+## H1c withdrawn
+
+Amendment 1 stated H1c, comparing Tier B and Tier A performance adjusted for class support. It is withdrawn as a hypothesis and retained as a reported analysis. With eight and eleven classes, a support-adjusted residual comparison has too little power to carry a formal claim. Recorded before the analysis was run.
+
+## Restructure
+
+The three objectives are restated as the conditions a threat model built from observation must satisfy: timeliness, coverage, and trustworthy translation. The research questions and hypotheses are restated accordingly. Objective 2 is unchanged in substance.
+
+### H1 — Timeliness
+
+Sequence-based detection will identify at least twelve of nineteen threat classes at F1 of 0.80 or above within fifty observed records, and will exceed single-record classification by at least 0.03 macro-F1, with median minimum-observation requirements differing at least threefold between volumetric and low-rate classes.
+
+- Independent: observation budget k in {5, 10, 25, 50}; model input structure.
+- Dependent: per-class F1 at each budget; macro-F1; median minimum number of records per class.
+- Testable: budget sweep under capture-disjoint evaluation; five seeds, mean and standard deviation; McNemar on paired predictions at alpha = 0.05.
+- Fails if: fewer than twelve classes reach F1 of 0.80 at k = 50, or the sequence gain falls below 0.03, or minimum-observation requirements show no systematic difference between attack families.
+
+### H2 — Coverage
+
+Unchanged from Amendment 2.
+
+### H3 — Trustworthy translation
+
+Timing features will identify the source capture at above 50 percent accuracy with attack class held fixed and will rank in the top five by SHAP importance; attributions will show Kendall's tau of 0.70 or above across five seeds; and fewer than one percent of matched MAUDE records will be attributable to cyberattack.
+
+- Independent: feature family; STRIDE category assignment under a deterministic rule fixed in advance; random seed.
+- Dependent: capture-identification accuracy with class fixed; SHAP rank of timing features; Kendall's tau on top-10 features; percentage of cyber-attributable MAUDE records.
+- Testable: RandomForest capture-identity classifier per family, equal row draws per capture, chance baseline 0.02 across fifty captures; tau across five seeds; keyword and category search of MAUDE bulk records.
+- Fails if: capture-identification accuracy with class fixed falls below 0.50, or timing features do not rank in the top five by SHAP importance, or tau falls below 0.70.
+
+First clause already supported by NB04 at 0.9427. Remaining clauses open.
+
+The permutation test on STRIDE separation, stated in Amendment 2, is withdrawn as a hypothesis clause and retained as a reported analysis. Eight Tier A and eleven Tier B classes give too few groups for the test to carry weight. Recorded before the test was run.
+
