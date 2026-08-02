@@ -203,3 +203,50 @@ constant across the entire dataset.
 provenance signal exists it is carried in distributions rather than constants, which
 is what the NB04 timing diagnostic tests. The screen is repeated at FAST=0 before
 this is treated as final.
+
+---
+
+## 2026-08-02 — Tier A shipped split is already capture-disjoint
+
+**Decision:** No modification is made to the shipped split for the eight Tier A
+classes. Chunk numbering restarts per partition, so ICMP1_test is an independent
+recording from ICMP1_train despite the shared name.
+
+**Evidence:** Two lines of evidence agree. Row counts: Tier A test files match the
+standard chunk size of their family (ICMP2_test 195,692 against ICMP2_train 194,818),
+which a percentage split cannot produce. Distributions: ICMP1_test is not closer to
+ICMP1_train than to ICMP5_train on Header_Length or Rate.
+
+**Consequence:** Tier A requires no reconstruction. The two-tier protocol stands, but
+its basis changes: Tier A was never leaking, and Tier B always was, within the same
+shipped split used throughout the published literature.
+
+---
+
+## 2026-08-02 — Tier B shipped split confirmed within-capture
+
+**Decision:** For the eleven Tier B classes, the shipped test file is the held-out
+portion of a single recording and is discarded. Splits are built by contiguous block
+within the training capture.
+
+**Evidence:** Every Tier B pair sits near 80/20 — Benign 192,732 / 37,607 at 16.3%;
+Recon-Port_Scan 83,981 / 22,622 at 21.2%; Recon-Ping_Sweep 740 / 186 at 20.1%.
+
+---
+
+## 2026-08-02 — Provenance signal is distributional, not constant
+
+**Decision:** NB04 measures between-capture variance relative to within-capture
+variance for every feature, and ranks features by that ratio. This replaces the
+constancy screen.
+
+**Evidence:** NB02 found no capture-constant columns and no near-misses. However,
+Header_Length varies from 59.60 to 225.98 across three captures of the same attack
+class, and Rate from 15,887 to 26,882, while IAT is flat at approximately 84.69
+million across all three.
+
+**Consequence:** Provenance, if present, is carried by distributional shift rather
+than by any column acting as a capture label. Header_Length is the leading candidate.
+IAT, identified as the top SHAP feature by prior work on this dataset and on
+CICIoT2023, shows no between-capture variation in this sample and is unlikely to be
+the carrier.
