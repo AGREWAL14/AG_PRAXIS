@@ -119,6 +119,13 @@ worth deriving in the notebook that raises it.
 - The final cell prints a ledger entry block ready to paste into
   `RESULTS_LEDGER.md`.
 - Long runs include a per-epoch `ModelCheckpoint` writing to Drive.
+- Never cast a label or grouping column to category dtype. Pandas carries the
+  categorical through groupby into the aggregation result, and later arithmetic on
+  those columns raises "Object with dtype category cannot perform the numpy op".
+  Use plain object or string dtype for labels.
+- After building any frame that will be divided, averaged, or fed to a model, assert
+  every column is numeric, so a dtype problem fails at construction with the column
+  named rather than seven frames deep in pandas.
 
 ---
 

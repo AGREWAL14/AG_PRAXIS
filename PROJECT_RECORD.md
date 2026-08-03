@@ -306,6 +306,11 @@ def assert_single_change(cfg, parent):
   never in a separate cell — a Colab disconnect loses separate cells:
   `config.json`, `metrics.json`, `y_true.npy`, `y_pred.npy`, and the model.
 
+- **Labels are never category dtype.** Pandas carries a categorical through groupby
+  into the aggregation, and arithmetic on the result raises. Every frame that will
+  be divided, averaged, or fed to a model asserts all columns numeric at
+  construction.
+
 - **Tune on validation. Evaluate test once per configuration.**
 
 - **Seed 42** set before any model construction. Five seeds for reported results.
