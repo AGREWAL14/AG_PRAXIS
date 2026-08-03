@@ -1,0 +1,103 @@
+# AG_PRAXIS — feature families (DRAFT, NEEDS MANUAL REVIEW)
+#
+# Written by NB01 from column names alone. No column was inspected for
+# what it actually measures. Anything under `ambiguous` matched more than
+# one rule and was assigned to the first match only.
+#
+# Read every line before any experiment depends on these groupings.
+# Set status: reviewed once that has been done.
+
+status: draft
+review_required: true
+generated_by: AG_PRAXIS_NB01_dataset_inventory.ipynb
+generated_from: ARP_Spoofing_train.pcap.csv
+git_sha: 6a331e4
+generated_on: '2026-08-03'
+label_columns: []
+families:
+  timing:
+  - Duration
+  - Rate
+  - Srate
+  - Drate
+  - IAT
+  protocol:
+  - Header_Length
+  - Protocol Type
+  - fin_flag_number
+  - syn_flag_number
+  - rst_flag_number
+  - psh_flag_number
+  - ack_flag_number
+  - ece_flag_number
+  - cwr_flag_number
+  - ack_count
+  - syn_count
+  - fin_count
+  - rst_count
+  - HTTP
+  - HTTPS
+  - DNS
+  - Telnet
+  - SMTP
+  - SSH
+  - IRC
+  - TCP
+  - UDP
+  - DHCP
+  - ARP
+  - ICMP
+  - IGMP
+  - IPv
+  - LLC
+  statistical:
+  - Tot sum
+  - Min
+  - Max
+  - AVG
+  - Std
+  - Tot size
+  - Number
+  - Magnitue
+  - Radius
+  - Covariance
+  - Variance
+  - Weight
+  other: []
+ambiguous:
+  Header_Length:
+  - protocol
+  - statistical
+  fin_flag_number:
+  - protocol
+  - statistical
+  syn_flag_number:
+  - protocol
+  - statistical
+  rst_flag_number:
+  - protocol
+  - statistical
+  psh_flag_number:
+  - protocol
+  - statistical
+  ack_flag_number:
+  - protocol
+  - statistical
+  ece_flag_number:
+  - protocol
+  - statistical
+  cwr_flag_number:
+  - protocol
+  - statistical
+  ack_count:
+  - protocol
+  - statistical
+  syn_count:
+  - protocol
+  - statistical
+  fin_count:
+  - protocol
+  - statistical
+  rst_count:
+  - protocol
+  - statistical
