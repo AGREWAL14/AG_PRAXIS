@@ -112,8 +112,9 @@ worth deriving in the notebook that raises it.
 - Macro-F1 is the primary metric. Macro and weighted are always reported together.
 - Notebooks import from `src/`. Logic that lives only in a cell cannot be tested
   or reused.
-- The `FAST` environment variable toggles a 1% stratified subsample. Default is
-  `FAST=1`. Runs entered in the ledger require `FAST=0`.
+- Notebooks that run both a fast and a full pass take the mode as a function
+  argument, not an environment variable, and write to separate artifact folders.
+  Notebooks with a single pass may use the FAST environment variable.
 - Cell 1 of every notebook mounts Drive, clones the repo, and captures the git SHA.
 - The final cell prints a ledger entry block ready to paste into
   `RESULTS_LEDGER.md`.
