@@ -191,6 +191,12 @@ the real class distribution.
 
 ### Feature provenance
 
+These figures were produced under the earlier numbering, on 43 features with both DHCP
+and Drate excluded. NB01 established that only Drate is constant, so the live feature
+count is 44. The provenance test is re-run as NB03 under the current numbering; until
+then these figures stand as the measured result on 43 features and should be read with
+that qualification.
+
 | Test | Accuracy |
 |---|---|
 | Capture identification, all 43 features, 50 captures (chance 0.02) | 0.9340 |
@@ -202,17 +208,17 @@ the real class distribution.
 | Attack macro-F1, whole capture held out (Tier A) | 0.9993 |
 | Attack macro-F1, rows pooled (Tier A) | 0.9995 |
 
-Note: the figures above were produced with both DHCP and Drate excluded, following a
-1% screen. The full-scale scan in NB01 found only Drate constant across the dataset, so
-DHCP is retained from NB02 onward and the live feature count is 44.
-
 **Consequence:** four timing features identify the source recording nearly as well as
 all 43. SHAP therefore runs on a timing-excluded model in NB09, so the threat mapping
 describes attack behaviour rather than recording conditions.
 
 **No column is constant within a capture while varying across captures**, so provenance
-is carried by distributional shift, not by any column acting as a label. *(Screen run at
-1% sampling; repeat at full scale in NB01.)*
+is carried by distributional shift, not by any column acting as a label.
+
+The full-scale scan in NB01 read all 8,775,013 rows and found one column constant across
+the whole dataset, Drate, and no column constant within a recording while varying between
+recordings. The two readings, one file per recording and one recording name per
+recording, agree, so the finding does not depend on how files were grouped.
 
 ### Reproduced baseline — Mohammadi et al., shipped split
 
