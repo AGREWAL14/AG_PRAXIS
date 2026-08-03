@@ -162,22 +162,32 @@ All figures below are from full-data reference runs unless marked.
 
 ### Feature separability
 
+From the NB02 reference run: a full pass over all 8,775,013 rows, using the 44 features
+that remain after Drate is dropped.
+
 | Finding | Value |
 |---|---|
-| Median best single-feature AUC, 171 class pairs | 0.9987 |
+| Median best single-feature AUC, 171 class pairs | 0.9985 |
 | Pairs separable at AUC 0.90 by one feature | 160 of 171 |
-| Least separable pair | Recon-OS_Scan / Recon-Port_Scan, 0.6585 on Rate |
-| Top feature by mutual information, 19-class | IAT, 2.6074 nats |
-| Features zero in more than 90% of rows | 14 of 43 |
-| Feature pairs above 0.95 correlation | 14 |
+| Least separable pair | Recon-OS_Scan / Recon-Port_Scan, 0.6850 on Rate |
+| Top feature by mutual information, 19-class | IAT, 2.1500 nats of 2.1940 available |
+| Top feature, four weakest classes | IAT, 0.9703 of 1.1777 |
+| Features zero in more than 90% of rows | 15 of 44 |
+| Feature pairs above r 0.95 | 14 |
+| Largest between-recording shift | Protocol Type, ratio 0.23 on DoS-UDP |
 
 **Eleven pairs below AUC 0.90**, all within Tier B:
-Recon-OS_Scan/Recon-Port_Scan 0.6585 · Recon-Port_Scan/Recon-VulScan 0.7394 ·
-Recon-OS_Scan/Recon-VulScan 0.7395 · MQTT-Malformed_Data/Spoofing 0.7934 ·
-Benign/Spoofing 0.7958 · MQTT-DDoS-Publish_Flood/MQTT-Malformed_Data 0.8182 ·
-MQTT-DDoS-Publish_Flood/Spoofing 0.8256 · Benign/MQTT-Malformed_Data 0.8438 ·
-MQTT-DoS-Publish_Flood/MQTT-Malformed_Data 0.8503 · Recon-VulScan/Spoofing 0.8708 ·
-MQTT-DoS-Publish_Flood/Spoofing 0.8730
+Recon-OS_Scan/Recon-Port_Scan 0.6850 · Recon-Port_Scan/Recon-VulScan 0.7368 ·
+Recon-OS_Scan/Recon-VulScan 0.7442 · MQTT-Malformed_Data/Spoofing 0.7847 ·
+Benign/Spoofing 0.8010 · MQTT-DoS-Publish_Flood/MQTT-Malformed_Data 0.8514 ·
+Benign/MQTT-Malformed_Data 0.8664 · Recon-VulScan/Spoofing 0.8671 ·
+MQTT-DoS-Publish_Flood/Spoofing 0.8733 · MQTT-DDoS-Publish_Flood/MQTT-Malformed_Data
+0.8753 · MQTT-DDoS-Publish_Flood/Spoofing 0.8930
+
+An earlier screen put IAT's mutual information at 2.6074 nats. That figure is above the
+label entropy, which is impossible, and it came from computing the score on a balanced
+sample of 2,000 rows per class rather than on the data as recorded. The figures above use
+the real class distribution.
 
 ### Feature provenance
 
@@ -418,3 +428,4 @@ position; the pre-registration states how it was reached.
 | Benign contiguous-block boundaries | Fix in NB04, declare as a limitation |
 | H3 reference standard | Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is in scope |
 | Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation |
+| `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
