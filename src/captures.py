@@ -166,6 +166,78 @@ def capture_constant_columns(scans: dict) -> pd.DataFrame:
     ).reset_index(drop=True)
 
 
+def constancy_report(scans: dict, recording_of: dict | None = None) -> pd.DataFrame:
+    """Separate the two kinds of column that never change inside a recording.
+
+    A recording is whatever grouping of files the caller passes in
+    `recording_of`, a map from file name to recording name. The default is one
+    file per recording, which is the safest reading: a file is one contiguous
+    stretch of capture, whereas a group of files is only a recording if the
+    grouping is right.
+
+    Two findings come out of the same counts and they mean opposite things.
+
+    A column holding the same value in every recording is dead weight. It
+    separates nothing anywhere and can be dropped without losing information.
+
+    A column holding one value inside each recording and a different value in
+    different recordings is the dangerous kind. It is not describing the traffic,
+    it is naming the session, and a model reading it can recover which recording
+    a row came from rather than which attack it represents.
+
+    `constant_in_recordings` of zero means the column moved inside every
+    recording, which is what an ordinary measurement looks like.
+    """
+    recording_of = recording_of or {name: name for name in scans}
+
+    recordings: dict = {}
+    for name, recording in recording_of.items():
+        recordings.setdefault(recording, []).append(name)
+
+    columns = sorted({c for s in scans.values() for c in s["columns"]})
+
+    rows = []
+    for col in columns:
+        constant_in, values, seen_in = 0, [], 0
+        for members in recordings.values():
+            stats = [scans[m]["columns"].get(col) for m in members if m in scans]
+            stats = [s for s in stats if s is not None]
+            if not stats:
+                continue
+            seen_in += 1
+            if any(s["n_unique"] > 1 for s in stats):
+                continue
+            held = {_hashable(s["value"]) for s in stats if s["value"] is not None}
+            if len(held) > 1:
+                continue  # each file steady on its own, but they disagree with each other
+            constant_in += 1
+            values.extend(held)
+
+        distinct = sorted(set(values))
+        everywhere = constant_in == seen_in and seen_in > 0
+        rows.append(
+            {
+                "column": col,
+                "constant_in_recordings": constant_in,
+                "of_recordings": seen_in,
+                "distinct_values_across_recordings": len(distinct),
+                "constant_everywhere": bool(everywhere and len(distinct) <= 1),
+                "recording_identifying": bool(everywhere and len(distinct) > 1),
+                "values": distinct,
+            }
+        )
+
+    frame = pd.DataFrame(rows)
+    frame["_rank"] = np.where(
+        frame["recording_identifying"], 0, np.where(frame["constant_everywhere"], 1, 2)
+    )
+    frame = frame.sort_values(
+        ["_rank", "constant_in_recordings", "distinct_values_across_recordings"],
+        ascending=[True, False, False],
+    )
+    return frame.drop(columns="_rank").reset_index(drop=True)
+
+
 def _hashable(value):
     """Round floats before de-duplicating so 1.0000000001 and 1.0 are one value."""
     if isinstance(value, (float, np.floating)):

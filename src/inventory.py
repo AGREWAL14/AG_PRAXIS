@@ -301,13 +301,18 @@ def assign_families(columns) -> dict:
 
 
 def render_feature_families_yaml(
-    assignment: dict, *, source_file: str, git_sha: str, run_date: str
+    assignment: dict,
+    *,
+    source_file: str,
+    git_sha: str,
+    run_date: str,
+    generated_by: str = "AG_PRAXIS_NB01_dataset_inventory.ipynb",
 ) -> str:
     """Render the family assignment as YAML with a header saying it is a draft."""
     body = {
         "status": "draft",
         "review_required": True,
-        "generated_by": "AG_PRAXIS_NB01_load_inventory.ipynb",
+        "generated_by": generated_by,
         "generated_from": source_file,
         "git_sha": git_sha,
         "generated_on": run_date,
