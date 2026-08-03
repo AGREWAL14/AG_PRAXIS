@@ -128,7 +128,7 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 | Smallest class | Recon-Ping_Sweep, 926 rows |
 | Timestamp column | **None** |
 | Endpoint identifiers | **None** |
-| Constant across dataset | DHCP, Drate — dropped |
+| Constant across dataset | Drate only — dropped |
 
 ### Capture structure
 
@@ -191,6 +191,10 @@ MQTT-DoS-Publish_Flood/Spoofing 0.8730
 | Statistical family, 12 features | 0.1280 |
 | Attack macro-F1, whole capture held out (Tier A) | 0.9993 |
 | Attack macro-F1, rows pooled (Tier A) | 0.9995 |
+
+Note: the figures above were produced with both DHCP and Drate excluded, following a
+1% screen. The full-scale scan in NB01 found only Drate constant across the dataset, so
+DHCP is retained from NB02 onward and the live feature count is 44.
 
 **Consequence:** four timing features identify the source recording nearly as well as
 all 43. SHAP therefore runs on a timing-excluded model in NB09, so the threat mapping
@@ -403,7 +407,7 @@ position; the pre-registration states how it was reached.
 
 | Item | Action |
 |---|---|
-| Per-capture constancy screen at full scale | Run in NB01 |
+| config/feature_families.yaml — 12 flag columns are ambiguous between protocol and statistical and were assigned to protocol by name rule. Review and mark before NB04. |
 | `config/feature_families.yaml` empty | Fill and mark reviewed before NB04 |
 | `SGKF` labels in Bogan's Table 3-1 | Verify before NB05 |
 | Benign contiguous-block boundaries | Fix in NB04, declare as a limitation |
