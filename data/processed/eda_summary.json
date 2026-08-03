@@ -1,15 +1,15 @@
 {
   "generated_by": "AG_PRAXIS_NB03_eda.ipynb",
   "generated_on": "2026-08-03",
-  "git_sha": "4b0fba3",
-  "fast_mode": true,
-  "read_fraction": 0.01,
+  "git_sha": "835f17a",
+  "fast_mode": false,
+  "read_fraction": 1.0,
   "seed": 42,
-  "rows_read": 103704,
+  "rows_read": 8775013,
   "rows_in_corpus": 8775013,
   "rows_dropped_non_finite": 0,
-  "rows_kept_per_file": 1000,
-  "rows_kept": 70926,
+  "rows_kept_per_file": 5000,
+  "rows_kept": 334589,
   "features_dropped": [
     "DHCP",
     "Drate"
@@ -27,559 +27,559 @@
     {
       "feature": "Header_Length",
       "family": "protocol",
-      "n": 103704,
-      "mean": 72127.88925595711,
-      "std": 441700.5510311918,
+      "n": 8775013,
+      "mean": 29962.471661355816,
+      "std": 282363.3778155479,
       "min": 0.0,
       "median_of_kept_rows": 112.0,
-      "max": 6512481.0,
-      "skew": 8.73728108947114,
-      "zero_share": 0.21993365733240763,
+      "max": 9896704.0,
+      "skew": 20.91283524655787,
+      "zero_share": 0.24907917515335876,
       "near_empty": false
     },
     {
       "feature": "Protocol Type",
       "family": "protocol",
-      "n": 103704,
-      "mean": 7.850245340538532,
-      "std": 5.965451395221081,
+      "n": 8775013,
+      "mean": 8.047203270560619,
+      "std": 6.304831826461492,
       "min": 0.0,
       "median_of_kept_rows": 6.0,
       "max": 17.0,
-      "skew": 0.5992831771559706,
-      "zero_share": 0.0039149888143176735,
+      "skew": 0.47932398930279524,
+      "zero_share": 9.253547544601929e-05,
       "near_empty": false
     },
     {
       "feature": "Duration",
       "family": "timing",
-      "n": 103704,
-      "mean": 65.852479606219,
-      "std": 17.202059814203523,
+      "n": 8775013,
+      "mean": 64.63690880435495,
+      "std": 7.853065119106996,
       "min": 0.0,
       "median_of_kept_rows": 64.0,
       "max": 255.0,
-      "skew": 6.656147647450606,
-      "zero_share": 0.0039149888143176735,
+      "skew": 16.299808114835596,
+      "zero_share": 9.253547544601929e-05,
       "near_empty": false
     },
     {
       "feature": "Rate",
       "family": "timing",
-      "n": 103704,
-      "mean": 15638.565651259749,
-      "std": 39250.916745446644,
+      "n": 8775013,
+      "mean": 15744.489481554228,
+      "std": 40008.54410524545,
       "min": 0.0,
-      "median_of_kept_rows": 63.58214569091797,
-      "max": 829565.3125,
-      "skew": 5.7133236237966525,
-      "zero_share": 0.04706665123813932,
+      "median_of_kept_rows": 65.04833984375,
+      "max": 2097152.0,
+      "skew": 9.083007968647113,
+      "zero_share": 0.038292592842882396,
       "near_empty": false
     },
     {
       "feature": "Srate",
       "family": "timing",
-      "n": 103704,
-      "mean": 15638.565651259749,
-      "std": 39250.916745446644,
+      "n": 8775013,
+      "mean": 15744.489481554228,
+      "std": 40008.54410524545,
       "min": 0.0,
-      "median_of_kept_rows": 63.58214569091797,
-      "max": 829565.3125,
-      "skew": 5.7133236237966525,
-      "zero_share": 0.04706665123813932,
+      "median_of_kept_rows": 65.04833984375,
+      "max": 2097152.0,
+      "skew": 9.083007968647113,
+      "zero_share": 0.038292592842882396,
       "near_empty": false
     },
     {
       "feature": "fin_flag_number",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.006846137978255804,
-      "std": 0.0371399717456717,
+      "n": 8775013,
+      "mean": 0.005123298145031399,
+      "std": 0.03415861511831429,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 7.406439531060971,
-      "zero_share": 0.9452190850883283,
+      "skew": 8.060554485446303,
+      "zero_share": 0.971039017264134,
       "near_empty": true
     },
     {
       "feature": "syn_flag_number",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.16127463029466027,
-      "std": 0.3367539406581854,
+      "n": 8775013,
+      "mean": 0.15721153059580834,
+      "std": 0.33687884587446676,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 1.8437185734420902,
-      "zero_share": 0.7637024608501118,
+      "skew": 1.8468992482601871,
+      "zero_share": 0.7896695993498813,
       "near_empty": false
     },
     {
       "feature": "rst_flag_number",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.05282859780648863,
-      "std": 0.17075522067857196,
+      "n": 8775013,
+      "mean": 0.03951837698900839,
+      "std": 0.13929946057433681,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 4.015172990407786,
-      "zero_share": 0.8551068425518784,
+      "skew": 4.428903212377378,
+      "zero_share": 0.8817999471909614,
       "near_empty": false
     },
     {
       "feature": "psh_flag_number",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.052177768006781,
-      "std": 0.14687667029886095,
+      "n": 8775013,
+      "mean": 0.022178872866014852,
+      "std": 0.0965353994250554,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 3.1443575056494115,
-      "zero_share": 0.8474118645375299,
-      "near_empty": false
+      "skew": 5.090443345975433,
+      "zero_share": 0.9253964638001106,
+      "near_empty": true
     },
     {
       "feature": "ack_flag_number",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.1831071130745623,
-      "std": 0.3464236325577128,
+      "n": 8775013,
+      "mean": 0.09566386726664595,
+      "std": 0.25214151068024354,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 1.5783173650938087,
-      "zero_share": 0.7235015042814164,
+      "skew": 2.6538052171626214,
+      "zero_share": 0.8201763347814983,
       "near_empty": false
     },
     {
       "feature": "ece_flag_number",
       "family": "protocol",
-      "n": 103704,
-      "mean": 1.1860680564017213e-05,
-      "std": 0.0010769827104090911,
+      "n": 8775013,
+      "mean": 2.9086919592279835e-06,
+      "std": 0.0005036040387115226,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 0.10000000149011612,
-      "skew": 92.62180282552053,
-      "zero_share": 0.9998553575561213,
+      "max": 0.20000000298023224,
+      "skew": 202.10986165072697,
+      "zero_share": 0.9999304844334703,
       "near_empty": true
     },
     {
       "feature": "cwr_flag_number",
       "family": "protocol",
-      "n": 103704,
-      "mean": 6.4606958977095846e-06,
-      "std": 0.0007650346610309629,
+      "n": 8775013,
+      "mean": 1.9206592164872442e-06,
+      "std": 0.00037965836841196066,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 0.10000000149011612,
-      "skew": 129.3402645718722,
-      "zero_share": 0.9998746432153051,
+      "max": 0.20000000298023224,
+      "skew": 262.09474843212894,
+      "zero_share": 0.9999313961130314,
       "near_empty": true
     },
     {
       "feature": "ack_count",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.03891061501907121,
-      "std": 0.18434828328544892,
+      "n": 8775013,
+      "mean": 0.027977130922538902,
+      "std": 0.17825564226468735,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 2.8499999046325684,
-      "skew": 5.730285805287624,
-      "zero_share": 0.9367912520249942,
+      "max": 11.199999809265137,
+      "skew": 7.23796443219949,
+      "zero_share": 0.9686761717617968,
       "near_empty": true
     },
     {
       "feature": "syn_count",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.3348505856608436,
-      "std": 0.6705145402072907,
+      "n": 8775013,
+      "mean": 0.2938791970032773,
+      "std": 0.6036414091826314,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 4.269999980926514,
-      "skew": 2.0893571032285863,
-      "zero_share": 0.7487657178122348,
+      "max": 10.699999809265137,
+      "skew": 1.874808852457969,
+      "zero_share": 0.7819778728532938,
       "near_empty": false
     },
     {
       "feature": "fin_count",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.18046666292314464,
-      "std": 0.9517048221869828,
+      "n": 8775013,
+      "mean": 0.08557530831915208,
+      "std": 0.5612390499855606,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 24.399999618530273,
-      "skew": 11.323454466900756,
-      "zero_share": 0.8312794106302553,
+      "max": 151.74000549316406,
+      "skew": 27.682220930384904,
+      "zero_share": 0.8670517069319441,
       "near_empty": false
     },
     {
       "feature": "rst_count",
       "family": "protocol",
-      "n": 103704,
-      "mean": 54.378729291887566,
-      "std": 355.6382816110751,
+      "n": 8775013,
+      "mean": 65.87126716991793,
+      "std": 498.28118248238644,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 6617.5,
-      "skew": 11.120456256821731,
-      "zero_share": 0.7008794260587827,
+      "max": 9576.5,
+      "skew": 9.79006721546919,
+      "zero_share": 0.7998033735106718,
       "near_empty": false
     },
     {
       "feature": "HTTP",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.00017193165234301774,
-      "std": 0.01008069083430646,
+      "n": 8775013,
+      "mean": 0.000867666710880229,
+      "std": 0.028421501512627793,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 82.98345818538175,
-      "zero_share": 0.99864036102754,
+      "skew": 34.27238275686696,
+      "zero_share": 0.9981490625711894,
       "near_empty": true
     },
     {
       "feature": "HTTPS",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.018153048864767894,
-      "std": 0.11964576399734395,
+      "n": 8775013,
+      "mean": 0.005590280121413363,
+      "std": 0.060340205405728944,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 7.528873030401801,
-      "zero_share": 0.9500597855434699,
+      "skew": 14.376498420985188,
+      "zero_share": 0.9707585618391676,
       "near_empty": true
     },
     {
       "feature": "DNS",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.00041888074192212665,
-      "std": 0.009186512254229617,
+      "n": 8775013,
+      "mean": 0.0001515585068956952,
+      "std": 0.005247802881751234,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 0.5,
-      "skew": 28.228668126426516,
-      "zero_share": 0.9960657255264985,
+      "max": 1.0,
+      "skew": 58.72327868848827,
+      "zero_share": 0.9974109440065787,
       "near_empty": true
     },
     {
       "feature": "Telnet",
       "family": "protocol",
-      "n": 103704,
-      "mean": 3.297847750897228e-05,
-      "std": 0.0016868538160293872,
+      "n": 8775013,
+      "mean": 1.2544984169881279e-05,
+      "std": 0.0008916875834592015,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 0.10000000149011612,
-      "skew": 58.30576554853991,
-      "zero_share": 0.9992189308030548,
+      "skew": 105.64143652657219,
+      "zero_share": 0.9994156134013704,
       "near_empty": true
     },
     {
       "feature": "SMTP",
       "family": "protocol",
-      "n": 103704,
-      "mean": 3.3942760482532756e-05,
-      "std": 0.001715179163946286,
+      "n": 8775013,
+      "mean": 1.2544739970140764e-05,
+      "std": 0.0008917079633454448,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 0.10000000149011612,
-      "skew": 57.37202490079275,
-      "zero_share": 0.999209287973463,
+      "skew": 105.63575042506189,
+      "zero_share": 0.9994158413212607,
       "near_empty": true
     },
     {
       "feature": "SSH",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.0001835994785466924,
-      "std": 0.007382435322996076,
+      "n": 8775013,
+      "mean": 2.611065870247697e-05,
+      "std": 0.002719031603080018,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 0.699999988079071,
-      "skew": 58.86041996372411,
-      "zero_share": 0.9985632183908046,
+      "max": 1.0,
+      "skew": 191.40254168586733,
+      "zero_share": 0.9993772088998615,
       "near_empty": true
     },
     {
       "feature": "IRC",
       "family": "protocol",
-      "n": 103704,
-      "mean": 3.3942760482532756e-05,
-      "std": 0.0017151791639462865,
+      "n": 8775013,
+      "mean": 1.2532575198732887e-05,
+      "std": 0.0008923358441403956,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 0.10000000149011612,
-      "skew": 57.37202490079271,
-      "zero_share": 0.999209287973463,
+      "max": 0.1111111119389534,
+      "skew": 105.62782639783417,
+      "zero_share": 0.9994180065602182,
       "near_empty": true
     },
     {
       "feature": "TCP",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.48307456371962043,
-      "std": 0.4945885526161631,
+      "n": 8775013,
+      "mean": 0.41487102110023033,
+      "std": 0.4899027481291256,
       "min": 0.0,
       "median_of_kept_rows": 0.9900000095367432,
       "max": 1.0,
-      "skew": 0.06483061457461321,
-      "zero_share": 0.4925653783846332,
+      "skew": 0.34432788707701834,
+      "zero_share": 0.5667649723140011,
       "near_empty": false
     },
     {
       "feature": "UDP",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.277647824695608,
-      "std": 0.4430011106379032,
+      "n": 8775013,
+      "mean": 0.3108489805514096,
+      "std": 0.45956641212526833,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 0.9981180574198587,
-      "zero_share": 0.6778812774820643,
+      "skew": 0.8182456265980276,
+      "zero_share": 0.6423702164315882,
       "near_empty": false
     },
     {
       "feature": "ARP",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.0074974928609250905,
-      "std": 0.07890462988620893,
+      "n": 8775013,
+      "mean": 0.000760748920279761,
+      "std": 0.019283885868556543,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 11.415816999339548,
-      "zero_share": 0.9854586129753915,
+      "skew": 35.39311440946229,
+      "zero_share": 0.9943932846595213,
       "near_empty": true
     },
     {
       "feature": "ICMP",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.2317752976163303,
-      "std": 0.4207733827457947,
+      "n": 8775013,
+      "mean": 0.2735134789987872,
+      "std": 0.4440486820591457,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 1.2704047881867486,
-      "zero_share": 0.7593824731929337,
+      "skew": 1.0164662799957564,
+      "zero_share": 0.7114799715966232,
       "near_empty": false
     },
     {
       "feature": "IGMP",
       "family": "protocol",
-      "n": 103704,
-      "mean": 4.821414867802406e-06,
-      "std": 0.0012803350473367045,
+      "n": 8775013,
+      "mean": 4.474067514575026e-06,
+      "std": 0.0012064974070136421,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 0.4000000059604645,
-      "skew": 298.6280079105547,
-      "zero_share": 0.9999807143408161,
+      "max": 0.699999988079071,
+      "skew": 338.1368673019941,
+      "zero_share": 0.999965925976406,
       "near_empty": true
     },
     {
       "feature": "IPv",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.9925025071498157,
-      "std": 0.07890462997532287,
+      "n": 8775013,
+      "mean": 0.9992392511154046,
+      "std": 0.019283885548625795,
       "min": 0.0,
       "median_of_kept_rows": 1.0,
       "max": 1.0,
-      "skew": -11.415817038950468,
-      "zero_share": 0.0039149888143176735,
+      "skew": -35.39311489284099,
+      "zero_share": 9.253547544601929e-05,
       "near_empty": false
     },
     {
       "feature": "LLC",
       "family": "protocol",
-      "n": 103704,
-      "mean": 0.9925025071498157,
-      "std": 0.07890462997532287,
+      "n": 8775013,
+      "mean": 0.9992392511154046,
+      "std": 0.019283885548625795,
       "min": 0.0,
       "median_of_kept_rows": 1.0,
       "max": 1.0,
-      "skew": -11.415817038950468,
-      "zero_share": 0.0039149888143176735,
+      "skew": -35.39311489284099,
+      "zero_share": 9.253547544601929e-05,
       "near_empty": false
     },
     {
       "feature": "Tot sum",
       "family": "statistical",
-      "n": 103704,
-      "mean": 923.3042104403695,
-      "std": 1820.4956608122404,
-      "min": 249.0,
+      "n": 8775013,
+      "mean": 636.0113796720968,
+      "std": 991.6090430193339,
+      "min": 42.0,
       "median_of_kept_rows": 567.0,
-      "max": 23207.80078125,
-      "skew": 7.426268790216005,
+      "max": 23467.0,
+      "skew": 15.396279421493615,
       "zero_share": 0.0,
       "near_empty": false
     },
     {
       "feature": "Min",
       "family": "statistical",
-      "n": 103704,
-      "mean": 65.29142419638791,
-      "std": 108.18595049574738,
+      "n": 8775013,
+      "mean": 55.12016135834108,
+      "std": 69.09937258584077,
       "min": 42.0,
       "median_of_kept_rows": 54.0,
       "max": 1514.0,
-      "skew": 11.41883550960981,
+      "skew": 18.53208379573883,
       "zero_share": 0.0,
       "near_empty": false
     },
     {
       "feature": "Max",
       "family": "statistical",
-      "n": 103704,
-      "mean": 126.37072984673661,
-      "std": 260.6793562801925,
+      "n": 8775013,
+      "mean": 72.33250733368769,
+      "std": 133.60903903929773,
       "min": 42.0,
       "median_of_kept_rows": 54.0,
       "max": 1514.0,
-      "skew": 3.9346812238078535,
+      "skew": 7.985328866847427,
       "zero_share": 0.0,
       "near_empty": false
     },
     {
       "feature": "AVG",
       "family": "statistical",
-      "n": 103704,
-      "mean": 87.92938167828336,
-      "std": 161.25258910549226,
+      "n": 8775013,
+      "mean": 60.586513216149335,
+      "std": 88.07201686186576,
       "min": 42.0,
       "median_of_kept_rows": 54.0,
       "max": 1514.0,
-      "skew": 6.008621644351498,
+      "skew": 12.36272522281438,
       "zero_share": 0.0,
       "near_empty": false
     },
     {
       "feature": "Std",
       "family": "statistical",
-      "n": 103704,
-      "mean": 22.697841129524118,
-      "std": 85.06254221775745,
+      "n": 8775013,
+      "mean": 6.060536941896899,
+      "std": 38.057854753540774,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 708.7837524414062,
-      "skew": 4.734396701537214,
-      "zero_share": 0.6918248090719741,
+      "max": 721.15087890625,
+      "skew": 9.396687009503365,
+      "zero_share": 0.7665538501196523,
       "near_empty": false
     },
     {
       "feature": "Tot size",
       "family": "statistical",
-      "n": 103704,
-      "mean": 87.90704108689714,
-      "std": 161.69522223476403,
+      "n": 8775013,
+      "mean": 60.58909345765938,
+      "std": 87.8768747530693,
       "min": 42.0,
       "median_of_kept_rows": 54.0,
       "max": 1514.0,
-      "skew": 6.048884587178608,
+      "skew": 12.395748091256614,
       "zero_share": 0.0,
       "near_empty": false
     },
     {
       "feature": "IAT",
       "family": "timing",
-      "n": 103704,
-      "mean": 84718383.67395528,
-      "std": 30971360.850995935,
-      "min": 0.0,
-      "median_of_kept_rows": 84696008.0,
-      "max": 169470352.0,
-      "skew": 0.002693231771071536,
-      "zero_share": 0.004146416724523644,
+      "n": 8775013,
+      "mean": 84683677.92801526,
+      "std": 17819168.498690985,
+      "min": -1.2820613384246826,
+      "median_of_kept_rows": 84696000.0,
+      "max": 169470848.0,
+      "skew": -0.008680187277915278,
+      "zero_share": 0.001263473911662581,
       "near_empty": false
     },
     {
       "feature": "Number",
       "family": "statistical",
-      "n": 103704,
-      "mean": 9.499557231354105,
-      "std": 1.4621677153272,
-      "min": 3.5,
+      "n": 8775013,
+      "mean": 9.499086088110442,
+      "std": 0.8415773342593735,
+      "min": 1.0,
       "median_of_kept_rows": 9.5,
-      "max": 13.5,
-      "skew": -0.00118290800476803,
+      "max": 15.0,
+      "skew": -0.03622043621138691,
       "zero_share": 0.0,
       "near_empty": false
     },
     {
       "feature": "Magnitue",
       "family": "statistical",
-      "n": 103704,
-      "mean": 11.646514670078025,
-      "std": 5.902303608894591,
+      "n": 8775013,
+      "mean": 10.438245088940839,
+      "std": 3.1580730548064735,
       "min": 9.165151596069336,
       "median_of_kept_rows": 10.392304420471191,
       "max": 55.02726745605469,
-      "skew": 4.72201218710139,
+      "skew": 9.608747573201116,
       "zero_share": 0.0,
       "near_empty": false
     },
     {
       "feature": "Radius",
       "family": "statistical",
-      "n": 103704,
-      "mean": 32.071605967695085,
-      "std": 120.27456839437193,
+      "n": 8775013,
+      "mean": 8.560009776010649,
+      "std": 53.80450039912512,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 1002.73779296875,
-      "skew": 4.737355289459191,
-      "zero_share": 0.6952865848954717,
+      "max": 1020.2320556640625,
+      "skew": 9.403099404049449,
+      "zero_share": 0.7706297415171921,
       "near_empty": false
     },
     {
       "feature": "Covariance",
       "family": "statistical",
-      "n": 103704,
-      "mean": 10101.503770228235,
-      "std": 46859.770282962214,
+      "n": 8775013,
+      "mean": 2370.54474793914,
+      "std": 19758.81437711709,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
-      "max": 502804.40625,
-      "skew": 6.0562140069725325,
-      "zero_share": 0.6952865848954717,
+      "max": 520437.875,
+      "skew": 11.857360654036059,
+      "zero_share": 0.7706297415171921,
       "near_empty": false
     },
     {
       "feature": "Variance",
       "family": "statistical",
-      "n": 103704,
-      "mean": 0.1771335437800506,
-      "std": 0.33438645899315683,
+      "n": 8775013,
+      "mean": 0.0907436149680909,
+      "std": 0.23297908208412224,
       "min": 0.0,
       "median_of_kept_rows": 0.0,
       "max": 1.0,
-      "skew": 1.6450953352749917,
-      "zero_share": 0.6952865848954717,
+      "skew": 2.9002064575510005,
+      "zero_share": 0.7706297415171921,
       "near_empty": false
     },
     {
       "feature": "Weight",
       "family": "statistical",
-      "n": 103704,
-      "mean": 141.53699355931738,
-      "std": 37.666416083208226,
-      "min": 15.166666984558105,
+      "n": 8775013,
+      "mean": 141.52734523638492,
+      "std": 21.661885903425688,
+      "min": 1.0,
       "median_of_kept_rows": 141.5500030517578,
       "max": 244.60000610351562,
-      "skew": -0.0006625196901519896,
+      "skew": -0.015682463552892857,
       "zero_share": 0.0,
       "near_empty": false
     }
@@ -588,16 +588,17 @@
     "IGMP",
     "cwr_flag_number",
     "ece_flag_number",
-    "Telnet",
     "IRC",
     "SMTP",
-    "HTTP",
+    "Telnet",
     "SSH",
+    "HTTP",
     "DNS",
     "ARP",
-    "HTTPS",
     "fin_flag_number",
-    "ack_count"
+    "HTTPS",
+    "ack_count",
+    "psh_flag_number"
   ],
   "high_correlation_pairs": [
     {
@@ -613,57 +614,62 @@
     {
       "feature_a": "ARP",
       "feature_b": "IPv",
-      "correlation": -0.9999999999999923
+      "correlation": -0.9999999999999845
     },
     {
       "feature_a": "ARP",
       "feature_b": "LLC",
-      "correlation": -0.9999999999999923
+      "correlation": -0.9999999999999845
     },
     {
       "feature_a": "Std",
       "feature_b": "Radius",
-      "correlation": 0.9999839962633296
+      "correlation": 0.9999815847805024
     },
     {
       "feature_a": "Number",
       "feature_b": "Weight",
-      "correlation": 0.9999602554882818
+      "correlation": 0.9998662925234619
     },
     {
       "feature_a": "IAT",
       "feature_b": "Weight",
-      "correlation": 0.9975483317137439
+      "correlation": 0.9986226681606192
     },
     {
       "feature_a": "IAT",
       "feature_b": "Number",
-      "correlation": 0.9973603768169997
+      "correlation": 0.9981630057706917
     },
     {
       "feature_a": "AVG",
       "feature_b": "Magnitue",
-      "correlation": 0.9803186568524264
-    },
-    {
-      "feature_a": "Radius",
-      "feature_b": "Covariance",
-      "correlation": 0.9672798099614524
-    },
-    {
-      "feature_a": "Std",
-      "feature_b": "Covariance",
-      "correlation": 0.967219973224072
+      "correlation": 0.9801614101336706
     },
     {
       "feature_a": "AVG",
       "feature_b": "Tot size",
-      "correlation": 0.9542038203972999
+      "correlation": 0.9683061930748581
+    },
+    {
+      "feature_a": "Radius",
+      "feature_b": "Covariance",
+      "correlation": 0.9678557273368446
+    },
+    {
+      "feature_a": "Std",
+      "feature_b": "Covariance",
+      "correlation": 0.9677835563656633
     },
     {
       "feature_a": "Max",
       "feature_b": "Magnitue",
-      "correlation": 0.9509374127773674
+      "correlation": 0.9529281665200454
+    },
+    {
+      "feature_a": "Tot size",
+      "feature_b": "Magnitue",
+      "correlation": 0.9523309196302306
     }
   ],
   "mutual_information_19_class": [
@@ -671,257 +677,257 @@
       "rank": 1,
       "feature": "IAT",
       "family": "timing",
-      "mutual_information": 2.6057184725420335
+      "mutual_information": 2.6074388740272814
     },
     {
       "rank": 2,
       "feature": "Tot sum",
       "family": "statistical",
-      "mutual_information": 1.7294589953273363
+      "mutual_information": 1.7023939668106935
     },
     {
       "rank": 3,
       "feature": "Tot size",
       "family": "statistical",
-      "mutual_information": 1.6835703366499524
+      "mutual_information": 1.6709549861540092
     },
     {
       "rank": 4,
-      "feature": "Srate",
-      "family": "timing",
-      "mutual_information": 1.6569327686547566
+      "feature": "Min",
+      "family": "statistical",
+      "mutual_information": 1.593087840942729
     },
     {
       "rank": 5,
-      "feature": "Rate",
-      "family": "timing",
-      "mutual_information": 1.6555458295262206
+      "feature": "Max",
+      "family": "statistical",
+      "mutual_information": 1.5849608173431347
     },
     {
       "rank": 6,
-      "feature": "Min",
+      "feature": "Magnitue",
       "family": "statistical",
-      "mutual_information": 1.5962484324679744
+      "mutual_information": 1.5534819387118084
     },
     {
       "rank": 7,
-      "feature": "Max",
+      "feature": "AVG",
       "family": "statistical",
-      "mutual_information": 1.58996749633115
+      "mutual_information": 1.5485826540712666
     },
     {
       "rank": 8,
-      "feature": "AVG",
-      "family": "statistical",
-      "mutual_information": 1.5856651748221053
+      "feature": "Header_Length",
+      "family": "protocol",
+      "mutual_information": 1.4357639191764457
     },
     {
       "rank": 9,
-      "feature": "Magnitue",
-      "family": "statistical",
-      "mutual_information": 1.5854480092159733
+      "feature": "Rate",
+      "family": "timing",
+      "mutual_information": 1.3109682278932642
     },
     {
       "rank": 10,
-      "feature": "Header_Length",
-      "family": "protocol",
-      "mutual_information": 1.383141549255832
+      "feature": "Srate",
+      "family": "timing",
+      "mutual_information": 1.3109451296478691
     },
     {
       "rank": 11,
       "feature": "rst_count",
       "family": "protocol",
-      "mutual_information": 1.100564398074411
+      "mutual_information": 1.1260940117551734
     },
     {
       "rank": 12,
       "feature": "Protocol Type",
       "family": "protocol",
-      "mutual_information": 0.916728508741083
+      "mutual_information": 0.8368186344251738
     },
     {
       "rank": 13,
-      "feature": "Covariance",
+      "feature": "Radius",
       "family": "statistical",
-      "mutual_information": 0.9094838671138099
+      "mutual_information": 0.8336095053614447
     },
     {
       "rank": 14,
       "feature": "Std",
       "family": "statistical",
-      "mutual_information": 0.9034750923410546
+      "mutual_information": 0.8302055203529535
     },
     {
       "rank": 15,
-      "feature": "Radius",
+      "feature": "Covariance",
       "family": "statistical",
-      "mutual_information": 0.8942203988793027
+      "mutual_information": 0.8271955766892978
     },
     {
       "rank": 16,
       "feature": "Variance",
       "family": "statistical",
-      "mutual_information": 0.8252050768622863
+      "mutual_information": 0.806329440201333
     },
     {
       "rank": 17,
       "feature": "ack_flag_number",
       "family": "protocol",
-      "mutual_information": 0.8134140052104328
+      "mutual_information": 0.7998163701526257
     },
     {
       "rank": 18,
-      "feature": "syn_flag_number",
+      "feature": "syn_count",
       "family": "protocol",
-      "mutual_information": 0.7491135661372863
+      "mutual_information": 0.7802343824517743
     },
     {
       "rank": 19,
-      "feature": "syn_count",
+      "feature": "syn_flag_number",
       "family": "protocol",
-      "mutual_information": 0.7486391467418487
+      "mutual_information": 0.7406759772726454
     },
     {
       "rank": 20,
-      "feature": "psh_flag_number",
+      "feature": "fin_count",
       "family": "protocol",
-      "mutual_information": 0.7254170976129481
+      "mutual_information": 0.7302722076115531
     },
     {
       "rank": 21,
-      "feature": "fin_count",
+      "feature": "psh_flag_number",
       "family": "protocol",
-      "mutual_information": 0.6899753067076948
+      "mutual_information": 0.7295858035042753
     },
     {
       "rank": 22,
       "feature": "Weight",
       "family": "statistical",
-      "mutual_information": 0.6594616864722487
+      "mutual_information": 0.6518467318900143
     },
     {
       "rank": 23,
       "feature": "Number",
       "family": "statistical",
-      "mutual_information": 0.6522937097469592
+      "mutual_information": 0.6510320947421482
     },
     {
       "rank": 24,
       "feature": "TCP",
       "family": "protocol",
-      "mutual_information": 0.6456603480262602
+      "mutual_information": 0.5890213636700419
     },
     {
       "rank": 25,
       "feature": "rst_flag_number",
       "family": "protocol",
-      "mutual_information": 0.49428381216609596
+      "mutual_information": 0.4895546213522124
     },
     {
       "rank": 26,
       "feature": "UDP",
       "family": "protocol",
-      "mutual_information": 0.48837845440254
+      "mutual_information": 0.4381711109351496
     },
     {
       "rank": 27,
       "feature": "Duration",
       "family": "timing",
-      "mutual_information": 0.4764351933978208
+      "mutual_information": 0.4057505196537723
     },
     {
       "rank": 28,
       "feature": "ack_count",
       "family": "protocol",
-      "mutual_information": 0.3983754560042474
+      "mutual_information": 0.39962291571255815
     },
     {
       "rank": 29,
-      "feature": "ICMP",
+      "feature": "fin_flag_number",
       "family": "protocol",
-      "mutual_information": 0.36971224356144816
+      "mutual_information": 0.38741704481454287
     },
     {
       "rank": 30,
-      "feature": "fin_flag_number",
+      "feature": "ICMP",
       "family": "protocol",
-      "mutual_information": 0.36816826126631197
+      "mutual_information": 0.3718824468372577
     },
     {
       "rank": 31,
-      "feature": "IPv",
+      "feature": "HTTPS",
       "family": "protocol",
-      "mutual_information": 0.1560316733494158
+      "mutual_information": 0.14539502451677455
     },
     {
       "rank": 32,
-      "feature": "HTTPS",
+      "feature": "ARP",
       "family": "protocol",
-      "mutual_information": 0.15069972503082063
+      "mutual_information": 0.09921120289767504
     },
     {
       "rank": 33,
-      "feature": "LLC",
+      "feature": "IPv",
       "family": "protocol",
-      "mutual_information": 0.1503711987250096
+      "mutual_information": 0.09869588223024639
     },
     {
       "rank": 34,
-      "feature": "ARP",
+      "feature": "LLC",
       "family": "protocol",
-      "mutual_information": 0.14440523934206473
+      "mutual_information": 0.09265149328508882
     },
     {
       "rank": 35,
-      "feature": "HTTP",
+      "feature": "ece_flag_number",
       "family": "protocol",
-      "mutual_information": 0.020738816579492614
+      "mutual_information": 0.010973879325449687
     },
     {
       "rank": 36,
-      "feature": "DNS",
+      "feature": "HTTP",
       "family": "protocol",
-      "mutual_information": 0.002014362595470054
+      "mutual_information": 0.009873090133739826
     },
     {
       "rank": 37,
-      "feature": "ece_flag_number",
+      "feature": "DNS",
       "family": "protocol",
-      "mutual_information": 0.0
+      "mutual_information": 0.008757796055377742
     },
     {
       "rank": 38,
-      "feature": "Telnet",
+      "feature": "SMTP",
       "family": "protocol",
-      "mutual_information": 0.0
+      "mutual_information": 0.0028975525674623803
     },
     {
       "rank": 39,
-      "feature": "IRC",
+      "feature": "IGMP",
       "family": "protocol",
-      "mutual_information": 0.0
+      "mutual_information": 0.0006598335006624545
     },
     {
       "rank": 40,
-      "feature": "cwr_flag_number",
-      "family": "protocol",
-      "mutual_information": 0.0
-    },
-    {
-      "rank": 41,
-      "feature": "SMTP",
-      "family": "protocol",
-      "mutual_information": 0.0
-    },
-    {
-      "rank": 42,
       "feature": "SSH",
       "family": "protocol",
       "mutual_information": 0.0
     },
     {
+      "rank": 41,
+      "feature": "Telnet",
+      "family": "protocol",
+      "mutual_information": 0.0
+    },
+    {
+      "rank": 42,
+      "feature": "IRC",
+      "family": "protocol",
+      "mutual_information": 0.0
+    },
+    {
       "rank": 43,
-      "feature": "IGMP",
+      "feature": "cwr_flag_number",
       "family": "protocol",
       "mutual_information": 0.0
     }
@@ -935,258 +941,258 @@
     ],
     "label": "the four target classes kept apart, every other class pooled as Other",
     "rows_per_level": {
-      "Spoofing": 400,
-      "Other": 400,
-      "MQTT-DDoS-Publish_Flood": 400,
-      "Recon-OS_Scan": 400,
-      "Recon-VulScan": 400
+      "Spoofing": 2000,
+      "Other": 2000,
+      "MQTT-DDoS-Publish_Flood": 2000,
+      "Recon-OS_Scan": 2000,
+      "Recon-VulScan": 2000
     },
     "ranking": [
       {
         "rank": 1,
         "feature": "IAT",
         "family": "timing",
-        "mutual_information": 1.2225865536583644
+        "mutual_information": 1.2042674814937049
       },
       {
         "rank": 2,
-        "feature": "Rate",
+        "feature": "Srate",
         "family": "timing",
-        "mutual_information": 0.8056189761999923
+        "mutual_information": 0.7041185872552977
       },
       {
         "rank": 3,
-        "feature": "Srate",
+        "feature": "Rate",
         "family": "timing",
-        "mutual_information": 0.8052188332873496
+        "mutual_information": 0.7034881140253975
       },
       {
         "rank": 4,
-        "feature": "Header_Length",
-        "family": "protocol",
-        "mutual_information": 0.7229793308241561
+        "feature": "Max",
+        "family": "statistical",
+        "mutual_information": 0.6853423456790495
       },
       {
         "rank": 5,
-        "feature": "Max",
+        "feature": "Tot sum",
         "family": "statistical",
-        "mutual_information": 0.7003720695547149
+        "mutual_information": 0.6548541544941184
       },
       {
         "rank": 6,
-        "feature": "Tot sum",
+        "feature": "Min",
         "family": "statistical",
-        "mutual_information": 0.6999693899607538
+        "mutual_information": 0.6477632821132886
       },
       {
         "rank": 7,
         "feature": "Tot size",
         "family": "statistical",
-        "mutual_information": 0.6752602749541945
+        "mutual_information": 0.6421666786072757
       },
       {
         "rank": 8,
-        "feature": "Min",
-        "family": "statistical",
-        "mutual_information": 0.6336550317995346
+        "feature": "Header_Length",
+        "family": "protocol",
+        "mutual_information": 0.6224940460792534
       },
       {
         "rank": 9,
         "feature": "AVG",
         "family": "statistical",
-        "mutual_information": 0.6222116335320467
+        "mutual_information": 0.5862909815886372
       },
       {
         "rank": 10,
         "feature": "Magnitue",
         "family": "statistical",
-        "mutual_information": 0.6170050444870683
+        "mutual_information": 0.5843556813307946
       },
       {
         "rank": 11,
-        "feature": "Covariance",
+        "feature": "Number",
         "family": "statistical",
-        "mutual_information": 0.5566175053756517
+        "mutual_information": 0.5401264628346099
       },
       {
         "rank": 12,
-        "feature": "Variance",
+        "feature": "Weight",
         "family": "statistical",
-        "mutual_information": 0.5431988747353378
+        "mutual_information": 0.5342665061823604
       },
       {
         "rank": 13,
-        "feature": "Weight",
+        "feature": "Variance",
         "family": "statistical",
-        "mutual_information": 0.5308222425361238
+        "mutual_information": 0.5225884340776781
       },
       {
         "rank": 14,
-        "feature": "fin_count",
+        "feature": "rst_count",
         "family": "protocol",
-        "mutual_information": 0.5229792874099712
+        "mutual_information": 0.5131118805298134
       },
       {
         "rank": 15,
-        "feature": "Number",
-        "family": "statistical",
-        "mutual_information": 0.5218210783769717
+        "feature": "fin_count",
+        "family": "protocol",
+        "mutual_information": 0.5074377192736472
       },
       {
         "rank": 16,
-        "feature": "Radius",
+        "feature": "Covariance",
         "family": "statistical",
-        "mutual_information": 0.5190206279798355
+        "mutual_information": 0.4460455084599051
       },
       {
         "rank": 17,
         "feature": "Std",
         "family": "statistical",
-        "mutual_information": 0.5109764591265815
+        "mutual_information": 0.4324568916688487
       },
       {
         "rank": 18,
-        "feature": "rst_count",
+        "feature": "psh_flag_number",
         "family": "protocol",
-        "mutual_information": 0.5002829382279321
+        "mutual_information": 0.431865079598972
       },
       {
         "rank": 19,
-        "feature": "Protocol Type",
-        "family": "protocol",
-        "mutual_information": 0.4560227105904633
+        "feature": "Radius",
+        "family": "statistical",
+        "mutual_information": 0.42592798861535375
       },
       {
         "rank": 20,
-        "feature": "UDP",
+        "feature": "syn_count",
         "family": "protocol",
-        "mutual_information": 0.39506606606995964
+        "mutual_information": 0.40341485895454854
       },
       {
         "rank": 21,
-        "feature": "psh_flag_number",
+        "feature": "syn_flag_number",
         "family": "protocol",
-        "mutual_information": 0.38979678102047277
+        "mutual_information": 0.3434646402397732
       },
       {
         "rank": 22,
-        "feature": "syn_count",
+        "feature": "ack_flag_number",
         "family": "protocol",
-        "mutual_information": 0.37037204893895437
+        "mutual_information": 0.31050105069560097
       },
       {
         "rank": 23,
-        "feature": "syn_flag_number",
-        "family": "protocol",
-        "mutual_information": 0.3496654790427831
+        "feature": "Duration",
+        "family": "timing",
+        "mutual_information": 0.30375863595109287
       },
       {
         "rank": 24,
-        "feature": "TCP",
+        "feature": "rst_flag_number",
         "family": "protocol",
-        "mutual_information": 0.3475414042370044
+        "mutual_information": 0.2942107573940791
       },
       {
         "rank": 25,
-        "feature": "ack_flag_number",
+        "feature": "Protocol Type",
         "family": "protocol",
-        "mutual_information": 0.3430239289388983
+        "mutual_information": 0.258737943324133
       },
       {
         "rank": 26,
-        "feature": "rst_flag_number",
+        "feature": "UDP",
         "family": "protocol",
-        "mutual_information": 0.33902794330522834
+        "mutual_information": 0.20888019640897593
       },
       {
         "rank": 27,
-        "feature": "Duration",
-        "family": "timing",
-        "mutual_information": 0.3329992525364003
+        "feature": "TCP",
+        "family": "protocol",
+        "mutual_information": 0.2073776636758371
       },
       {
         "rank": 28,
         "feature": "ack_count",
         "family": "protocol",
-        "mutual_information": 0.20426892450919176
+        "mutual_information": 0.18125668650170068
       },
       {
         "rank": 29,
         "feature": "fin_flag_number",
         "family": "protocol",
-        "mutual_information": 0.0822541910873329
+        "mutual_information": 0.09469873224172609
       },
       {
         "rank": 30,
         "feature": "HTTPS",
         "family": "protocol",
-        "mutual_information": 0.03240221883560057
+        "mutual_information": 0.08610851433422528
       },
       {
         "rank": 31,
-        "feature": "LLC",
+        "feature": "ICMP",
         "family": "protocol",
-        "mutual_information": 0.026948597172336886
+        "mutual_information": 0.06285871612788618
       },
       {
         "rank": 32,
-        "feature": "ICMP",
+        "feature": "IPv",
         "family": "protocol",
-        "mutual_information": 0.023819761343269352
+        "mutual_information": 0.023943539452045748
       },
       {
         "rank": 33,
-        "feature": "IPv",
+        "feature": "DNS",
         "family": "protocol",
-        "mutual_information": 0.020133815282909584
+        "mutual_information": 0.01876171133881188
       },
       {
         "rank": 34,
         "feature": "SSH",
         "family": "protocol",
-        "mutual_information": 0.006111779889827584
+        "mutual_information": 0.015291522602605578
       },
       {
         "rank": 35,
-        "feature": "ARP",
+        "feature": "HTTP",
         "family": "protocol",
-        "mutual_information": 0.004663264934864131
+        "mutual_information": 0.011965178900600115
       },
       {
         "rank": 36,
-        "feature": "IGMP",
+        "feature": "LLC",
         "family": "protocol",
-        "mutual_information": 0.0036968960336278833
+        "mutual_information": 0.008635131022231679
       },
       {
         "rank": 37,
-        "feature": "HTTP",
+        "feature": "ARP",
         "family": "protocol",
-        "mutual_information": 0.003333647320209021
+        "mutual_information": 0.007411876892905678
       },
       {
         "rank": 38,
         "feature": "Telnet",
         "family": "protocol",
-        "mutual_information": 0.003170718757562252
+        "mutual_information": 0.00616313396346202
       },
       {
         "rank": 39,
-        "feature": "ece_flag_number",
+        "feature": "SMTP",
         "family": "protocol",
-        "mutual_information": 0.0
+        "mutual_information": 0.004225893117496327
       },
       {
         "rank": 40,
-        "feature": "SMTP",
+        "feature": "ece_flag_number",
         "family": "protocol",
-        "mutual_information": 0.0
+        "mutual_information": 0.004166950169731898
       },
       {
         "rank": 41,
         "feature": "IRC",
         "family": "protocol",
-        "mutual_information": 0.0
+        "mutual_information": 0.0010840213940475074
       },
       {
         "rank": 42,
@@ -1196,71 +1202,71 @@
       },
       {
         "rank": 43,
-        "feature": "DNS",
+        "feature": "IGMP",
         "family": "protocol",
         "mutual_information": 0.0
       }
     ],
     "largest_rank_changes": [
       {
-        "feature": "Weight",
-        "rank_19_class": 22,
-        "rank_target": 13,
-        "rank_change": 9
-      },
-      {
-        "feature": "ack_flag_number",
-        "rank_19_class": 17,
+        "feature": "Protocol Type",
+        "rank_19_class": 12,
         "rank_target": 25,
-        "rank_change": -8
+        "rank_change": -13
       },
       {
         "feature": "Number",
         "rank_19_class": 23,
-        "rank_target": 15,
+        "rank_target": 11,
+        "rank_change": 12
+      },
+      {
+        "feature": "Weight",
+        "rank_19_class": 22,
+        "rank_target": 12,
+        "rank_change": 10
+      },
+      {
+        "feature": "Srate",
+        "rank_19_class": 10,
+        "rank_target": 2,
         "rank_change": 8
+      },
+      {
+        "feature": "Radius",
+        "rank_19_class": 13,
+        "rank_target": 19,
+        "rank_change": -6
+      },
+      {
+        "feature": "Rate",
+        "rank_19_class": 9,
+        "rank_target": 3,
+        "rank_change": 6
       },
       {
         "feature": "SSH",
-        "rank_19_class": 42,
+        "rank_19_class": 40,
         "rank_target": 34,
-        "rank_change": 8
-      },
-      {
-        "feature": "DNS",
-        "rank_19_class": 36,
-        "rank_target": 43,
-        "rank_change": -7
-      },
-      {
-        "feature": "IGMP",
-        "rank_19_class": 43,
-        "rank_target": 36,
-        "rank_change": 7
+        "rank_change": 6
       },
       {
         "feature": "fin_count",
-        "rank_19_class": 21,
-        "rank_target": 14,
-        "rank_change": 7
+        "rank_19_class": 20,
+        "rank_target": 15,
+        "rank_change": 5
       },
       {
-        "feature": "Protocol Type",
-        "rank_19_class": 12,
-        "rank_target": 19,
-        "rank_change": -7
+        "feature": "ece_flag_number",
+        "rank_19_class": 35,
+        "rank_target": 40,
+        "rank_change": -5
       },
       {
-        "feature": "rst_count",
-        "rank_19_class": 11,
-        "rank_target": 18,
-        "rank_change": -7
-      },
-      {
-        "feature": "Header_Length",
-        "rank_19_class": 10,
-        "rank_target": 4,
-        "rank_change": 6
+        "feature": "ack_flag_number",
+        "rank_19_class": 17,
+        "rank_target": 22,
+        "rank_change": -5
       }
     ]
   },
@@ -1268,171 +1274,171 @@
     {
       "feature": "IAT",
       "classes_compared": 8,
-      "median_between_over_within_sd": 0.01044182475868373,
-      "max_between_over_within_sd": 0.015315491334839554,
+      "median_between_over_within_sd": 0.0028040226040337134,
+      "max_between_over_within_sd": 0.005082675655168474,
       "classes_where_between_exceeds_within": 0
     },
     {
       "feature": "Tot sum",
       "classes_compared": 8,
-      "median_between_over_within_sd": 0.07229661977986214,
-      "max_between_over_within_sd": 0.16215985020118104,
+      "median_between_over_within_sd": 0.04373810318709853,
+      "max_between_over_within_sd": 0.06253814559059273,
       "classes_where_between_exceeds_within": 0
     },
     {
       "feature": "Tot size",
       "classes_compared": 8,
-      "median_between_over_within_sd": 0.07196162625055705,
-      "max_between_over_within_sd": 0.16316193385331196,
-      "classes_where_between_exceeds_within": 0
-    },
-    {
-      "feature": "Srate",
-      "classes_compared": 8,
-      "median_between_over_within_sd": 0.31200567973606386,
-      "max_between_over_within_sd": 0.5297399713816296,
-      "classes_where_between_exceeds_within": 0
-    },
-    {
-      "feature": "Rate",
-      "classes_compared": 8,
-      "median_between_over_within_sd": 0.31200567973606386,
-      "max_between_over_within_sd": 0.5297399713816296,
+      "median_between_over_within_sd": 0.043949431432172344,
+      "max_between_over_within_sd": 0.06301272410206078,
       "classes_where_between_exceeds_within": 0
     },
     {
       "feature": "Min",
       "classes_compared": 8,
-      "median_between_over_within_sd": 0.058031917676724463,
-      "max_between_over_within_sd": 0.11190670657761198,
+      "median_between_over_within_sd": 0.03609201059835607,
+      "max_between_over_within_sd": 0.0590782980888093,
       "classes_where_between_exceeds_within": 0
     },
     {
       "feature": "Max",
       "classes_compared": 8,
-      "median_between_over_within_sd": 0.10540593402350938,
-      "max_between_over_within_sd": 0.18544396495540968,
-      "classes_where_between_exceeds_within": 0
-    },
-    {
-      "feature": "AVG",
-      "classes_compared": 8,
-      "median_between_over_within_sd": 0.07235260059844073,
-      "max_between_over_within_sd": 0.16247179536991155,
+      "median_between_over_within_sd": 0.0720306510116017,
+      "max_between_over_within_sd": 0.09145305503165087,
       "classes_where_between_exceeds_within": 0
     },
     {
       "feature": "Magnitue",
       "classes_compared": 8,
-      "median_between_over_within_sd": 0.08784495178427022,
-      "max_between_over_within_sd": 0.16609151712118386,
+      "median_between_over_within_sd": 0.04727535738791182,
+      "max_between_over_within_sd": 0.0679268976823712,
+      "classes_where_between_exceeds_within": 0
+    },
+    {
+      "feature": "AVG",
+      "classes_compared": 8,
+      "median_between_over_within_sd": 0.04349181015248719,
+      "max_between_over_within_sd": 0.06224771298658583,
       "classes_where_between_exceeds_within": 0
     },
     {
       "feature": "Header_Length",
       "classes_compared": 8,
-      "median_between_over_within_sd": 0.09494705234623592,
-      "max_between_over_within_sd": 0.22556830511388415,
+      "median_between_over_within_sd": 0.03871482574793603,
+      "max_between_over_within_sd": 0.07504746275491166,
+      "classes_where_between_exceeds_within": 0
+    },
+    {
+      "feature": "Rate",
+      "classes_compared": 8,
+      "median_between_over_within_sd": 0.13732466955430778,
+      "max_between_over_within_sd": 0.16639717969347542,
+      "classes_where_between_exceeds_within": 0
+    },
+    {
+      "feature": "Srate",
+      "classes_compared": 8,
+      "median_between_over_within_sd": 0.13732466955430778,
+      "max_between_over_within_sd": 0.16639717969347542,
       "classes_where_between_exceeds_within": 0
     }
   ],
   "least_separable_class_pairs": [
     {
       "class_a": "Recon-OS_Scan",
-      "class_b": "Recon-VulScan",
-      "best_single_feature_auc": 0.666275,
-      "best_feature": "IAT",
-      "second_feature": "Duration",
-      "second_auc": 0.61761875,
-      "features_above_0_9": 0
-    },
-    {
-      "class_a": "Recon-OS_Scan",
       "class_b": "Recon-Port_Scan",
-      "best_single_feature_auc": 0.6921375,
-      "best_feature": "Header_Length",
-      "second_feature": "Tot size",
-      "second_auc": 0.682571875,
+      "best_single_feature_auc": 0.6585125000000001,
+      "best_feature": "Rate",
+      "second_feature": "Rate",
+      "second_auc": 0.6585125000000001,
       "features_above_0_9": 0
     },
     {
       "class_a": "Recon-Port_Scan",
       "class_b": "Recon-VulScan",
-      "best_single_feature_auc": 0.77939375,
-      "best_feature": "Duration",
-      "second_feature": "Header_Length",
-      "second_auc": 0.7556125,
+      "best_single_feature_auc": 0.739389375,
+      "best_feature": "Radius",
+      "second_feature": "Covariance",
+      "second_auc": 0.738841125,
+      "features_above_0_9": 0
+    },
+    {
+      "class_a": "Recon-OS_Scan",
+      "class_b": "Recon-VulScan",
+      "best_single_feature_auc": 0.739492125,
+      "best_feature": "Std",
+      "second_feature": "Radius",
+      "second_auc": 0.739396375,
+      "features_above_0_9": 0
+    },
+    {
+      "class_a": "MQTT-Malformed_Data",
+      "class_b": "Spoofing",
+      "best_single_feature_auc": 0.793405625,
+      "best_feature": "TCP",
+      "second_feature": "UDP",
+      "second_auc": 0.7831835,
+      "features_above_0_9": 0
+    },
+    {
+      "class_a": "Benign",
+      "class_b": "Spoofing",
+      "best_single_feature_auc": 0.7957955,
+      "best_feature": "rst_count",
+      "second_feature": "psh_flag_number",
+      "second_auc": 0.787162625,
       "features_above_0_9": 0
     },
     {
       "class_a": "MQTT-DDoS-Publish_Flood",
       "class_b": "MQTT-Malformed_Data",
-      "best_single_feature_auc": 0.874115625,
+      "best_single_feature_auc": 0.81818275,
       "best_feature": "HTTPS",
       "second_feature": "psh_flag_number",
-      "second_auc": 0.847790625,
+      "second_auc": 0.80610075,
+      "features_above_0_9": 0
+    },
+    {
+      "class_a": "MQTT-DDoS-Publish_Flood",
+      "class_b": "Spoofing",
+      "best_single_feature_auc": 0.825621125,
+      "best_feature": "psh_flag_number",
+      "second_feature": "Header_Length",
+      "second_auc": 0.82198575,
+      "features_above_0_9": 0
+    },
+    {
+      "class_a": "Benign",
+      "class_b": "MQTT-Malformed_Data",
+      "best_single_feature_auc": 0.8437693749999999,
+      "best_feature": "Rate",
+      "second_feature": "Rate",
+      "second_auc": 0.8437693749999999,
       "features_above_0_9": 0
     },
     {
       "class_a": "MQTT-DoS-Publish_Flood",
       "class_b": "MQTT-Malformed_Data",
-      "best_single_feature_auc": 0.87615625,
-      "best_feature": "HTTPS",
-      "second_feature": "psh_flag_number",
-      "second_auc": 0.87505,
+      "best_single_feature_auc": 0.85030175,
+      "best_feature": "psh_flag_number",
+      "second_feature": "HTTPS",
+      "second_auc": 0.8204407499999999,
       "features_above_0_9": 0
     },
     {
-      "class_a": "DoS-SYN",
-      "class_b": "Recon-VulScan",
-      "best_single_feature_auc": 0.8917,
-      "best_feature": "syn_count",
-      "second_feature": "syn_flag_number",
-      "second_auc": 0.855746875,
-      "features_above_0_9": 0
-    },
-    {
-      "class_a": "DoS-SYN",
-      "class_b": "Recon-OS_Scan",
-      "best_single_feature_auc": 0.90324375,
-      "best_feature": "syn_count",
-      "second_feature": "fin_count",
-      "second_auc": 0.836625,
-      "features_above_0_9": 1
-    },
-    {
-      "class_a": "MQTT-Malformed_Data",
-      "class_b": "Recon-VulScan",
-      "best_single_feature_auc": 0.91405625,
+      "class_a": "Recon-VulScan",
+      "class_b": "Spoofing",
+      "best_single_feature_auc": 0.8708335,
       "best_feature": "Header_Length",
-      "second_feature": "rst_count",
-      "second_auc": 0.91324375,
-      "features_above_0_9": 2
-    },
-    {
-      "class_a": "Recon-OS_Scan",
-      "class_b": "Recon-Ping_Sweep",
-      "best_single_feature_auc": 0.92310625,
-      "best_feature": "TCP",
-      "second_feature": "IPv",
-      "second_auc": 0.922140625,
-      "features_above_0_9": 5
-    },
-    {
-      "class_a": "DDoS-SYN",
-      "class_b": "Recon-Port_Scan",
-      "best_single_feature_auc": 0.92398125,
-      "best_feature": "fin_count",
-      "second_feature": "rst_count",
-      "second_auc": 0.898640625,
-      "features_above_0_9": 1
+      "second_feature": "Min",
+      "second_auc": 0.810258,
+      "features_above_0_9": 0
     }
   ],
   "class_pair_separability": {
     "n_pairs": 171,
-    "rows_per_class": 400,
-    "median_best_auc": 0.9999875,
-    "pairs_separable_by_one_feature": 165
+    "rows_per_class": 2000,
+    "median_best_auc": 0.9987455,
+    "pairs_separable_by_one_feature": 160
   },
   "figures": [
     "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_feature_correlation_clustered.png",
@@ -1444,13 +1450,13 @@
     "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_01_IAT.png",
     "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_02_Tot_sum.png",
     "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_03_Tot_size.png",
-    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_04_Srate.png",
-    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_05_Rate.png",
-    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_06_Min.png",
-    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_07_Max.png",
-    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_08_AVG.png",
-    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_09_Magnitue.png",
-    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_10_Header_Length.png",
+    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_04_Min.png",
+    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_05_Max.png",
+    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_06_Magnitue.png",
+    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_07_AVG.png",
+    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_08_Header_Length.png",
+    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_09_Rate.png",
+    "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_capture_means_10_Srate.png",
     "/content/drive/MyDrive/AG_PRAXIS_artifacts/NB03/results/figures/NB03_class_separability_best_single_feature_auc.png"
   ]
 }
