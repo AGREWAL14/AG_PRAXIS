@@ -7,3 +7,6 @@ data/raw/
 __pycache__/
 .DS_Store
 .DS_Store
+*.csv.gz
+data/processed/MedSec*
+archive/data/*.csv
