@@ -102,8 +102,11 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 - **Ontology-based NLP** — the mapping operates on SHAP attributions against structured
   CAPEC fields. No text corpus.
 - **Dashboard, ISO/IEC 42001 conformance** — not built, not assessed.
-- **Cross-dataset transfer** — leave-one-family-out within CICIoMT2024 is the
-  generalisation test.
+-- **Cross-dataset transfer** — zero-shot transfer between CICIoMT2024 and a second IoMT
+  corpus was tested and did not generalise: macro-F1 0.477 and 0.410 across the two
+  directions, with one direction failing to beat a majority-class baseline. Protocol
+  encodings differ substantially between the corpora. Leave-one-family-out within
+  CICIoMT2024 is the generalisation test.
 
 ---
 
