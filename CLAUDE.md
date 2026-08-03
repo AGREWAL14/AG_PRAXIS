@@ -123,6 +123,10 @@ worth deriving in the notebook that raises it.
   categorical through groupby into the aggregation result, and later arithmetic on
   those columns raises "Object with dtype category cannot perform the numpy op".
   Use plain object or string dtype for labels.
+  `Categorical.map` returns a Categorical only when the mapped values are unique,
+  and int64 when any value repeats. The same code therefore works on test data
+  where classes share row counts and fails on real data where they do not.
+  Synthetic corpora used for smoke tests must give every class a distinct size.
 - After building any frame that will be divided, averaged, or fed to a model, assert
   every column is numeric, so a dtype problem fails at construction with the column
   named rather than seven frames deep in pandas.
