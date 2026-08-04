@@ -295,8 +295,10 @@ Cited as prior work to extend, never critiqued. Four positive anchors:
 4. He observed different top-five SHAP features between Random Forest and Extra Trees —
    the motivation for measuring attribution stability with Kendall's tau.
 
-**Open verification:** his Table 3-1 labels models `SGKF`, undefined in his
-abbreviations list where every other reference is `SKF`. Verify before NB05.
+**Verified 2026-08-04:** his Table 3-1 labels models `SGKF`, which appears nowhere in his
+abbreviations list where every other reference is `SKF`, defined as Stratified K-Fold. The
+labelling is a typographical error confined to that table, and plain stratified k-fold is
+what was used. Section 11 records the checks the finding rests on.
 
 ### Positioning against the literature
 
@@ -464,7 +466,7 @@ position; the pre-registration states how it was reached.
 | Item | Action |
 |---|---|
 | `config/feature_families.yaml`, resolved | Reviewed and marked on 2026-08-04. The twelve columns ambiguous between protocol and statistical stay in protocol; the rationale, the evidence for it and the one open point are recorded in the file itself |
-| `SGKF` labels in Bogan's Table 3-1 | Verify before NB05 |
+| `SGKF` labels in Bogan's Table 3-1, resolved | A typographical error. `SGKF` appears six times, all within that one table. `SKF` appears throughout the abbreviations list, the research questions, all of Chapter 4 and both confusion matrix captions, and is defined as Stratified K-Fold. No `SGKF` entry exists in the abbreviations list. The prose immediately below the table describes plain stratified k-fold cross-validation, five folds with no reserved validation portion, and no grouping variable is defined anywhere in the methodology. Plain `StratifiedKFold` is therefore the correct comparison |
 | Benign split boundaries, resolved | Tier B classes concatenate their train and test files and cut at 70 and 85 percent of the whole, so a partition can span the file boundary. Benign trains on `Benign_train` rows 0 to 161,237, validates on `Benign_train` rows 161,237 to 192,732 plus `Benign_test` rows 0 to 3,056, and tests on the remainder of `Benign_test`. Stated as a design choice in Chapter 3 |
 | Recon-Ping_Sweep sequence counts | 24 train, 2 validation, 4 test at window 50 and stride 25, from 926 records. Excluded from the low-rate median in H1. See `PREREGISTRATION.md` amendment |
 | H3 reference standard | Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is in scope |
