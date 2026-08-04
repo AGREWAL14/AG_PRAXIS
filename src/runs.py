@@ -128,6 +128,19 @@ def fit_and_save(
     model.fit(X_train, y_train)
     train_seconds = time.perf_counter() - started
 
+    # Read the parameters the fit actually ran under, before the line below
+    # changes one of them.
+    params = model.get_params()
+
+    # Predict on one thread. A forest fitted with n_jobs=-1 comes out identical
+    # every time, but its prediction does not: the per-tree probabilities are
+    # summed into a shared array from several threads, and floating-point
+    # addition is not associative, so the totals differ in the last bit and any
+    # class the trees split exactly evenly flips. Fitting stays parallel;
+    # only the accumulation is serialised.
+    if hasattr(model, "n_jobs"):
+        model.n_jobs = 1
+
     started = time.perf_counter()
     y_pred = model.predict(X_test)
     inference_seconds = time.perf_counter() - started
@@ -146,7 +159,7 @@ def fit_and_save(
         "run": name,
         "target": target,
         "model": type(model).__name__,
-        "params": model.get_params(),
+        "params": params,
         "n_features": len(list(features)),
         "features": list(features),
         "n_train": int(len(y_train)),
