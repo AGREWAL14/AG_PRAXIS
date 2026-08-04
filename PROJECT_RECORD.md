@@ -234,6 +234,27 @@ the whole dataset, Drate, and no column constant within a recording while varyin
 recordings. The two readings, one file per recording and one recording name per
 recording, agree, so the finding does not depend on how files were grouped.
 
+### Preprocessing and splits
+
+From the NB04 reference run: every row of every file read once, the two-tier protocol,
+window 50 and stride 25.
+
+| Partition | Rows | Share | Sequences |
+|---|---|---|---|
+| Train | 6,228,288 | 71.0% | 249,061 |
+| Validation | 1,317,014 | 15.0% | 52,637 |
+| Test | 1,229,711 | 14.0% | 49,159 |
+
+A sequence never crosses a file boundary. All 19 classes are present in all three
+partitions.
+
+**Fewest sequences, train / validation / test:** Recon-Ping_Sweep 24 / 2 / 4 ·
+Recon-VulScan 86 / 18 / 18 · MQTT-Malformed_Data 191 / 38 / 40 ·
+MQTT-DoS-Connect_Flood 444 / 92 / 94.
+
+The timing-excluded input is defined in the manifest as a column slice rather than
+written as a second array: drop Duration, Rate, Srate and IAT, leaving 40 features.
+
 ### Reproduced baseline — Mohammadi et al., shipped split
 
 | Task | Accuracy | Weighted F1 | Macro F1 |
@@ -442,10 +463,10 @@ position; the pre-registration states how it was reached.
 
 | Item | Action |
 |---|---|
-| config/feature_families.yaml — 12 flag columns are ambiguous between protocol and statistical and were assigned to protocol by name rule. Review and mark before NB04. |
-| `config/feature_families.yaml` empty | Fill and mark reviewed before NB04 |
+| `config/feature_families.yaml`, resolved | Reviewed and marked on 2026-08-04. The twelve columns ambiguous between protocol and statistical stay in protocol; the rationale, the evidence for it and the one open point are recorded in the file itself |
 | `SGKF` labels in Bogan's Table 3-1 | Verify before NB05 |
-| Benign contiguous-block boundaries | Fix in NB04, declare as a limitation |
+| Benign split boundaries, resolved | Tier B classes concatenate their train and test files and cut at 70 and 85 percent of the whole, so a partition can span the file boundary. Benign trains on `Benign_train` rows 0 to 161,237, validates on `Benign_train` rows 161,237 to 192,732 plus `Benign_test` rows 0 to 3,056, and tests on the remainder of `Benign_test`. Stated as a design choice in Chapter 3 |
+| Recon-Ping_Sweep sequence counts | 24 train, 2 validation, 4 test at window 50 and stride 25, from 926 records. Excluded from the low-rate median in H1. See `PREREGISTRATION.md` amendment |
 | H3 reference standard | Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is in scope |
 | Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation |
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |

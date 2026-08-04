@@ -249,3 +249,44 @@ First clause already supported by NB04 at 0.9427. Remaining clauses open.
 
 The permutation test on STRIDE separation, stated in Amendment 2, is withdrawn as a hypothesis clause and retained as a reported analysis. Eight Tier A and eleven Tier B classes give too few groups for the test to carry weight. Recorded before the test was run.
 
+---
+
+# Amendment 4 — 2026-08-04
+
+Made after NB04, before any model was trained.
+
+## Sequence counts and one class too small to evaluate
+
+NB04 built the sequences at window 50 and stride 25. Recon-Ping_Sweep yields 24
+training, 2 validation and 4 test sequences from its 926 records. An F1 computed on two
+samples can only take the values 0, 0.5 or 1, so no per-class metric on that partition
+is interpretable.
+
+H1 compares the median records-to-threshold of low-rate classes against volumetric
+classes. Recon-Ping_Sweep is excluded from that median. The low-rate group is therefore
+Recon-OS_Scan, Recon-Port_Scan, Recon-VulScan, Spoofing and MQTT-Malformed_Data. The
+volumetric group is unchanged: the eight DDoS and DoS classes.
+
+Recon-Ping_Sweep's per-class figures are still reported, marked as resting on too few
+sequences to interpret.
+
+Recon-VulScan at 18 validation sequences and MQTT-Malformed_Data at 38 are also thin.
+Both are retained in the low-rate group, and their per-class figures carry the same
+caveat wherever they are reported.
+
+## The window is not adjusted for small classes
+
+Window 50 and stride 25 are unchanged. Shortening the stride for the smaller classes
+would produce near-duplicate windows and would make those classes incomparable with the
+rest. This is recorded before NB06 runs so that the parameters cannot be read as having
+been chosen once results were known.
+
+## Tier B partition boundaries
+
+Classes with a single recording concatenate their train and test files and cut at 70
+and 85 percent of the whole, so a partition can span the file boundary. The two files
+are halves of one recording, so this is the correct treatment, but it is a design
+choice and is stated as such. Benign trains on Benign_train rows 0 to 161,237,
+validates on Benign_train rows 161,237 to 192,732 plus Benign_test rows 0 to 3,056, and
+tests on the remainder of Benign_test.
+
