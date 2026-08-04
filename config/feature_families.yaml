@@ -1,18 +1,17 @@
-# AG_PRAXIS — feature families (DRAFT, NEEDS MANUAL REVIEW)
+# AG_PRAXIS — feature families (REVIEWED)
 #
-# Written by NB01 from column names alone. No column was inspected for
-# what it actually measures. Anything under `ambiguous` matched more than
-# one rule and was assigned to the first match only.
-#
-# Read every line before any experiment depends on these groupings.
-# Set status: reviewed once that has been done.
+# Written by NB01 from column names alone, then checked by hand against the
+# dataset documentation and the NB01 value ranges. The columns under
+# `ambiguous` matched more than one name rule; `rationale` below records how
+# each was resolved and what is still open.
 
-status: draft
-review_required: true
+status: reviewed
+review_required: false
 generated_by: AG_PRAXIS_NB01_dataset_inventory.ipynb
 generated_from: ARP_Spoofing_train.pcap.csv
 git_sha: 6a331e4
 generated_on: '2026-08-03'
+reviewed_on: '2026-08-04'
 label_columns: []
 families:
   timing:
@@ -101,3 +100,33 @@ ambiguous:
   rst_count:
   - protocol
   - statistical
+rationale:
+  columns_in_question: >-
+    Twelve columns matched both the protocol and the statistical name rule and
+    were assigned to protocol: Header_Length, the six flag_number columns (fin,
+    syn, rst, psh, ack, ece, cwr), and the count columns ack_count, syn_count,
+    fin_count, rst_count.
+  evidence: >-
+    The dataset documentation describes Header_Length as the mean transport
+    layer header length, and the flag_number columns as the proportion of
+    packets carrying each flag. Both are therefore statistical operations
+    applied to protocol attributes. The NB01 value ranges agree: the
+    flag_number columns fall between 0 and 1, the count columns are non-integer
+    averages, and Header_Length reaches 9.58e6 across 15,786 distinct values in
+    a single file.
+  decision: >-
+    The families are separated by what is measured rather than how it is
+    summarised. The statistical family holds summaries of packet size and
+    volume. The protocol family holds protocol identity and flag behaviour,
+    including how often flags appear. On that basis the twelve belong to
+    protocol.
+  open_points: >-
+    The count columns are not covered by the documentation quoted above. Their
+    assignment rests on their value ranges alone.
+  effect_on_downstream: >-
+    The assignment does not affect the timing family, which is unambiguous —
+    Duration, Rate, Srate, IAT — and is the only family excluded downstream in
+    NB09. NB03 measured protocol at 0.1802 and statistical at 0.1198 for
+    capture identification against timing at 0.9301, so neither of the two
+    families in question carries the provenance signal wherever these columns
+    sit.
