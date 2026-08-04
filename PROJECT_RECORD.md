@@ -191,26 +191,40 @@ the real class distribution.
 
 ### Feature provenance
 
-These figures were produced under the earlier numbering, on 43 features with both DHCP
-and Drate excluded. NB01 established that only Drate is constant, so the live feature
-count is 44. The provenance test is re-run as NB03 under the current numbering; until
-then these figures stand as the measured result on 43 features and should be read with
-that qualification.
+From the NB03 reference run: RandomForest, 50 trees, `min_samples_leaf` 100, 30% of rows
+held out for test, on the 44 features that remain after Drate is dropped. Every model is
+trained on 8,000 rows drawn equally from each of the 50 recordings belonging to the 8
+classes recorded more than once, so no recording can be identified by being larger than the
+others and chance is one over the number of recordings.
 
 | Test | Accuracy |
 |---|---|
-| Capture identification, all 43 features, 50 captures (chance 0.02) | 0.9340 |
-| Capture identification, attack class held fixed | **0.9427** |
-| Timing family only: Duration, Rate, Srate, IAT | 0.9364 |
-| The five features named by prior work | 0.9444 |
-| Protocol family, 27 features | 0.2471 |
-| Statistical family, 12 features | 0.1280 |
-| Attack macro-F1, whole capture held out (Tier A) | 0.9993 |
-| Attack macro-F1, rows pooled (Tier A) | 0.9995 |
+| Capture identification, all 44 features, 50 recordings (chance 0.0200) | 0.8010 |
+| Capture identification, attack class held fixed (mean chance 0.1750) | **0.8280** |
+| Timing family only: Duration, Rate, Srate, IAT | 0.9301 |
+| The five features named by prior work | 0.9285 |
+| IAT, Rate, Srate | 0.8935 |
+| Protocol family, 28 features | 0.1802 |
+| Statistical family, 12 features | 0.1198 |
+| Attack macro-F1, whole recording held out | 0.9985 |
+| Attack macro-F1, rows pooled | 0.9982 |
+| Difference, pooled minus held out | -0.0003 |
 
-**Consequence:** four timing features identify the source recording nearly as well as
-all 43. SHAP therefore runs on a timing-excluded model in NB09, so the threat mapping
-describes attack behaviour rather than recording conditions.
+**Per class, attack held fixed:** DDoS-ICMP 0.8532 (chance 0.100) · DDoS-SYN 0.8784 (0.200)
+· DDoS-TCP 0.8232 (0.200) · DDoS-UDP 0.6869 (0.100) · DoS-ICMP 0.7863 (0.200) · DoS-SYN
+0.9177 (0.200) · DoS-TCP 0.8291 (0.200) · DoS-UDP 0.8489 (0.200). Across the eight, the
+within-class models close 0.7915 of the distance between chance and being right every time.
+
+An earlier run under the previous numbering, using 100 trees with no leaf constraint,
+reached 0.9427 with the class held fixed. The constrained model here gives a lower bound on
+the same effect.
+
+**Consequence:** four timing features identify the source recording better than all 44
+together, and three of them get most of the way there. SHAP therefore runs on a
+timing-excluded model in NB09, so the threat mapping describes attack behaviour rather than
+recording conditions. The identifiable session is not being used to score points on these
+eight classes, where the two attack protocols agree to within 0.0003 macro-F1, but it
+remains available to any model trained on these columns and to any explanation read off one.
 
 **No column is constant within a capture while varying across captures**, so provenance
 is carried by distributional shift, not by any column acting as a label.
