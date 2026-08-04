@@ -130,3 +130,9 @@ rationale:
     capture identification against timing at 0.9301, so neither of the two
     families in question carries the provenance signal wherever these columns
     sit.
+  timing_family_size: >-
+    The timing family lists five columns. Drate is dropped before modelling as
+    constant across the whole dataset (NB01, full scan, all 8,775,013 rows), so
+    four reach any downstream stage: Duration, Rate, Srate, IAT. Notebooks
+    excluding the timing family should intersect the family list with the live
+    column list rather than assuming five.
