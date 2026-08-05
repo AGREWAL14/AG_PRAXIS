@@ -255,6 +255,43 @@ MQTT-DoS-Connect_Flood 444 / 92 / 94.
 The timing-excluded input is defined in the manifest as a column slice rather than
 written as a second array: drop Duration, Rate, Srate and IAT, leaving 40 features.
 
+### Baseline models
+
+From the NB05 reference run: seven runs, full pass, 303 minutes. Seed 42, and the 44
+features that remain after Drate is dropped.
+
+| run | model | task | split | accuracy | weighted F1 | macro F1 |
+|---|---|---|---|---|---|---|
+| ours_cnn_19class | mohammadi_cnn | 19-class | two_tier | 0.9852 | 0.9831 | 0.7356 |
+| published_cnn_19class | mohammadi_cnn | 19-class | shipped | 0.9863 | 0.9840 | 0.7110 |
+| forest_19class | random_forest | 19-class | two_tier | 0.9923 | 0.9906 | 0.8418 |
+| ours_cnn_6class | mohammadi_cnn | 6-class | two_tier | 0.9945 | 0.9947 | 0.9006 |
+| published_cnn_6class | mohammadi_cnn | 6-class | shipped | 0.9929 | 0.9931 | 0.8786 |
+| forest_6class | random_forest | 6-class | two_tier | 0.9980 | 0.9980 | 0.9681 |
+| published_cnn_2class | mohammadi_cnn | 2-class | shipped | 0.9968 | 0.9968 | 0.9651 |
+
+The split protocol costs nothing. The same architecture with the same settings scores
+0.7356 macro-F1 on the two-tier split against 0.7110 on the shipped split at nineteen
+classes, and 0.9006 against 0.8786 at six. The two-tier figure is higher in both cases.
+The test partitions differ in size and composition, so this is not evidence the two-tier
+split is better, only that holding recording sessions apart does not cost performance.
+This is the third measurement pointing the same way, after the 0.0003 difference NB03
+measured on Tier A.
+
+A random forest on single records beats both convolutional runs. 0.8418 macro-F1 against
+0.7356 and 0.7110, trained on 999,998 rows in 21 seconds against 65 minutes,
+cross-validated at 0.8958 plus or minus 0.0049. Per class the difference is largest where
+the convolution fails: Recon-OS_Scan 0.7241 against 0.0519, Spoofing 0.8605 against
+0.4167, Recon-Ping_Sweep 0.6884 against 0.5018.
+
+Three classes are below F1 0.50 in both convolutional runs: Recon-VulScan, Recon-OS_Scan
+and MQTT-DDoS-Publish_Flood. The forest resolves one of them, Recon-OS_Scan, from 0.0519
+to 0.7241. It still fails the other two, MQTT-DDoS-Publish_Flood at 0.1186 and
+Recon-VulScan at 0.2536, and those two are the only classes no model reaches F1 0.50 on.
+
+The weighted minus macro gap is 0.2474 on the two-tier nineteen-class run and 0.2730 on
+the shipped one. Accuracy reads 0.985 and 0.986 on the same predictions.
+
 ### Reproduced baseline — Mohammadi et al., shipped split
 
 | Task | Accuracy | Weighted F1 | Macro F1 |
@@ -472,3 +509,4 @@ position; the pre-registration states how it was reached.
 | H3 reference standard | Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is in scope |
 | Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation |
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
+| H2's single-record baseline | H2 predicts sequence-based detection will exceed single-record classification by 0.05 mean pairwise F1 on within-family pairs. The single-record baseline is now a random forest at 0.8418 macro-F1, which handles the Recon cluster substantially better than the published convolutional architecture. NB06 is measured against the forest, not against the CNN |
