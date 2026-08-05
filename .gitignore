@@ -10,3 +10,7 @@ __pycache__/
 *.csv.gz
 data/processed/MedSec*
 archive/data/*.csv
+
+# NB05 predictions: int8 encoded, ~1.2MB each, needed for McNemar and pairwise F1
+!results/NB05/*/y_true.npy
+!results/NB05/*/y_pred.npy
