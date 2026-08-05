@@ -368,3 +368,117 @@ post-hoc choice.
 
 Unchanged. A class counts as detected at F1 of 0.50 or above.
 
+
+---
+
+# Amendment 7 — 2026-08-05
+
+H1 and H3 were restated when PROJECT_RECORD.md v1.0 was written on 3 August 2026. No
+amendment recorded either change at the time. This amendment records them.
+
+## H1 — replaces the statement in Amendment 3
+
+**H1.** Reconnaissance and low-rate attack classes will require at least twice as many
+observed records to reach F1 >= 0.80 as volumetric flooding classes.
+
+Metric: records observed to reach F1 >= 0.80, per class. Notebooks 04, 06 and 08.
+
+## What changed in H1, and when
+
+Restated on 3 August 2026, when PROJECT_RECORD.md v1.0 was written, before NB06 was
+run. Amendment 3 stated H1 as three conjuncts. Two were dropped and one was altered.
+
+**Clause 1, dropped.** "at least twelve of nineteen threat classes at F1 of 0.80 or
+above within fifty observed records". Nothing in v1.0 sets a number of classes that
+must reach F1 0.80, and the ceiling of fifty observed records is not carried.
+
+**Clause 2, dropped.** "will exceed single-record classification by at least 0.03
+macro-F1". A sequence-versus-single-record claim now sits in H2, but Amendment 5
+restates H2 against the published CNN with no numeric macro-F1 threshold, so the 0.03
+figure is no longer stated anywhere in the project.
+
+**Clause 3, retained and altered in three ways.** Amendment 3 read "median
+minimum-observation requirements differing at least threefold between volumetric and
+low-rate classes".
+
+- The multiple is twice, not threefold.
+- The aggregation is no longer stated. Amendment 3 compared medians. v1.0 states the
+  metric as records observed to reach F1 >= 0.80, per class, and names no summary
+  statistic. Amendment 4's exclusion of Recon-Ping_Sweep was written against a median
+  and still presumes one.
+- The direction is now fixed. Amendment 3 required the requirements to differ, which a
+  difference in either direction satisfies. v1.0 requires low-rate classes to need more
+  records than volumetric ones.
+
+**Scaffold, dropped.** The observation budget k in {5, 10, 25, 50} is no longer fixed,
+so the grid on which records observed is measured is open. The failure condition is
+dropped; v1.0 states no fails-if for any hypothesis. Five seeds and McNemar at alpha
+0.05 survive in Section 8's fixed parameters rather than attached to H1.
+
+**Group membership, unresolved.** v1.0 Section 3 lists Recon-Ping_Sweep in the low-rate
+group. Amendment 4 excludes it from the H1 median, because two validation and four test
+sequences cannot support a per-class metric. The two statements disagree. The exclusion
+in Amendment 4 governs, and PROJECT_RECORD.md Section 3's low-rate group listing is to
+be corrected to match. That correction is logged as an open item in Section 11 rather
+than made here.
+
+## H3 — replaces the statement in Amendment 3
+
+**H3.** For at least 70% of attack classes, the deterministic mapping will assign a
+STRIDE category consistent with that class's documented attack semantics in the
+CICIoMT2024 benchmark paper.
+
+Metric: proportion of classes with a consistent STRIDE assignment. Notebook 09.
+
+## What changed in H3, and when
+
+Restated on 3 August 2026, when PROJECT_RECORD.md v1.0 was written, before NB09 was
+run. H3 as stated in v1.0 shares no clause with H3 as stated in Amendment 3. All four
+of Amendment 3's clauses left the hypothesis, and the clause that replaced them is new.
+
+**Clause 1, dropped as a hypothesis clause, retained as a reported result.** "Timing
+features will identify the source capture at above 50 percent accuracy with attack
+class held fixed." Amendment 3 recorded it as already supported at 0.9427. It now
+appears in v1.0 Section 3 under "Reported results — not hypothesis tests" as capture
+identifiability, served by notebook 03, and in Section 5 at 0.8280 with the attack
+class held fixed.
+
+**Clause 2, dropped, and no longer testable.** "and will rank in the top five by SHAP
+importance." v1.0 Section 5 fixes SHAP to run on a timing-excluded model in NB09,
+dropping Duration, Rate, Srate and IAT and leaving 40 features. Timing features cannot
+hold a SHAP rank under that design, so the clause is not merely unstated but foreclosed.
+
+**Clause 3, moved to a reported result.** "attributions will show Kendall's tau of 0.70
+or above across five seeds." It appears in v1.0 Section 3 as attribution stability,
+Kendall's tau, served by notebook 09, reported with the mapping. The 0.70 threshold is
+not carried, so tau is reported without a pass mark.
+
+**Clause 4, moved to a reported result.** "fewer than one percent of matched MAUDE
+records will be attributable to cyberattack." It appears as the MAUDE cyber-attributable
+share, served by notebook 09, as corroboration and surveillance coverage. The one
+percent threshold is not carried.
+
+**New clause, first stated in v1.0.** The 70 percent STRIDE consistency criterion
+appears in no amendment. It is not a narrowing of any Amendment 3 clause: it measures
+agreement between the deterministic mapping and the attack semantics documented in the
+benchmark paper, which no earlier clause measured. Amendment 2 carried a different
+STRIDE clause, a permutation test on SHAP profile separation at p below 0.05, and
+Amendment 3 withdrew it. The 70 percent criterion is not that test.
+
+**Scaffold, dropped.** Amendment 3's independent, dependent, testable and fails-if
+entries for H3 are not carried into v1.0.
+
+## Notebook renumbering
+
+Amendment 3 is headed "Made after NB04" and cites capture-identification figures of
+0.9340 and 0.9427. Under the numbering fixed by PROJECT_RECORD.md v1.0 Section 7, that
+work is notebook 03, Feature Provenance Check. Section 5 records the same experiment
+re-run under a constrained model at 0.8010 and 0.8280 and notes the earlier figures came
+from 100 trees with no leaf constraint. References to NB04 in Amendments 1 through 3
+mean the notebook now numbered 03.
+
+The feature count differs between the two records of that same earlier run. Amendment 3
+states 0.9340 was reached using all 43 features. v1.0 Section 5 reports 44 features
+remaining after Drate is dropped from the 45 released columns. The discrepancy is
+recorded here and not resolved.
+
