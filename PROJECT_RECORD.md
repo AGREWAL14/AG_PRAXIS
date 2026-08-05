@@ -6,7 +6,7 @@ Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.0 · 3 August 2026**
+**Version 1.1 · 5 August 2026**
 
 ---
 
@@ -64,7 +64,7 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 | | Research Objective | Research Question | Hypothesis | Metric | Notebooks |
 |---|---|---|---|---|---|
 | **1** | Develop and validate a sequence-based neural architecture that models the temporal structure of IoMT network traffic, and determine how much observation each threat class requires before it becomes reliably identifiable. | How accurately can a model identify cyber threats targeting health monitoring wearables and remote patient hubs from partial observations, and how many records must be observed before each threat class becomes reliably identifiable? | Reconnaissance and low-rate attack classes will require at least twice as many observed records to reach F1 >= 0.80 as volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
-| **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack variants that flow-level features do not separate. | Does modelling traffic as sequences rather than single records improve threat detection in RPH networks, and which threat classes benefit most? | Sequence-based detection will achieve mean pairwise F1 at least 0.05 above single-record classification on attack pairs within the same family. | Mean pairwise F1, within-family pairs | 05, 06, 07, 08 |
+| **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack variants that flow-level features do not separate. | Does modelling traffic as sequences rather than single records improve threat detection in RPH networks, and which threat classes benefit most? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 on the classes the published CNN fails to detect | 05, 06, 07, 08 |
 | **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and corroborate the resulting threat records against FDA MAUDE adverse events. | Can model explanations be mapped to STRIDE threat categories via a CAPEC ontology pipeline linked to MAUDE signals, to produce actionable threat intelligence for health monitoring wearables and RPH? | For at least 70% of attack classes, the deterministic mapping will assign a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
 
 ### Group definitions — fixed by the benchmark taxonomy, not by measurement
@@ -509,4 +509,6 @@ position; the pre-registration states how it was reached.
 | H3 reference standard | Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is in scope |
 | Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation |
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
-| H2's single-record baseline | H2 predicts sequence-based detection will exceed single-record classification by 0.05 mean pairwise F1 on within-family pairs. The single-record baseline is now a random forest at 0.8418 macro-F1, which handles the Recon cluster substantially better than the published convolutional architecture. NB06 is measured against the forest, not against the CNN |
+| H2's single-record baseline, resolved | H2 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |
+| Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
+| Section 5 sentence on classes below F1 0.50 | The sentence naming three classes below 0.50 in both convolutional runs is inconsistent with the record's own figures: Spoofing reads 0.4167 for ours_cnn and 0.3438 for published_cnn_19class, both under 0.50. Section 5 also carries two different reproductions of the shipped-split 19-class task — macro-F1 0.7110 and 0.75 — presented as one. Both to be re-derived from the saved metrics.json files and Section 5 corrected |

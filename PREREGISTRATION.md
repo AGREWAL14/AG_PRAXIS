@@ -290,3 +290,81 @@ choice and is stated as such. Benign trains on Benign_train rows 0 to 161,237,
 validates on Benign_train rows 161,237 to 192,732 plus Benign_test rows 0 to 3,056, and
 tests on the remainder of Benign_test.
 
+
+---
+
+# Amendment 5 — 2026-08-05
+
+Made after the NB05 baseline runs, before NB06 was written.
+
+## Numbering
+
+Under the numbering fixed by PROJECT_RECORD.md v1.0, H2 is the sequence hypothesis.
+The class-imbalance intervention claim carried under the H2 label in Amendments 2 and
+3 is no longer a hypothesis. It is a reported result of NB07, listed in
+PROJECT_RECORD.md Section 3 under "Reported results — not hypothesis tests".
+Amendments 2 and 3 stand as written and are not edited.
+
+## H2 — replaces the previous statement
+
+**H2.** Sequence-based detection improves macro-averaged F1 on the attack classes
+the published CNN model fails to detect.
+
+## What is superseded
+
+PROJECT_RECORD.md Section 3 row 2 previously required a mean pairwise F1 gain of at
+least 0.05 on within-family pairs. That threshold is superseded and is no longer the
+test H2 stands or falls on. Mean pairwise F1 is still computed and reported in
+Chapter 4 as a secondary result.
+
+## The class set, fixed here
+
+The class set is fixed by the published_cnn_19class run in NB05, which ran before
+NB06 was written. The classes scoring F1 below 0.50 in that run are Recon-VulScan,
+Recon-OS_Scan, MQTT-DDoS-Publish_Flood and Spoofing.
+
+## The threshold
+
+A class counts as detected at F1 of 0.50 or above. The same threshold defines
+membership of the set above and defines improvement on it.
+
+## The comparator
+
+The comparator named in H2 is the published CNN. The single-record random forest is
+reported as a third comparison in Chapter 4 but is not the hypothesis comparator.
+
+
+---
+
+# Amendment 6 — 2026-08-05
+
+## Correction to the H2 class set
+
+Amendment 5 named four classes as scoring F1 below 0.50 in the published_cnn_19class
+run. Reading metrics.json for that run directly shows six. The four named came from a
+separate reproduction reported in PROJECT_RECORD.md Section 5, which scores macro-F1
+0.75 against 0.7110 for published_cnn_19class and reports Spoofing at 0.40 against
+0.3438. The two are not the same run.
+
+The six classes below F1 0.50 in published_cnn_19class are Recon-VulScan 0.0000,
+Recon-Ping_Sweep 0.0107, Recon-OS_Scan 0.0343, MQTT-DDoS-Publish_Flood 0.1858,
+Spoofing 0.3438 and MQTT-Malformed_Data 0.4883.
+
+## The set used for H2
+
+Recon-Ping_Sweep is excluded, on the rule already fixed in Amendment 4: it yields 2
+validation and 4 test sequences at window 50 and stride 25, so no per-class metric on
+that partition is interpretable. Its per-class figures are still reported, marked as
+resting on too few sequences to interpret.
+
+The H2 class set is therefore Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood,
+Spoofing and MQTT-Malformed_Data.
+
+MQTT-Malformed_Data is retained despite sitting close to the threshold. No rule
+excludes it, and dropping a borderline class after seeing its value would be a
+post-hoc choice.
+
+## The threshold
+
+Unchanged. A class counts as detected at F1 of 0.50 or above.
+
