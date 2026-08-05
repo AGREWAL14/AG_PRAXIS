@@ -284,10 +284,12 @@ cross-validated at 0.8958 plus or minus 0.0049. Per class the difference is larg
 the convolution fails: Recon-OS_Scan 0.7241 against 0.0519, Spoofing 0.8605 against
 0.4167, Recon-Ping_Sweep 0.6884 against 0.5018.
 
-Three classes are below F1 0.50 in both convolutional runs: Recon-VulScan, Recon-OS_Scan
-and MQTT-DDoS-Publish_Flood. The forest resolves one of them, Recon-OS_Scan, from 0.0519
-to 0.7241. It still fails the other two, MQTT-DDoS-Publish_Flood at 0.1186 and
-Recon-VulScan at 0.2536, and those two are the only classes no model reaches F1 0.50 on.
+Five classes are below F1 0.50 in both convolutional runs: Recon-VulScan,
+Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data. The forest
+resolves three of them, Recon-OS_Scan from 0.0519 to 0.7241, Spoofing from 0.4167 to
+0.8605, and MQTT-Malformed_Data from 0.4021 to 0.6752. It still fails
+MQTT-DDoS-Publish_Flood at 0.1186 and Recon-VulScan at 0.2536, and those two are the
+only classes no model reaches F1 0.50 on.
 
 The weighted minus macro gap is 0.2474 on the two-tier nineteen-class run and 0.2730 on
 the shipped one. Accuracy reads 0.985 and 0.986 on the same predictions.
@@ -303,6 +305,13 @@ the shipped one. Accuracy reads 0.985 and 0.986 on the same predictions.
 Four classes effectively undetected at 19-class: Recon-VulScan 0.00, Recon-OS_Scan 0.03,
 MQTT-DDoS-Publish_Flood 0.20, Spoofing 0.40. In the six-class task Spoofing scores 0.38
 while accuracy reads 0.995.
+
+These figures come from an earlier reproduction whose artifacts are not in
+`results/NB05/`. The nearest run on disk, `published_cnn_19class`, reads macro-F1
+0.7110 against 0.75 and Spoofing 0.3438 against 0.40. The six-class Spoofing figure
+moves the opposite way, 0.38 recorded against 0.4094 on disk, so this is not a
+rounding difference. The block is retained as a record of what was run; every figure
+cited in Chapter 4 comes from the artifacts in `results/NB05/`.
 
 ---
 
@@ -511,4 +520,4 @@ position; the pre-registration states how it was reached.
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
 | H2's single-record baseline, resolved | H2 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |
 | Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
-| Section 5 sentence on classes below F1 0.50 | The sentence naming three classes below 0.50 in both convolutional runs is inconsistent with the record's own figures: Spoofing reads 0.4167 for ours_cnn and 0.3438 for published_cnn_19class, both under 0.50. Section 5 also carries two different reproductions of the shipped-split 19-class task — macro-F1 0.7110 and 0.75 — presented as one. Both to be re-derived from the saved metrics.json files and Section 5 corrected |
+| Section 5 sentence on classes below F1 0.50, resolved | Both statements re-derived from `results/NB05/*/metrics.json` and corrected. First: five classes, not three, are below F1 0.50 in both convolutional runs — Spoofing and MQTT-Malformed_Data were missing — and the forest resolves three of the five, MQTT-Malformed_Data reaching 0.6752. Second: no run on disk produces the "Reproduced baseline" figures, so that block now carries a note recording that it comes from an earlier reproduction and that every figure cited in Chapter 4 comes from the artifacts in `results/NB05/` |
