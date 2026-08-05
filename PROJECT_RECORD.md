@@ -63,7 +63,7 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 
 | | Research Objective | Research Question | Hypothesis | Metric | Notebooks |
 |---|---|---|---|---|---|
-| **1** | Develop and validate a sequence-based neural architecture that models the temporal structure of IoMT network traffic, and determine how much observation each threat class requires before it becomes reliably identifiable. | How accurately can a model identify cyber threats targeting health monitoring wearables and remote patient hubs from partial observations, and how many records must be observed before each threat class becomes reliably identifiable? | Reconnaissance and low-rate attack classes will require at least twice as many observed records to reach F1 >= 0.80 as volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
+| **1** | Develop and validate a sequence-based neural architecture that models the temporal structure of IoMT network traffic, and determine how much observation each threat class requires before it becomes reliably identifiable. | How accurately can a model identify cyber threats targeting health monitoring wearables and remote patient hubs from partial observations, and how many records must be observed before each threat class becomes reliably identifiable? | The median number of observed records that low-rate attack classes require to reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
 | **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack variants that flow-level features do not separate. | Does modelling traffic as sequences rather than single records improve threat detection in RPH networks, and which threat classes benefit most? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 on the classes the published CNN fails to detect | 05, 06, 07, 08 |
 | **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and corroborate the resulting threat records against FDA MAUDE adverse events. | Can model explanations be mapped to STRIDE threat categories via a CAPEC ontology pipeline linked to MAUDE signals, to produce actionable threat intelligence for health monitoring wearables and RPH? | For at least 70% of attack classes, the deterministic mapping will assign a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
 
@@ -71,10 +71,16 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 
 - **Volumetric:** DDoS-ICMP, DDoS-SYN, DDoS-TCP, DDoS-UDP, DoS-ICMP, DoS-SYN,
   DoS-TCP, DoS-UDP
-- **Low-rate:** Recon-OS_Scan, Recon-Ping_Sweep, Recon-Port_Scan, Recon-VulScan,
-  Spoofing, MQTT-Malformed_Data
+- **Low-rate:** Recon-OS_Scan, Recon-Port_Scan, Recon-VulScan, Spoofing,
+  MQTT-Malformed_Data
 - **Within-family pairs:** any two classes sharing a family prefix (Recon, MQTT,
   DDoS, DoS)
+
+Recon-Ping_Sweep is excluded from the low-rate median under `PREREGISTRATION.md`
+Amendment 4: at window 50 and stride 25 its 926 records yield 2 validation and 4 test
+sequences, too few for a per-class metric to be interpretable. Its per-class figures are
+reported, marked as resting on too few sequences to interpret. The same exclusion
+applies to the H2 class set under Amendment 6.
 
 ### Reported results — not hypothesis tests
 
@@ -520,5 +526,5 @@ position; the pre-registration states how it was reached.
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
 | H2's single-record baseline, resolved | H2 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |
 | Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
-| Low-rate group listing in Section 3 | Section 3 lists Recon-Ping_Sweep in the low-rate group, while `PREREGISTRATION.md` Amendment 4 excludes it from the H1 median on 2 validation and 4 test sequences. Amendment 4 governs, as recorded in Amendment 7. Section 3's listing to be corrected to match |
+| Low-rate group listing in Section 3, resolved | Section 3's low-rate bullet no longer lists Recon-Ping_Sweep, matching the group fixed by `PREREGISTRATION.md` Amendment 4, and the exclusion and its basis are now stated beneath the bullets. H1 names the median again in the same edit, restoring the aggregation Amendment 3 stated and v1.0 dropped. Both changes are recorded in Amendment 8 |
 | Section 5 sentence on classes below F1 0.50, resolved | Both statements re-derived from `results/NB05/*/metrics.json` and corrected. First: five classes, not three, are below F1 0.50 in both convolutional runs — Spoofing and MQTT-Malformed_Data were missing — and the forest resolves three of the five, MQTT-Malformed_Data reaching 0.6752. Second: no run on disk produces the "Reproduced baseline" figures, so that block now carries a note recording that it comes from an earlier reproduction and that every figure cited in Chapter 4 comes from the artifacts in `results/NB05/` |

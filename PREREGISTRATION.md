@@ -482,3 +482,42 @@ states 0.9340 was reached using all 43 features. v1.0 Section 5 reports 44 featu
 remaining after Drate is dropped from the 45 released columns. The discrepancy is
 recorded here and not resolved.
 
+
+---
+
+# Amendment 8 — 2026-08-05
+
+Made after Amendment 7, before NB06 was run.
+
+## H1 — the median is named again
+
+**H1.** The median number of observed records that low-rate attack classes require to
+reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes.
+
+Amendment 7 recorded that v1.0 dropped the aggregation Amendment 3 had stated:
+Amendment 3 compared medians, v1.0 stated the comparison with no summary statistic, and
+Amendment 4's exclusion of Recon-Ping_Sweep continued to presume one. The median is
+named again here.
+
+Only the aggregation is restored. The multiple stays at twice, not the threefold of
+Amendment 3, and the direction stays as v1.0 fixed it: low-rate classes require more
+observed records than volumetric ones. The metric is unchanged — records observed to
+reach F1 >= 0.80, measured per class and compared as group medians.
+
+## The low-rate group listing is corrected
+
+Amendment 4 fixed the low-rate group for the H1 median as Recon-OS_Scan,
+Recon-Port_Scan, Recon-VulScan, Spoofing and MQTT-Malformed_Data, excluding
+Recon-Ping_Sweep. PROJECT_RECORD.md v1.0 Section 3 listed Recon-Ping_Sweep among the
+low-rate classes, which Amendment 7 recorded as an unresolved disagreement between the
+two files. Section 3's listing is corrected to match Amendment 4. The volumetric group
+is unchanged.
+
+The exclusion rests on sequence count, not on measured performance. At window 50 and
+stride 25 Recon-Ping_Sweep's 926 records yield 2 validation and 4 test sequences, and an
+F1 computed on two samples can only take the values 0, 0.5 or 1. Its per-class figures
+are still reported, marked as resting on too few sequences to interpret. The same
+exclusion applies to the H2 class set under Amendment 6.
+
+This closes the disagreement Amendment 7 left open.
+
