@@ -65,8 +65,8 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 
 | | Research Objective | Research Question | Hypothesis | Metric | Notebooks |
 |---|---|---|---|---|---|
-| **1** | Determine, using a sequence-based detector, how much observation each threat class requires before it becomes reliably identifiable. | How many records of traffic from health monitoring wearables and remote patient hubs (RPH) must be observed before each threat class becomes reliably identifiable? | The median number of observed records that low-rate attack classes require to reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
-| **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack classes the published CNN model fails to detect. | Does modelling traffic as sequences rather than single records improve threat detection in RPH networks? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 change on the classes the published CNN fails to detect | 05, 06, 07, 08 |
+| **1** | Determine, using a sequence-based detector, how much observation each threat class requires before it becomes reliably identifiable. | How many records of IoMT device traffic must be observed before each threat class becomes reliably identifiable? | The median number of observed records that low-rate attack classes require to reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
+| **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack classes the published CNN model fails to detect. | Does modelling traffic as sequences rather than single records improve threat detection in remote patient hub (RPH) networks? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 change on the classes the published CNN fails to detect | 05, 06, 07, 08 |
 | **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
 
 ### Group definitions — fixed by the benchmark taxonomy, not by measurement
@@ -139,6 +139,26 @@ applies to the H2 class set under Amendment 6.
 | Timestamp column | **None** |
 | Endpoint identifiers | **None** |
 | Constant across dataset | Drate only — dropped |
+
+### Device inventory by protocol
+
+From the testbed diagram in Dadkhah et al. (2024). The split by protocol decides what
+the modelled data can support.
+
+**Wi-Fi — 7 real devices, none a wearable.** Sense-U Baby Monitor, SOS Multifunctional
+Pager, SINGCALL SOS Button, M1T laxihub, Owltron, Blink mini, Ecobee Camera.
+
+**MQTT — 15 simulated devices, several of them wearables.** Lookee Ring Pro Sleep
+Monitor, Wellue Visual Oxy Wrist Pulse Oximeter, Wellue EKG, an EMG sensor and a GSR
+sensor, among others.
+
+**Bluetooth — the remaining real devices, almost all wearables.** Checkme O2 wrist
+oximeters, COOSPO armband heart rate monitors, Rhythm+ armband, Powrlabs chest strap,
+LIVLOV heart rate sensor, Pulsebit EX EKG tracker, SleepU, Lookee Sleep Ring.
+
+The 72 CSVs cover Wi-Fi and MQTT only. Bluetooth is released as pcap with no extracted
+features, so no real wearable contributed a row to the data modelled here. Wearable
+traffic in this subset is simulated MQTT traffic.
 
 ### Capture structure
 
@@ -526,7 +546,7 @@ position; the pre-registration states how it was reached.
 | Benign split boundaries, resolved | Tier B classes concatenate their train and test files and cut at 70 and 85 percent of the whole, so a partition can span the file boundary. Benign trains on `Benign_train` rows 0 to 161,237, validates on `Benign_train` rows 161,237 to 192,732 plus `Benign_test` rows 0 to 3,056, and tests on the remainder of `Benign_test`. Stated as a design choice in Chapter 3 |
 | Recon-Ping_Sweep sequence counts | 24 train, 2 validation, 4 test at window 50 and stride 25, from 926 records. Excluded from the low-rate median in H1 by `PREREGISTRATION.md` Amendment 4. The same exclusion rule is applied to the H2 class set in Amendment 6, which drops it from the classes the published CNN fails to detect despite its F1 of 0.0107 on that run |
 | H3 reference standard, resolved | H3 tests STRIDE consistency against the attack semantics documented in the CICIoMT2024 benchmark paper. MITRE's CWE-CAPEC-ATT&CK chain is in scope as a secondary reference, attached to the mapping output as enrichment in the same way CVE identifiers are, and is not part of what H3 tests |
-| Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation. No device breakdown exists in the repository: `data/processed/dataset_inventory.json` carries schema and row accounting only and names no device, and Section 4 gives 40 devices, 25 real and 15 simulated, with no per-device list. To be confirmed against the device table in Dadkhah et al. (2024) |
+| Wearable and RPH framing, resolved | The testbed splits by protocol: 7 real Wi-Fi devices, none a wearable; 15 simulated MQTT devices including several wearables; the remaining real devices on Bluetooth, almost all wearables. The 72 CSVs are Wi-Fi and MQTT only and Bluetooth is pcap-only, so no real wearable contributed a row to the modelled data. RQ1 no longer names wearables. Remote patient hub framing is retained: the Wi-Fi set includes a hub, an SOS pager, an SOS button and a baby monitor. Wearables remain in the dataset description in Section 4 |
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
 | H2's single-record baseline, resolved | H2 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |
 | Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
