@@ -252,3 +252,15 @@ things worse. A correction is a new entry, never an edit to an old one.
 | artefacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB04, 9 files, 4.4 GB: records_train.npz, sequences_train.npz, records_val.npz, sequences_val.npz, records_test.npz, sequences_test.npz, splits.json, scaler.joblib, NB04_manifest.json. Individual sizes are not recorded for this run |
 
 Stated limitation: 11 of 19 classes have one recording each. Their training, validation and test rows are consecutive stretches of that single recording, so anything a model learns about the session helps it on all three sides. Their scores are not evidence of generalisation to a new recording. Those classes are 8.05% of the rows and 8.61% of the test partition. Two Tier B classes have partitions that cross their file boundary. Recon-VulScan trains on the whole of its train file plus rows 0 to 71 of its test file, and Spoofing tests on rows 15,122 to 16,047 of its train file plus the whole of its test file. Both follow the concatenate-and-cut rule fixed in PREREGISTRATION.md Amendment 4, and both classes are in the H2 class set.
+
+### NB04 row-order check — reading of the IAT result (2026-08-06)
+
+The rule counts z above +3 only. Read two-sided, all 216 of 216 file-and-column combinations depart from randomness, not 143.
+
+Per-file z for IAT across all 72 files: minimum -4,008,331, median -129.3, maximum -10.5. All 72 are below -3. Observed lag-1 ranges from -1.000 to -0.210 with a median of -0.259.
+
+IAT is therefore the most strongly ordered of the three columns measured, not the least. It is negatively autocorrelated: adjacent records alternate rather than resemble each other, which in inter-arrival timing is consistent with paired or bursty traffic. The one-sided rule scores this as failure.
+
+The rule stands as stated before the run and the reported verdict is unchanged at 66.2%. This reading is recorded as a further finding, not as a revision of the rule.
+
+A window of 50 consecutive records carries this alternating structure and a single record cannot. Recorded before NB06 was run.
