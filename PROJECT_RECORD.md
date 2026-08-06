@@ -1,12 +1,13 @@
 # AG_PRAXIS — Project Record
 
-**Grounding Medical Device Threat Models in Observed Network Behaviour**
+**A Proactive Threat Modeling Framework for Connected Medical Devices Using
+Sequence-Based Detection and Explainable AI**
 
 Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.1 · 5 August 2026**
+**Version 1.2 · 6 August 2026**
 
 ---
 
@@ -64,7 +65,7 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 
 | | Research Objective | Research Question | Hypothesis | Metric | Notebooks |
 |---|---|---|---|---|---|
-| **1** | Determine, using a sequence-based detector, how much observation each threat class requires before it becomes reliably identifiable. | How many records of health monitoring wearable and remote patient hub traffic must be observed before each threat class becomes reliably identifiable? | The median number of observed records that low-rate attack classes require to reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
+| **1** | Determine, using a sequence-based detector, how much observation each threat class requires before it becomes reliably identifiable. | How many records of traffic from health monitoring wearables and remote patient hubs (RPH) must be observed before each threat class becomes reliably identifiable? | The median number of observed records that low-rate attack classes require to reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
 | **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack classes the published CNN model fails to detect. | Does modelling traffic as sequences rather than single records improve threat detection in RPH networks? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 change on the classes the published CNN fails to detect | 05, 06, 07, 08 |
 | **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
 
@@ -103,9 +104,11 @@ applies to the H2 class set under Amendment 6.
 - **Zero-day detection** — 19 labelled classes; nothing is unseen at training time.
 - **Real-time operation and edge deployment** — no latency measurement, no edge
   hardware. Training and inference time recorded as a feasibility observation only.
-- **CVE as a mapping input** — CVE identifies vulnerabilities in named software
-  products; the evidence here is network behaviour. CVE identifiers are attached where a
-  CAPEC pattern already carries them, as complementary enrichment only.
+- **CVE and the MITRE chain as mapping inputs** — CVE identifies vulnerabilities in
+  named software products; the evidence here is network behaviour. CVE identifiers are
+  attached where a CAPEC pattern already carries them, as complementary enrichment only.
+  MITRE's CWE-CAPEC-ATT&CK chain is attached on the same footing, as secondary reference
+  alongside CVE, and is not a mapping input for H3.
 - **Ontology-based NLP** — the mapping operates on SHAP attributions against structured
   CAPEC fields. No text corpus.
 - **Dashboard, ISO/IEC 42001 conformance** — not built, not assessed.
@@ -522,8 +525,8 @@ position; the pre-registration states how it was reached.
 | `SGKF` labels in Bogan's Table 3-1, resolved | A typographical error. `SGKF` appears six times, all within that one table. `SKF` appears throughout the abbreviations list, the research questions, all of Chapter 4 and both confusion matrix captions, and is defined as Stratified K-Fold. No `SGKF` entry exists in the abbreviations list. The prose immediately below the table describes plain stratified k-fold cross-validation, five folds with no reserved validation portion, and no grouping variable is defined anywhere in the methodology. Plain `StratifiedKFold` is therefore the correct comparison |
 | Benign split boundaries, resolved | Tier B classes concatenate their train and test files and cut at 70 and 85 percent of the whole, so a partition can span the file boundary. Benign trains on `Benign_train` rows 0 to 161,237, validates on `Benign_train` rows 161,237 to 192,732 plus `Benign_test` rows 0 to 3,056, and tests on the remainder of `Benign_test`. Stated as a design choice in Chapter 3 |
 | Recon-Ping_Sweep sequence counts | 24 train, 2 validation, 4 test at window 50 and stride 25, from 926 records. Excluded from the low-rate median in H1 by `PREREGISTRATION.md` Amendment 4. The same exclusion rule is applied to the H2 class set in Amendment 6, which drops it from the classes the published CNN fails to detect despite its F1 of 0.0107 on that run |
-| H3 reference standard | H3 names the attack semantics documented in the CICIoMT2024 benchmark paper as its reference standard. Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is also in scope as a secondary standard |
-| Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation |
+| H3 reference standard, resolved | H3 tests STRIDE consistency against the attack semantics documented in the CICIoMT2024 benchmark paper. MITRE's CWE-CAPEC-ATT&CK chain is in scope as a secondary reference, attached to the mapping output as enrichment in the same way CVE identifiers are, and is not part of what H3 tests |
+| Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation. No device breakdown exists in the repository: `data/processed/dataset_inventory.json` carries schema and row accounting only and names no device, and Section 4 gives 40 devices, 25 real and 15 simulated, with no per-device list. To be confirmed against the device table in Dadkhah et al. (2024) |
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
 | H2's single-record baseline, resolved | H2 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |
 | Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
