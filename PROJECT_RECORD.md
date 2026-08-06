@@ -65,7 +65,7 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 |---|---|---|---|---|---|
 | **1** | Determine, using a sequence-based detector, how much observation each threat class requires before it becomes reliably identifiable. | How many records of health monitoring wearable and remote patient hub traffic must be observed before each threat class becomes reliably identifiable? | The median number of observed records that low-rate attack classes require to reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
 | **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack classes the published CNN model fails to detect. | Does modelling traffic as sequences rather than single records improve threat detection in RPH networks? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 change on the classes the published CNN fails to detect | 05, 06, 07, 08 |
-| **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics. | Proportion of classes with a consistent STRIDE assignment | 09 |
+| **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
 
 ### Group definitions — fixed by the benchmark taxonomy, not by measurement
 
@@ -88,10 +88,10 @@ applies to the H2 class set under Amendment 6.
 |---|---|---|
 | Capture identifiability | 03 | Justifies running SHAP on a timing-excluded model |
 | Baseline reproduction, macro vs weighted | 05 | Comparison point |
-| Class-imbalance interventions, per-class costs | 07 | Second route to "which classes benefit most" |
+| Class-imbalance interventions, per-class costs | 07 | Per-class benefit, which classes gain most from intervention |
 | Leave-one-family-out generalisation | 08 | Robustness |
 | Attribution stability, Kendall's tau | 09 | Reported with the mapping |
-| MAUDE cyber-attributable share | 09 | Corroboration and surveillance coverage |
+| MAUDE cyber-attributable share | 09 | Surveillance coverage |
 
 ### Scope exclusions and their basis
 
@@ -521,7 +521,7 @@ position; the pre-registration states how it was reached.
 | `SGKF` labels in Bogan's Table 3-1, resolved | A typographical error. `SGKF` appears six times, all within that one table. `SKF` appears throughout the abbreviations list, the research questions, all of Chapter 4 and both confusion matrix captions, and is defined as Stratified K-Fold. No `SGKF` entry exists in the abbreviations list. The prose immediately below the table describes plain stratified k-fold cross-validation, five folds with no reserved validation portion, and no grouping variable is defined anywhere in the methodology. Plain `StratifiedKFold` is therefore the correct comparison |
 | Benign split boundaries, resolved | Tier B classes concatenate their train and test files and cut at 70 and 85 percent of the whole, so a partition can span the file boundary. Benign trains on `Benign_train` rows 0 to 161,237, validates on `Benign_train` rows 161,237 to 192,732 plus `Benign_test` rows 0 to 3,056, and tests on the remainder of `Benign_test`. Stated as a design choice in Chapter 3 |
 | Recon-Ping_Sweep sequence counts | 24 train, 2 validation, 4 test at window 50 and stride 25, from 926 records. Excluded from the low-rate median in H1 by `PREREGISTRATION.md` Amendment 4. The same exclusion rule is applied to the H2 class set in Amendment 6, which drops it from the classes the published CNN fails to detect despite its F1 of 0.0107 on that run |
-| H3 reference standard | Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is in scope |
+| H3 reference standard | H3 names the attack semantics documented in the CICIoMT2024 benchmark paper as its reference standard. Confirm whether MITRE's published CWE-CAPEC-ATT&CK chain is also in scope as a secondary standard |
 | Wearable and RPH framing | Verify the device inventory supports a wearable-specific claim, or move that framing to motivation |
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
 | H2's single-record baseline, resolved | H2 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |

@@ -543,6 +543,11 @@ attack semantics documented in the CICIoMT2024 benchmark paper. The metric is
 unchanged: the proportion of classes with a consistent STRIDE assignment. Made
 before NB09 was run.
 
+Section 3's H3 cell names the reference standard inline, ending "consistent with
+that class's documented attack semantics in the CICIoMT2024 benchmark paper." The
+boldface statement above stops at "documented attack semantics" and names the paper
+in the prose that follows. The two say the same thing; only the placement differs.
+
 ## Wording changes carrying no hypothesis content
 
 **H1, considered for shortening and left alone.** A shorter form was drafted:
