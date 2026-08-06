@@ -223,3 +223,32 @@ things worse. A correction is a new entry, never an edit to an old one.
 | artifacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB05/published_cnn_2class |
 | status | reference run |
 
+
+### NB04 — preprocessing and splits (2026-08-06)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB04_preprocessing_splits.ipynb |
+| run date | 2026-08-06 |
+| git sha | bc71318 |
+| seed | 42 |
+| pass reported | full, every row of every file read once |
+| fast/full agreement | all 19 compared values agree |
+| split checks | all 10 passed |
+| row-order check | passed, 143 of 216 file-and-column combinations above z of 3 (66.2%), rule stated before the run at 50%, none unscorable. Per column: Rate 98.6%, Header_Length 100%, IAT 0%. IAT's median observed lag-1 is -0.2593 against a null of -0.0001, so IAT departs from randomness strongly in the negative direction and the one-sided rule scores it as failure. Row order is not random and the sequence premise holds |
+| status | reference run |
+| runtime | fast 12s, full 215s |
+| files read | 72, 8,775,013 rows |
+| features | 44, after dropping Drate |
+| timing-excluded slice | defined in the manifest, not written: drop Duration, Rate, Srate, IAT, 40 features remain |
+| split protocol | two-tier, 70%/15%/15%, whole recordings held out for 8 classes, contiguous blocks for 11 |
+| rows per partition | train 6,228,288 (71.0%), val 1,317,014 (15.0%), test 1,229,711 (14.0%) |
+| recordings per partition | train 46, val 28, test 20 |
+| window, stride | 50 records, 25 records, never crossing a file boundary |
+| sequences | train 249,061, val 52,637, test 49,159 |
+| smallest class in sequences | Recon-Ping_Sweep, 2 in its smallest partition |
+| scaler | StandardScaler, fitted on 6,228,288 training rows from 46 blocks, no validation or test row read |
+| shipped split | saved as file lists and row ranges only, train 7,160,831 rows, test 1,614,182; NB05 reads those CSVs itself and fits its own scaler, so the baseline is reproduced as published |
+| artefacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB04, 9 files, 4.4 GB: records_train.npz, sequences_train.npz, records_val.npz, sequences_val.npz, records_test.npz, sequences_test.npz, splits.json, scaler.joblib, NB04_manifest.json. Individual sizes are not recorded for this run |
+
+Stated limitation: 11 of 19 classes have one recording each. Their training, validation and test rows are consecutive stretches of that single recording, so anything a model learns about the session helps it on all three sides. Their scores are not evidence of generalisation to a new recording. Those classes are 8.05% of the rows and 8.61% of the test partition. Two Tier B classes have partitions that cross their file boundary. Recon-VulScan trains on the whole of its train file plus rows 0 to 71 of its test file, and Spoofing tests on rows 15,122 to 16,047 of its train file plus the whole of its test file. Both follow the concatenate-and-cut rule fixed in PREREGISTRATION.md Amendment 4, and both classes are in the H2 class set.
