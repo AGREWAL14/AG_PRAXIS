@@ -11,9 +11,10 @@ Prior praxis in program: Bogan (2025)
 ---
 
 > **This file is the single source of truth for the project.**
-> Attach it, and only it, when starting a new chat. Everything a parallel
-> conversation needs is here. Files marked superseded in Section 10 must not be
-> used as reference.
+> Attach it and PREREGISTRATION.md when starting a new chat. This file states the
+> current position; the pre-registration holds the class sets, thresholds and
+> exclusion rules that the hypotheses depend on. Files marked superseded in
+> Section 10 must not be used as reference.
 
 ---
 
