@@ -521,3 +521,78 @@ exclusion applies to the H2 class set under Amendment 6.
 
 This closes the disagreement Amendment 7 left open.
 
+
+---
+
+# Amendment 9 — 2026-08-06
+
+Made after Amendment 8. Section 3's objectives, questions and hypotheses were
+reworded for consistency. One hypothesis is reworded. The rest carries no
+hypothesis content.
+
+## H3 — reworded to name SHAP as the subject
+
+**H3.** For at least 70% of attack classes, SHAP explanations of the detection
+model will map to a STRIDE category consistent with that class's documented
+attack semantics.
+
+The previous statement made the deterministic mapping the subject and left SHAP
+implicit. The new statement makes SHAP explanations of the detection model the
+subject. The 70% threshold is unchanged. The reference standard is unchanged: the
+attack semantics documented in the CICIoMT2024 benchmark paper. The metric is
+unchanged: the proportion of classes with a consistent STRIDE assignment. Made
+before NB09 was run.
+
+## Wording changes carrying no hypothesis content
+
+**H1, considered for shortening and left alone.** A shorter form was drafted:
+"Low-rate attack classes will require at least twice the median observed records
+of volumetric flooding classes to reach F1 >= 0.80." It names the median only on
+the volumetric side, so the low-rate side reads as a per-class requirement rather
+than a group median. That is the ambiguity Amendments 7 and 8 closed, so H1 stands
+exactly as Amendment 8 states it and is unchanged by this amendment.
+
+**RO1.** Previously named developing and validating a sequence-based neural
+architecture that models the temporal structure of IoMT network traffic, and then
+determining how much observation each class requires. It now states the
+determination and names the sequence-based detector as the means.
+
+**RQ1.** Previously asked both how accurately a model can identify threats from
+partial observations and how many records must be observed. It now asks only the
+records question. Per-class F1 at each observation budget is still what the
+records figure is read from.
+
+**RO2.** Previously named "the attack variants that flow-level features do not
+separate" and now names "the attack classes the published CNN model fails to
+detect". This aligns RO2 with the class set H2 tests. The two named different sets.
+
+An intermediate wording, "the attack classes single-record classification fails to
+detect", was considered and rejected. Amendment 5 fixes the H2 comparator as the
+published CNN and excludes the single-record random forest, which resolves three of
+the five classes in the set — Recon-OS_Scan, Spoofing and MQTT-Malformed_Data.
+Naming single-record classification would therefore have named a smaller set than
+H2 tests, reintroducing the mismatch this change closes.
+
+**RQ2.** Drops "and which threat classes benefit most?". The question is still
+answered: the class-imbalance interventions in notebook 07 are listed in Section 3
+as a second route to it, and per-class F1 change is the row 2 metric.
+
+**Row 2 metric.** "per-class F1" becomes "per-class F1 change", on the same class
+set. The set is unchanged, fixed by Amendment 6 as Recon-VulScan, Recon-OS_Scan,
+MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data.
+
+**RO3.** Previously said the resulting threat records are corroborated against FDA
+MAUDE adverse events. It now says the pipeline assesses whether postmarket
+surveillance captures the threats identified. This matches the scoping recorded in
+Amendment 7, where the MAUDE cyber-attributable share is a reported result rather
+than a hypothesis clause, and it matches Objective 3 as stated at the head of this
+file.
+
+**RQ3.** Previously asked whether explanations can be mapped to STRIDE via a CAPEC
+ontology pipeline linked to MAUDE signals, to produce actionable threat
+intelligence. It now asks whether they can be mapped to STRIDE categories
+consistent with documented attack semantics. The CAPEC pipeline and MAUDE remain
+in RO3 and in notebook 09.
+
+None of these changes a hypothesis, a threshold, a metric or a class set.
+
