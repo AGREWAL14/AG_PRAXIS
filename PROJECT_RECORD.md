@@ -7,7 +7,7 @@ Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.2 · 6 August 2026**
+**Version 1.3 · 7 August 2026**
 
 ---
 
@@ -343,6 +343,64 @@ moves the opposite way, 0.38 recorded against 0.4094 on disk, so this is not a
 rounding difference. The block is retained as a record of what was run; every figure
 cited in Chapter 4 comes from the artifacts in `results/NB05/`.
 
+### Sequence model
+
+From the NB06 reference run: one run, full pass, 41 minutes. Seed 42, window 50 and
+stride 25, the two-tier split, and the 44 features that remain after Drate is dropped.
+The published convolutional encoder is applied to each record of the window with its
+softmax head removed, one LSTM of 128 units reads across the 50 results, and a softmax
+head sits on top. 214,227 parameters. The parent is `ours_cnn_19class` and the one
+change is the model.
+
+| run | input | test items | accuracy | weighted F1 | macro F1 | gap |
+|---|---|---|---|---|---|---|
+| sequence_cnn_lstm_19class | 50 records, two_tier | 49,159 windows | 0.8197 | 0.8064 | **0.7138** | 0.0926 |
+| ours_cnn_19class | 1 record, two_tier | 1,229,711 rows | 0.9852 | 0.9831 | 0.7356 | 0.2474 |
+| published_cnn_19class | 1 record, shipped | 1,614,182 rows | 0.9863 | 0.9840 | 0.7110 | 0.2730 |
+| forest_19class | 1 record, two_tier | 1,229,711 rows | 0.9923 | 0.9906 | 0.8418 | 0.1488 |
+
+The rows of that table are scored on different items. A window and a record are not the
+same unit, and the shipped and two-tier splits hold out different rows, so these are four
+runs' own scores rather than a paired comparison.
+
+Macro-F1 is 0.7138. Against the parent, the same encoder reading one record at a time on
+the same split, that is -0.0218. Against `published_cnn_19class`, the comparator H2 names,
+it is +0.0028. The random forest on single records remains the highest macro-F1 recorded
+in this project at 0.8418. Accuracy falls from 0.9852 on the parent to 0.8197, and the
+weighted minus macro gap falls from 0.2474 to 0.0926.
+
+**The five classes the published run scores below F1 0.50:**
+
+| class | published_cnn | ours_cnn | forest | sequence |
+|---|---|---|---|---|
+| Recon-VulScan | 0.0000 | 0.0144 | 0.2536 | **0.5385** |
+| Recon-OS_Scan | 0.0343 | 0.0519 | 0.7241 | **0.6061** |
+| MQTT-DDoS-Publish_Flood | 0.1858 | 0.0875 | 0.1186 | 0.0796 |
+| Spoofing | 0.3438 | 0.4167 | 0.8605 | **0.7653** |
+| MQTT-Malformed_Data | 0.4883 | 0.4021 | 0.6752 | **0.8421** |
+
+Four of the five reach F1 0.50 or above, the threshold fixed in `PREREGISTRATION.md`
+Amendment 5. MQTT-DDoS-Publish_Flood does not, and falls further, 0.1858 to 0.0796. It
+and Recon-VulScan were the two classes no earlier model reached 0.50 on; Recon-VulScan is
+now above it and MQTT-DDoS-Publish_Flood is not.
+
+Across all nineteen classes against the published run, nine classes gained F1 and ten
+lost. The gains sum to +2.0566 and the losses to -2.0033, a net of +0.0533 over nineteen
+classes, which is the +0.0028 macro-F1 difference. One class crosses below 0.50:
+DoS-ICMP, 0.9960 to 0.3178, a loss larger in magnitude than any single class's gain among
+the five. The five largest losses are all volumetric classes, DoS-ICMP, DoS-TCP,
+DDoS-ICMP, DoS-SYN and DDoS-TCP, summing -1.7662, which is 88% of the total negative
+movement. The per-class table is in `RESULTS_LEDGER.md`.
+
+Three classes sit below F1 0.50: DoS-ICMP 0.3178, MQTT-DDoS-Publish_Flood 0.0796 and
+Recon-Ping_Sweep 0.0000. Recon-Ping_Sweep's figure rests on four test sequences and is
+reported without being interpreted, under Amendment 4. Recon-VulScan at 18 test sequences
+and MQTT-Malformed_Data at 40 carry the same caveat, and both are among the four classes
+that cross the threshold.
+
+Training took 2,427.7 seconds and inference 7.0 seconds over 49,159 windows, 6,985 windows
+a second, recorded as a feasibility observation.
+
 ---
 
 ## 6. Relation to prior work
@@ -552,3 +610,4 @@ position; the pre-registration states how it was reached.
 | Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
 | Low-rate group listing in Section 3, resolved | Section 3's low-rate bullet no longer lists Recon-Ping_Sweep, matching the group fixed by `PREREGISTRATION.md` Amendment 4, and the exclusion and its basis are now stated beneath the bullets. H1 names the median again in the same edit, restoring the aggregation Amendment 3 stated and v1.0 dropped. Both changes are recorded in Amendment 8 |
 | Section 5 sentence on classes below F1 0.50, resolved | Both statements re-derived from `results/NB05/*/metrics.json` and corrected. First: five classes, not three, are below F1 0.50 in both convolutional runs — Spoofing and MQTT-Malformed_Data were missing — and the forest resolves three of the five, MQTT-Malformed_Data reaching 0.6752. Second: no run on disk produces the "Reproduced baseline" figures, so that block now carries a note recording that it comes from an earlier reproduction and that every figure cited in Chapter 4 comes from the artifacts in `results/NB05/` |
+| DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H2 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB08's five-seed runs will show if it holds across seeds; NB07's balancing interventions may show if it is fixable. Not yet investigated. |
