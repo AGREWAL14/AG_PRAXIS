@@ -601,3 +601,64 @@ in RO3 and in notebook 09.
 
 None of these changes a hypothesis, a threshold, a metric or a class set.
 
+---
+
+# Amendment 10 — 2026-08-07
+
+Made after NB06 was run. This amendment records a gap between two statements of H2.
+It changes no hypothesis, no threshold and no class set.
+
+## What Amendment 2 carried
+
+Amendment 2 stated H2 as three conditions held together: macro-F1 up by at least
+0.05, at least three of the four lowest-scoring classes lifted to F1 0.40 or above,
+and mean majority-class F1 reduced by no more than 0.02. The majority set was
+defined there as the eight classes with highest support, which are the eight DDoS
+and DoS classes.
+
+The third condition is a cost clause. It said what a gain on the minority classes
+was not allowed to cost the majority ones.
+
+## What Amendment 5 carries
+
+Amendment 5 replaced that statement with a single sentence: sequence-based
+detection improves macro-averaged F1 on the attack classes the published CNN model
+fails to detect. Amendment 6 fixed the class set at Recon-VulScan, Recon-OS_Scan,
+MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data, and fixed the threshold
+at F1 0.50.
+
+No cost clause survives that replacement. H2 as stated in Amendment 5, and as
+carried in PROJECT_RECORD.md from v1.0 onward, says nothing about what happens to
+the classes outside the named set.
+
+## The result the clause would have spoken to
+
+NB06 trained the sequence model on the two-tier split at seed 42, window 50 and
+stride 25. Against `published_cnn_19class`, across all nineteen classes, nine
+classes gained F1 and ten lost. The gains sum to +2.0566 and the losses to -2.0033.
+The five largest losses fall on volumetric classes and sum to -1.7662, which is 88%
+of the total negative movement. DoS-ICMP crossed below the F1 0.50 line, 0.9960 to
+0.3178, a loss larger in magnitude than any single class's gain among the five named
+classes.
+
+The quantity Amendment 2's cost clause named is the mean F1 across the eight
+highest-support classes. That quantity moved 0.9972 to 0.7613, a difference of
+-0.2358, against the 0.02 limit the withdrawn clause set. H2 as it now stands sets
+no limit on this quantity. The figure states what the withdrawn clause's threshold
+would have measured. It does not evaluate H2.
+
+Figures from `data/processed/NB06/metrics.json` against
+`results/NB05/published_cnn_19class/metrics.json`, at full precision. The two runs
+are scored on different test partitions and different units, windows against
+records, so these are two runs' own scores rather than a paired comparison.
+
+## What this amendment does not do
+
+It records the gap. It does not resolve it.
+
+H2 is unchanged. It is evaluated on the five classes fixed in Amendment 6, at the
+F1 0.50 threshold fixed in Amendment 5, and the movement described above sits
+outside that set and does not bear on whether H2 is supported.
+
+Whether a majority-class safeguard should be reinstated is left open. This
+amendment sets no such threshold.
