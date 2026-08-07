@@ -205,6 +205,73 @@ def save_run(out_dir, name=None, *, config, metrics, y_true, y_pred, model=None)
     }
 
 
+def save_run_codes(out_dir, name=None, *, config, metrics, y_true, y_pred, labels, model=None) -> dict:
+    """The same five files as `save_run`, with the labels written as codes.
+
+    `y_true.npy` and `y_pred.npy` hold int8 positions into `labels` rather than
+    the class names themselves, and `labels` is the list those positions index,
+    carried in `metrics.json`. Fifty thousand predictions are fifty thousand
+    single bytes instead of fifty thousand strings, and the arrays this project
+    stores its rows in already hold their labels the same way.
+
+    `labels` is required rather than inferred. A file of integers with no list to
+    read it against says nothing at all, so the list has to be written by the same
+    call that writes the integers and cannot be reconstructed afterwards from
+    whichever ordering a later reader happens to guess.
+    """
+    labels = [str(v) for v in labels]
+    if not labels:
+        raise ValueError("labels is empty, so the codes in y_true and y_pred index nothing")
+    if len(labels) > 127:
+        raise ValueError(
+            f"{len(labels)} classes do not fit in int8. Use save_run for a problem this wide."
+        )
+    if metrics.get("labels") != labels:
+        raise ValueError(
+            "metrics['labels'] is not the label list the codes index, so metrics.json and "
+            "y_pred.npy would disagree about which class each code names."
+        )
+
+    coded = {}
+    for which, values in (("y_true", y_true), ("y_pred", y_pred)):
+        codes = np.asarray(values)
+        if codes.size and (codes.min() < 0 or codes.max() >= len(labels)):
+            raise ValueError(
+                f"{which} holds a code outside 0..{len(labels) - 1}, so it does not index labels"
+            )
+        coded[which] = codes.astype("int8")
+
+    name = str(config["run_id"]) if name is None else str(name)
+    missing = [k for k in ("train_seconds", "inference_seconds") if k not in metrics]
+    if missing:
+        raise KeyError(
+            f"{name}: metrics is missing {missing}. Every run records how long it took to "
+            "train and how long it took to predict."
+        )
+
+    run_dir = Path(out_dir) / name
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    (run_dir / "config.json").write_text(json.dumps(config, indent=2, default=str) + "\n")
+    (run_dir / "metrics.json").write_text(json.dumps(metrics, indent=2, default=str) + "\n")
+    np.save(run_dir / "y_true.npy", coded["y_true"])
+    np.save(run_dir / "y_pred.npy", coded["y_pred"])
+
+    model_file = None
+    if model is not None:
+        model_file = run_dir / "model.keras"
+        model.save(model_file)
+
+    return {
+        "name": name,
+        "run_dir": str(run_dir),
+        "model_file": str(model_file) if model_file else None,
+        "config": config,
+        "metrics": metrics,
+        "labels": labels,
+    }
+
+
 # --------------------------------------------------------------------------
 # fitting and saving in one statement
 # --------------------------------------------------------------------------
