@@ -58,7 +58,9 @@ def record_encoder(n_features: int, n_classes: int):
     return encoder
 
 
-def build_model(n_features: int, n_classes: int, *, window: int, lstm_units: int = LSTM_UNITS):
+def build_model(
+    n_features: int, n_classes: int, *, window: int, lstm_units: int = LSTM_UNITS, loss=None
+):
     """The encoder over each record of the window, one LSTM across it, then softmax.
 
     The caller seeds before calling this. Nothing is seeded here, for the same
@@ -68,6 +70,10 @@ def build_model(n_features: int, n_classes: int, *, window: int, lstm_units: int
     Compiled with the baseline's optimizer and loss, unchanged, so the only thing
     that differs between this and a single-record run is the shape of what goes in
     and the layer that reads across it.
+
+    `loss` replaces the baseline's cross-entropy for a run whose one change is the
+    loss. Left at None the compile settings are the baseline's exactly, so a run
+    that is not about the loss cannot differ from its parent in it by accident.
     """
     import keras
     from keras import layers
@@ -82,8 +88,41 @@ def build_model(n_features: int, n_classes: int, *, window: int, lstm_units: int
         ],
         name="mohammadi_cnn_lstm",
     )
-    model.compile(**mo.COMPILE)
+    settings = dict(mo.COMPILE)
+    if loss is not None:
+        settings["loss"] = loss
+    model.compile(**settings)
     return model
+
+
+def fit_model(model, X, y_codes, callbacks, *, n_classes: int, class_weight=None, verbose: int = 2):
+    """The baseline's ten epochs at batch 32, with an optional class weighting.
+
+    With no weighting this is the baseline's own `fit` and nothing else, so the
+    published training procedure runs the published way. With a weighting the
+    baseline's function cannot be used, because it fixes `class_weight` at None as
+    published and nothing under `baselines/` is edited. The settings are then read
+    off the baseline's `FIT` rather than written out again, so the two paths
+    cannot drift apart in the number of epochs or the size of a batch.
+    """
+    if class_weight is None:
+        return mo.fit(model, X, y_codes, callbacks, n_classes=int(n_classes), verbose=verbose)
+
+    import keras
+
+    targets = keras.utils.to_categorical(
+        np.asarray(y_codes).astype("int64"), num_classes=int(n_classes)
+    )
+    return model.fit(
+        X,
+        targets,
+        epochs=mo.FIT["epochs"],
+        batch_size=mo.FIT["batch_size"],
+        shuffle=mo.FIT["shuffle"],
+        class_weight={int(code): float(weight) for code, weight in class_weight.items()},
+        callbacks=list(callbacks),
+        verbose=verbose,
+    )
 
 
 def reshape(X):
@@ -283,6 +322,9 @@ def fit_and_save(
     checkpoint=True,
     predict_batch_size=512,
     verbose=2,
+    loss=None,
+    class_weight=None,
+    decision_rule=None,
 ):
     """Seed, build, fit, predict, score and write the run, in one statement.
 
@@ -297,6 +339,16 @@ def fit_and_save(
     `extra_metrics` is a function of the metrics document that returns more
     fields to put in it. It runs here rather than in the caller so that whatever
     it produces is written by the same statement that fitted the model.
+
+    Three arguments exist for runs whose one change is an intervention, and all
+    three are None for a run without one, leaving this function doing exactly what
+    it did before they were added. `loss` replaces the loss at compile time.
+    `class_weight` weights the classes in the fit. `decision_rule` is a function
+    of the fitted model returning a rule for turning probabilities into codes and
+    a record of how the rule was arrived at; the record goes into the metrics
+    under `decision_rule`. A rule is built after the fit and before the test
+    partition is touched, so a rule that needs a fitted model to choose its
+    settings can have one without any of them being chosen on test.
     """
     import keras
 
@@ -308,7 +360,13 @@ def fit_and_save(
 
     if seed is not None:
         keras.utils.set_random_seed(int(seed))
-    model = build_model(int(n_features), len(classes), window=int(window), lstm_units=int(lstm_units))
+    model = build_model(
+        int(n_features),
+        len(classes),
+        window=int(window),
+        lstm_units=int(lstm_units),
+        loss=loss,
+    )
 
     callbacks = []
     if checkpoint:
@@ -321,16 +379,29 @@ def fit_and_save(
         )
 
     started = time.perf_counter()
-    history = mo.fit(
-        model, X_train, np.asarray(y_train), callbacks, n_classes=len(classes), verbose=verbose
+    history = fit_model(
+        model,
+        X_train,
+        np.asarray(y_train),
+        callbacks,
+        n_classes=len(classes),
+        class_weight=class_weight,
+        verbose=verbose,
     )
     train_seconds = time.perf_counter() - started
+
+    decide, rule_record = (None, None)
+    if decision_rule is not None:
+        decide, rule_record = decision_rule(model)
 
     started = time.perf_counter()
     probabilities = model.predict(X_test, batch_size=int(predict_batch_size), verbose=0)
     inference_seconds = time.perf_counter() - started
 
-    y_pred_codes = np.asarray(probabilities).argmax(axis=1).astype("int8")
+    if decide is None:
+        y_pred_codes = np.asarray(probabilities).argmax(axis=1).astype("int8")
+    else:
+        y_pred_codes = np.asarray(decide(probabilities)).astype("int8")
     y_true_codes = np.asarray(y_test).astype("int8")
 
     metrics = rn.classification_metrics(
@@ -346,6 +417,8 @@ def fit_and_save(
     metrics["label_encoding"] = (
         "y_true.npy and y_pred.npy hold int8 positions into the labels list above"
     )
+    if rule_record is not None:
+        metrics["decision_rule"] = rule_record
     if history is not None and getattr(history, "history", None):
         metrics["history"] = {
             key: [float(v) for v in values] for key, values in history.history.items()
