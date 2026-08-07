@@ -264,3 +264,102 @@ IAT is therefore the most strongly ordered of the three columns measured, not th
 The rule stands as stated before the run and the reported verdict is unchanged at 66.2%. This reading is recorded as a further finding, not as a revision of the rule.
 
 A window of 50 consecutive records carries this alternating structure and a single record cannot. Recorded before NB06 was run.
+
+### NB06 — sequence_cnn_lstm_19class (2026-08-07)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB06_sequence_model.ipynb |
+| run date | 2026-08-07 |
+| git sha | 20d4709 |
+| seed | 42 |
+| pass reported | full |
+| runtime | fast 0.4 min, full 41.0 min |
+| model | mohammadi_cnn_lstm, the published encoder per record and one LSTM of 128 across the window |
+| parameters | 214,227 |
+| task | 19-class, 19 classes |
+| split | two_tier |
+| input | 50 records at stride 25, 44 features, no column excluded |
+| parent | ours_cnn_19class |
+| the one change | model |
+| training sequences | 249,061 |
+| test sequences | 49,159 |
+| accuracy | 0.8197 (chance 0.0526, largest class 0.1592) |
+| weighted P / R / F1 | 0.8087 / 0.8197 / 0.8064 |
+| macro P / R / F1 | 0.7813 / 0.7093 / 0.7138 |
+| weighted F1 minus macro F1 | 0.0926 |
+| macro F1 against published_cnn_19class | 0.7138 against 0.7110, +0.0028 |
+| the five compared classes, F1 | MQTT-Malformed_Data 0.4883 to 0.8421, Spoofing 0.3438 to 0.7653, Recon-OS_Scan 0.0343 to 0.6061, Recon-VulScan 0.0000 to 0.5385, MQTT-DDoS-Publish_Flood 0.1858 to 0.0796 |
+| detected at F1 0.50 | 4 of 5 here, 0 of 5 there, newly: MQTT-Malformed_Data, Recon-OS_Scan, Recon-VulScan, Spoofing |
+| classes at F1 0.00 | Recon-Ping_Sweep |
+| four weakest classes | Recon-Ping_Sweep 0.00, MQTT-DDoS-Publish_Flood 0.08, DoS-ICMP 0.32, DoS-TCP 0.52 |
+| too few sequences to interpret | Recon-Ping_Sweep (4 test, 2 validation); Recon-VulScan (18 test, 18 validation); MQTT-Malformed_Data (40 test, 38 validation) |
+| gate | 10 checks, all passed |
+| train seconds | 2,427.7 |
+| inference seconds | 7.0 (6,985 sequences/s) |
+| artifacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB06/sequence_cnn_lstm_19class |
+| status | reference run |
+
+| class | F1 | test sequences | thin |
+|---|---|---|---|
+| Recon-Ping_Sweep | 0.0000 | 4 | yes |
+| MQTT-DDoS-Publish_Flood | 0.0796 | 215 |  |
+| DoS-ICMP | 0.3178 | 3,936 |  |
+| DoS-TCP | 0.5161 | 3,282 |  |
+| Recon-VulScan | 0.5385 | 18 | yes |
+| Recon-OS_Scan | 0.6061 | 123 |  |
+| MQTT-DoS-Publish_Flood | 0.7551 | 316 |  |
+| Spoofing | 0.7653 | 104 |  |
+| DDoS-ICMP | 0.7721 | 7,826 |  |
+| DoS-SYN | 0.8023 | 3,942 |  |
+| DDoS-TCP | 0.8137 | 7,302 |  |
+| MQTT-Malformed_Data | 0.8421 | 40 | yes |
+| DDoS-SYN | 0.8926 | 6,894 |  |
+| Recon-Port_Scan | 0.9301 | 638 |  |
+| MQTT-DoS-Connect_Flood | 0.9741 | 94 |  |
+| Benign | 0.9808 | 1,381 |  |
+| DoS-UDP | 0.9880 | 5,501 |  |
+| DDoS-UDP | 0.9881 | 6,255 |  |
+| MQTT-DDoS-Connect_Flood | 0.9996 | 1,288 |  |
+
+### NB06 — full 19-class comparison against published_cnn_19class (2026-08-07)
+
+Source: data/processed/NB06/metrics.json against results/NB05/published_cnn_19class/metrics.json,
+full precision.
+
+- 9 classes gained F1, sum +2.0566. 10 classes lost F1, sum -2.0033. Net +0.0533 over
+  19 classes (+0.0028 per class), matching the macro-F1 delta already in the ledger
+  entry above.
+- One class crossed below the 0.50 detection threshold: DoS-ICMP, 0.9960 to 0.3178,
+  a loss of -0.6782, larger in magnitude than any single class's gain among the five
+  H2 classes.
+- The five largest losses are all volumetric classes: DoS-ICMP, DoS-TCP, DDoS-ICMP,
+  DoS-SYN, DDoS-TCP, summing -1.7662, which is 88% of the total negative movement.
+- Four classes crossed above the 0.50 threshold: MQTT-Malformed_Data, Spoofing,
+  Recon-VulScan, Recon-OS_Scan.
+- MQTT-DDoS-Publish_Flood, the fifth H2 class, did not cross: 0.1858 to 0.0796, a
+  further loss.
+
+Full 19-class table, sorted by difference ascending:
+
+| class | published F1 | NB06 F1 | difference |
+|---|---|---|---|
+| DoS-ICMP | 0.996018 | 0.317827 | -0.678191 |
+| DoS-TCP | 0.997981 | 0.516140 | -0.481841 |
+| DDoS-ICMP | 0.999140 | 0.772083 | -0.227057 |
+| DoS-SYN | 0.997886 | 0.802349 | -0.195537 |
+| DDoS-TCP | 0.997247 | 0.813724 | -0.183524 |
+| MQTT-DDoS-Publish_Flood | 0.185792 | 0.079646 | -0.106146 |
+| DDoS-SYN | 0.995929 | 0.892643 | -0.103286 |
+| Recon-Ping_Sweep | 0.010695 | 0.000000 | -0.010695 |
+| DDoS-UDP | 0.998491 | 0.988061 | -0.010431 |
+| DoS-UDP | 0.994557 | 0.987960 | -0.006596 |
+| MQTT-DDoS-Connect_Flood | 0.997059 | 0.999612 | +0.002553 |
+| MQTT-DoS-Connect_Flood | 0.967774 | 0.974093 | +0.006320 |
+| Recon-Port_Scan | 0.900620 | 0.930091 | +0.029471 |
+| MQTT-DoS-Publish_Flood | 0.693707 | 0.755078 | +0.061370 |
+| Benign | 0.909429 | 0.980810 | +0.071381 |
+| MQTT-Malformed_Data | 0.488332 | 0.842105 | +0.353773 |
+| Spoofing | 0.343826 | 0.765306 | +0.421480 |
+| Recon-VulScan | 0.000000 | 0.538462 | +0.538462 |
+| Recon-OS_Scan | 0.034306 | 0.606061 | +0.571754 |
