@@ -136,3 +136,42 @@ rationale:
     four reach any downstream stage: Duration, Rate, Srate, IAT. Notebooks
     excluding the timing family should intersect the family list with the live
     column list rather than assuming five.
+table5_reconciliation:
+  resolved_on: '2026-08-07'
+  matched: >-
+    Dadkhah et al. (2024) Table 5 lists 39 extracted features. The released
+    45-column CICIoMT2024 CSVs contain 38 of those 39 once names are normalised:
+    "fin flag number" against fin_flag_number, "Tot Sum" against "Tot sum", and
+    "Tot Size (Avg.)" against "Tot size". The last of those pairs 1:1 with a
+    second, separately listed Table 5 feature rather than duplicating the first.
+  missing_from_data: >-
+    One Table 5 feature, Time-To-Live, has no corresponding column in the
+    released data. This is a genuine paper-against-data gap, not a naming
+    artefact.
+  extra_in_data: >-
+    Seven released columns are not in Table 5 at all: Duration, Srate, Drate,
+    Magnitue, Radius, Covariance, Weight. All seven are engineered features
+    rather than label or metadata columns, which is why label_columns above is
+    empty and stays empty.
+  provenance_of_extras: >-
+    Dadkhah et al.'s methodology section says their extraction pipeline follows
+    the one used for CICIoT2023, and the seven extras are consistent with that.
+    This is inferred, not verified, and the inference is thinner than it first
+    looks. Neto et al.'s original CICIoT2023 feature table has not been checked,
+    and this project holds no record of that schema to check against either: it
+    is not documented in this file, and a search of the repository on the date
+    above found no description of it anywhere else. The attribution rests on
+    Dadkhah et al.'s statement about their own pipeline and on nothing this
+    project has independently read. Anyone who needs the provenance of these
+    seven columns to hold should read the CICIoT2023 paper first.
+  magnitue_spelling: >-
+    "Magnitue" is the released dataset's misspelling of "Magnitude". The
+    statistical family above carries the column under the released spelling, so
+    the family list matches the CSV header as read. The handling of the typo
+    itself sits in the name rules in src/inventory.py, which match both
+    spellings, so a corrected header would land in the same family.
+  effect_on_downstream: >-
+    None. Drate is the only column constant across the whole dataset (NB01 full
+    scan, all 8,775,013 rows) and is the one dropped, leaving 44 modelling
+    features. That is the working set already in use. This entry records how the
+    working set relates to Table 5's 39 rather than changing it.
