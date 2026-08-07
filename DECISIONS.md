@@ -250,3 +250,45 @@ than by any column acting as a capture label. Header_Length is the leading candi
 IAT, identified as the top SHAP feature by prior work on this dataset and on
 CICIoT2023, shows no between-capture variation in this sample and is unlikely to be
 the carrier.
+
+---
+
+## 2026-08-07 — Dadkhah et al. (2024) read against the paper itself
+
+**Decision:** The baseline figures, split protocol and forest settings this project
+attributes to Dadkhah et al. are taken from the source — "CICIoMT2024: A benchmark
+dataset for multi-protocol security assessment in IoMT", *Internet of Things*
+28:101351 — rather than from Mohammadi et al.'s secondhand transcription of it.
+
+**Evidence:** Four things were read off the source. Table 7's 19-class baselines are
+Logistic Regression F1 0.432, AdaBoost 0.141, DNN 0.522, Random Forest 0.551. No
+averaging method is stated for those figures anywhere in Section 5 or in the
+equations defining F1, so whether they are macro, micro or weighted is unresolved in
+the source itself rather than unrecorded here. Section 5 confirms the shipped
+train/test split is file-level 80/20 by PCAP file, not row-level and not
+capture-disjoint. Table 8 gives their forest as n_estimators 100,
+min_samples_leaf 1, bootstrap True. Table 5's 39 listed features were reconciled
+against the 45 columns of the released data, and the result is recorded in
+`config/feature_families.yaml` under `table5_reconciliation` on the same date: 38 of
+the 39 match under name normalisation, Time-To-Live has no column in the data at
+all, and the seven extra columns are attributed to the CICIoT2023 pipeline on
+Dadkhah et al.'s stated claim alone, unverified against Neto et al.'s own feature
+table.
+
+**Consequence:** H1, H2 and H3 are unchanged, as are their comparators and their
+thresholds. What changes is the grounding. RO2/RQ2's motivating claim, and the
+Chapter 2 and Chapter 4 comparisons against Dadkhah et al.'s reported baselines,
+now rest on the paper rather than on a reading of a reading. Three confounds have to
+be stated wherever their 0.551 forest is set against ours. First, the split
+protocol: theirs is file-level 80/20, ours is the two-tier capture-disjoint protocol
+fixed on 2026-08-02. Second, the feature count: our comparator uses the 44 columns
+that remain after Drate is dropped, while the paper lists 39 in Table 5 and ships
+45, and does not say which set its own models were trained on. Third, the forest
+settings, which differ by less than they appear. Table 8's forest is a stock
+scikit-learn forest: n_estimators 100, min_samples_leaf 1 and bootstrap True are all
+that library's defaults. `results/NB05/forest_19class` is the same stock forest with
+one parameter changed, `min_samples_leaf` 20; its `fitted_params` block records
+bootstrap True and every other setting at the default, and its specified 100 trees
+and sqrt max_features are the defaults rather than choices. Leaf size is therefore
+the whole of the difference. That run is the one reporting 0.8418 macro-F1, and it
+is the forest any comparison against their 0.551 is about.
