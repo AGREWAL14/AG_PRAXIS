@@ -95,6 +95,12 @@ applies to the H2 class set under Amendment 6.
 | Attribution stability, Kendall's tau | 09 | Reported with the mapping |
 | MAUDE cyber-attributable share | 09 | Surveillance coverage |
 
+Dadkhah et al.'s own baselines are context rather than a result of this project. Verified
+against the source PDF on 2026-08-07: 19-class Random Forest F1 0.551 from their Table 7, a
+file-level 80/20 split by PCAP file from their Section 5, and no averaging method stated
+anywhere in the paper. H2's comparator remains the published CNN. These figures position the
+work; they do not test it. Section 6 carries the detail.
+
 ### Scope exclusions and their basis
 
 - **Graph modelling** — the 45 released columns contain no source or destination
@@ -139,6 +145,13 @@ applies to the H2 class set under Amendment 6.
 | Timestamp column | **None** |
 | Endpoint identifiers | **None** |
 | Constant across dataset | Drate only — dropped |
+
+The 45 released columns were reconciled on 2026-08-07 against Dadkhah et al.'s Table 5 and
+against the CICIoT2023 schema it cites (Neto et al., *Sensors* 23(13):5941, 2023). All 39
+Table 5 features are present: 38 match by name, and the thirty-ninth, Time-To-Live, is the
+column named Duration, which CICIoT2023 lists with the description "Time-to-Live (ttl)". The
+six columns beyond Table 5 are CICIoT2023 features checked against Neto et al.'s Table 4.
+`config/feature_families.yaml` holds the full reconciliation.
 
 ### Device inventory by protocol
 
@@ -193,7 +206,8 @@ All figures below are from full-data reference runs unless marked.
 ### Feature separability
 
 From the NB02 reference run: a full pass over all 8,775,013 rows, using the 44 features
-that remain after Drate is dropped.
+that remain after Drate is dropped. Those 44 are the reconciled set described in Section 4,
+in which Duration is the TTL header field rather than a measure of time.
 
 | Finding | Value |
 |---|---|
@@ -239,6 +253,16 @@ others and chance is one over the number of recordings.
 | Attack macro-F1, whole recording held out | 0.9985 |
 | Attack macro-F1, rows pooled | 0.9982 |
 | Difference, pooled minus held out | -0.0003 |
+
+**Duration is the TTL header field, and it was inside every figure above.** It sits within
+the timing family for the 0.9301 row and among all 44 for 0.8010 and 0.8280. A full scan of
+all 72 files and 8,775,013 rows puts its global maximum at exactly 255 and 99.57% of its
+values at 64, so the column carries Time-To-Live and the timing family contains one header
+field. Because it is 99.57% constant its contribution to these figures should be near zero,
+but that is reasoned rather than measured; an NB08 timing-minus-Duration probe would settle
+it. The column stays in the timing family and in the 44 by deliberate decision, for
+comparability with runs already executed. `DECISIONS.md` under 2026-08-07 and
+`config/feature_families.yaml` under `duration_family_placement` carry the reasoning.
 
 **Per class, attack held fixed:** DDoS-ICMP 0.8532 (chance 0.100) · DDoS-SYN 0.8784 (0.200)
 · DDoS-TCP 0.8232 (0.200) · DDoS-UDP 0.6869 (0.100) · DoS-ICMP 0.7863 (0.200) · DoS-SYN
@@ -433,6 +457,19 @@ Cited as prior work to extend, never critiqued. Four positive anchors:
 abbreviations list where every other reference is `SKF`, defined as Stratified K-Fold. The
 labelling is a typographical error confined to that table, and plain stratified k-fold is
 what was used. Section 11 records the checks the finding rests on.
+
+### Benchmark baselines — Dadkhah et al. (2024)
+
+**Verified 2026-08-07** against the source PDF rather than through Mohammadi et al.'s
+transcription of it. Table 7 gives 19-class F1 of 0.432 for Logistic Regression, 0.141 for
+AdaBoost, 0.522 for the DNN and 0.551 for Random Forest. Section 5 defines the shipped split
+as 80% of all PCAP files for training and 20% for test, at file level rather than row level.
+No averaging method is stated anywhere in the paper's 22 pages — "macro", "micro" and
+"weighted" do not appear in it, and F1 is defined once, in its two-class form — so whether
+their figures are macro, micro or weighted is unresolved in the source. Any comparison
+against their 0.551 carries that ambiguity, the split difference, and a feature-count
+difference the paper does not settle, since it lists 39 features and ships 45 without saying
+which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 
 ### Positioning against the literature
 
