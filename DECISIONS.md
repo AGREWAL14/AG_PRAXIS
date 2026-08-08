@@ -350,3 +350,44 @@ account is in `config/feature_families.yaml` under `table5_reconciliation`, in
 `provenance_of_extras`, updated the same day. This entry exists to mark the wording in
 7c4b790 as outdated on that one point. The substance is unchanged and is not reopened
 here: the seven columns remain cited but unverified.
+
+---
+
+## 2026-08-07 — Time-To-Live is not missing from the data; it is the column named Duration
+
+**Correction:** Neto et al. (2023), "CICIoT2023: A Real-Time Dataset and Benchmark for
+Large-Scale Attacks in IoT Environment", Sensors 23(13):5941, was read directly. It
+reverses the gap recorded earlier today. Time-To-Live is not absent from the released
+CICIoMT2024 data. It is the column named Duration, so all 39 of Dadkhah et al.'s
+Table 5 features are present, 38 by name and one by equivalence. The six remaining
+extras are verified against Neto et al.'s own feature table, which closes the open
+item that stood on a citation alone.
+
+**Evidence:** Neto et al. Table 4 gives feature 5 as the name "Duration" with the
+description "Time-to-Live (ttl)", so the source equates the two: Dadkhah et al.'s
+Table 5 uses the descriptive name, the CSV keeps CICIoT2023's column name. Two further
+lines agree. The absences are complementary, Table 5 listing Time-To-Live and no
+Duration while the released CSVs carry Duration and no Time-To-Live. And the values are
+those of a header field, not a time: our Duration runs 0 to 250 over 590 distinct
+values in the reference file, under the 255 ceiling of an eight-bit TTL, while Neto et
+al.'s Table 5 gives their Duration a median of 64, the common default TTL, and a
+maximum of exactly 255. Their flow duration is a separate column reaching 394,357, so
+Duration cannot be that. The six extras all appear in Table 4: Srate at 7, Drate at 8,
+Magnitude at 43, Radius at 44, Covariance at 45 and Weight at 47. The released schema
+is fully accounted for — our 45 columns are Neto et al.'s 47 less ts, flow duration and
+urg count, plus IGMP, which CICIoMT2024 adds.
+
+**Consequence:** `config/feature_families.yaml` was updated: `matched` now reads 39 of
+39, `missing_from_data` records that nothing is missing and why the earlier reading was
+wrong, `extra_in_data` drops to six, and `provenance_of_extras` is verified rather than
+cited. The spelling note is corrected in the opposite direction to what was expected.
+Neto et al. spell Magnitude correctly in Table 4 but write "Magnitue" in Table 5, which
+reports statistics under the released column names and uses CSV spellings throughout,
+so CICIoMT2024 inherited the misspelling from the CICIoT2023 release rather than
+introducing it. One thing is opened rather than closed, and is recorded in the same
+file under `duration_family_placement`: the families block assigns Duration to timing
+by a name rule, which is wrong if the column is Time-To-Live. NB09 excludes the timing
+family and NB03 measured that family at 0.9301 for capture identification, both with
+Duration in it. No family assignment has been changed, because moving the column would
+alter what NB09 excludes and break comparability with the NB03 figure. H1, H2 and H3
+are unchanged, and the 44-feature working set is unchanged.

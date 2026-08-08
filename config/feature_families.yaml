@@ -139,48 +139,75 @@ rationale:
 table5_reconciliation:
   resolved_on: '2026-08-07'
   matched: >-
-    Dadkhah et al. (2024) Table 5 lists 39 extracted features. The released
-    45-column CICIoMT2024 CSVs contain 38 of those 39 once names are normalised:
-    "fin flag number" against fin_flag_number, "Tot Sum" against "Tot sum", and
-    "Tot Size (Avg.)" against "Tot size". The last of those pairs 1:1 with a
-    second, separately listed Table 5 feature rather than duplicating the first.
+    Dadkhah et al. (2024) Table 5 lists 39 extracted features. All 39 are present
+    in the released 45-column CICIoMT2024 CSVs. Thirty-eight match by name once
+    names are normalised: "fin flag number" against fin_flag_number, "Tot Sum"
+    against "Tot sum", and "Tot Size (Avg.)" against "Tot size", the last pairing
+    1:1 with a second, separately listed Table 5 feature rather than duplicating
+    the first. The thirty-ninth, Time-To-Live, is the column named Duration, for
+    the reasons under missing_from_data below.
   missing_from_data: >-
-    One Table 5 feature, Time-To-Live, has no corresponding column in the
-    released data. This is a genuine paper-against-data gap, not a naming
-    artefact.
+    Nothing is missing. Until 2026-08-07 this entry recorded Time-To-Live as a
+    Table 5 feature with no column in the released data, and called it a genuine
+    paper-against-data gap. That was wrong. Neto et al. (2023) Table 4, the
+    CICIoT2023 feature list Dadkhah et al. cite, gives feature 5 as the name
+    "Duration" with the description "Time-to-Live (ttl)", so the source itself
+    equates the two: Table 5 uses the descriptive name and the CSV keeps
+    CICIoT2023's column name. Three things agree on this. The definitions match,
+    by that description. The absences are complementary, Table 5 listing
+    Time-To-Live and no Duration while the CSVs carry Duration and no
+    Time-To-Live. And the values fit a header field rather than a time: our
+    Duration runs 0 to 250 across 590 distinct values in the reference file,
+    under the 255 ceiling of an eight-bit TTL, while CICIoT2023's own statistics
+    give their Duration a median of 64, the common default TTL, and a maximum of
+    exactly 255. CICIoT2023 carries flow duration as a separate column reaching
+    394,357, so there is no question of Duration being that instead.
   extra_in_data: >-
-    Seven released columns are not in Table 5 at all: Duration, Srate, Drate,
-    Magnitue, Radius, Covariance, Weight. All seven are engineered features
-    rather than label or metadata columns, which is why label_columns above is
-    empty and stays empty.
+    Six released columns are not in Table 5: Srate, Drate, Magnitue, Radius,
+    Covariance, Weight. Duration was counted as a seventh until 2026-08-07 and
+    has moved into the matched set. All six are engineered features rather than
+    label or metadata columns, which is why label_columns above is empty and
+    stays empty.
   provenance_of_extras: >-
-    Table 5 carries the caption "Features extracted from PCAP files [28]", and
-    reference [28] is Neto et al.'s CICIoT2023 paper. The lineage is therefore an
-    explicit citation with a named source, checked against the source PDF on
-    2026-08-07 and recorded in DECISIONS.md under that date. An earlier version
-    of this entry credited the claim to Dadkhah et al.'s methodology section
-    instead. That was wrong: Section 5 describes the extraction as TCPDUMP and
-    DPKT with window averaging and does not mention CICIoT2023 at all, so the
-    citation in the Table 5 caption is the whole of the support and is firmer
-    than what it replaces. None of this settles the seven columns. The citation
-    covers the 39 features Table 5 lists, and the seven extras are exactly the
-    columns that table does not list, so they sit outside what is cited rather
-    than inside it. Neto et al.'s own feature table still has not been read, and
-    this project holds no record of that schema to check against: it is not
-    documented in this file, and a search of the repository found no description
-    of it anywhere else. The seven stay unverified. What has changed is the kind
-    of unverified — a cited claim whose source can be looked up, rather than an
-    attribution resting on the paper's own account of its pipeline. Anyone who
-    needs the provenance of these seven columns to hold should read Neto et al.
-    directly.
+    Verified, and no longer an open item. All six appear in Neto et al. (2023)
+    Table 4, read from the source on 2026-08-07: Srate as feature 7, "Rate of
+    outbound packets transmission in a flow"; Drate as 8, "Rate of inbound
+    packets transmission in a flow"; Magnitude as 43 and Radius as 44, each the
+    square root of a sum of incoming and outgoing packet-length statistics;
+    Covariance as 45, "Covariance of the lengths of incoming and outgoing
+    packets"; and Weight as 47, "Number of incoming packets multiplied by number
+    of outgoing packets". The route to that table was the caption of Dadkhah et
+    al.'s Table 5, "Features extracted from PCAP files [28]", where [28] is Neto
+    et al. Until this check the six rested on that citation alone; they now rest
+    on the cited table itself. The whole of the released schema is accounted for
+    by CICIoT2023: our 45 columns are Neto et al.'s 47 less ts, flow duration and
+    urg count, plus IGMP, which CICIoMT2024 adds and CICIoT2023 does not list.
   magnitue_spelling: >-
-    "Magnitue" is the released dataset's misspelling of "Magnitude". The
-    statistical family above carries the column under the released spelling, so
-    the family list matches the CSV header as read. The handling of the typo
-    itself sits in the name rules in src/inventory.py, which match both
+    "Magnitue" is a misspelling of "Magnitude", and CICIoMT2024 inherited it
+    rather than introducing it. Neto et al. spell it correctly in Table 4, the
+    descriptive feature list, and incorrectly as "Magnitue" in Table 5, which
+    reports the statistics under the released column names and uses CSV spellings
+    throughout, flow_duration and fin_flag_number with underscores where Table 4
+    has spaces. The misspelling is therefore already in the CICIoT2023 release
+    and is carried forward. The statistical family above uses the column as the
+    CSV header has it, and the name rules in src/inventory.py match both
     spellings, so a corrected header would land in the same family.
+  duration_family_placement: >-
+    Open, and raised by this reconciliation rather than settled by it. The
+    families block above puts Duration in timing, assigned by a name rule that
+    matches the word "duration". If the column holds Time-To-Live it is a header
+    field, not a timing measurement, and that assignment is wrong on the same
+    what-is-measured basis the rationale above uses to separate protocol from
+    statistical. It matters downstream: NB09 excludes the timing family and would
+    be excluding a header field alongside Rate, Srate and IAT, and NB03's 0.9301
+    capture-identification figure for that family was measured with Duration in
+    it. Nothing has been changed here. Moving the column would alter what NB09
+    excludes and break comparability with the NB03 figure, so the decision is
+    left open rather than taken as a side effect of a naming reconciliation.
   effect_on_downstream: >-
-    None. Drate is the only column constant across the whole dataset (NB01 full
-    scan, all 8,775,013 rows) and is the one dropped, leaving 44 modelling
-    features. That is the working set already in use. This entry records how the
-    working set relates to Table 5's 39 rather than changing it.
+    None on the working set. Drate is the only column constant across the whole
+    dataset (NB01 full scan, all 8,775,013 rows) and is the one dropped, leaving
+    44 modelling features. That is the set already in use. What this entry
+    records is how it relates to Table 5's 39, and the relation is now complete:
+    all 39 are present, and the six columns beyond them are CICIoT2023's. The one
+    thing this raises for downstream work is duration_family_placement above.
