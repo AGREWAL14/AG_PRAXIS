@@ -106,11 +106,112 @@ def scan_captures(paths, *, frac: float = 1.0, known_rows: dict | None = None, p
     for i, path in enumerate(paths, start=1):
         name = Path(path).name
         df = read_capture(path, frac=frac, known_rows=(known_rows or {}).get(name))
-        scans[name] = {"n_rows_read": int(len(df)), "columns": column_stats(df)}
+        scans[name] = {
+            "n_rows_read": int(len(df)),
+            "columns": column_stats(df),
+            "near": near_constancy_stats(df),
+        }
         if progress_every and i % progress_every == 0:
             print(f"  scanned {i}/{len(paths)} files")
         del df
     return scans
+
+
+# --------------------------------------------------------------------------
+# the near-constant check
+# --------------------------------------------------------------------------
+
+
+def near_constancy_stats(df: pd.DataFrame, *, cardinality_cap: int = 200) -> dict:
+    """Per column: rows, nulls, zeros, and the counts a modal share is built from.
+
+    Taken from the same dataframe the constancy check already reads, so this costs
+    a pass over the columns rather than a second pass over the corpus.
+
+    Zero counts and null counts are exact, and they sum across files exactly. Value
+    counts are kept in full for a column taking fewer than `cardinality_cap`
+    distinct values, which makes its global modal share exact once the files are
+    summed. Above the cap only the commonest value and its count are kept, so such
+    a column's global modal share is a lower bound, and `exact_value_counts` says
+    which of the two it is. A column dense enough to pass the cap is not a
+    near-constant column, so the approximation never falls on the question being
+    asked.
+
+    The cap also bounds what the scan holds in memory. Seventy-two files and
+    forty-five columns at two hundred values each is the ceiling, and a column
+    above the cap contributes one entry rather than thousands.
+    """
+    stats = {}
+    for col in df.columns:
+        series = df[col]
+        present = series.dropna()
+        counts = present.value_counts()
+        exact = len(counts) <= cardinality_cap
+        stats[col] = {
+            "n_rows": int(len(series)),
+            "n_null": int(series.isna().sum()),
+            "n_zero": int((present == 0).sum()),
+            "n_unique": int(len(counts)),
+            "exact_value_counts": bool(exact),
+            "value_counts": (
+                {_hashable(v): int(c) for v, c in counts.items()}
+                if exact
+                else {_hashable(counts.index[0]): int(counts.iloc[0])}
+            ),
+        }
+    return stats
+
+
+def near_constancy_report(scans: dict) -> pd.DataFrame:
+    """Zero share and modal share per column, summed over every file scanned.
+
+    A column can be near enough to constant to carry nothing while still varying,
+    and the constant-column check cannot see that: it asks only whether a column
+    ever moves, so one value holding 93% of the rows and one value holding 100% of
+    them land on opposite sides of it. This is the same question asked as a share
+    rather than as a yes or no.
+
+    `modal_share` is computed over the non-null rows, because a null is not the
+    modal value and counting it in the denominator would report a column as less
+    constant than it is. `zero_share` is computed over all rows, because a zero is
+    a value the model reads.
+    """
+    columns = sorted({c for s in scans.values() for c in s.get("near", {})})
+
+    rows = []
+    for col in columns:
+        entries = [s["near"][col] for s in scans.values() if col in s.get("near", {})]
+        if not entries:
+            continue
+        n_rows = sum(e["n_rows"] for e in entries)
+        n_null = sum(e["n_null"] for e in entries)
+        n_zero = sum(e["n_zero"] for e in entries)
+        exact = all(e["exact_value_counts"] for e in entries)
+
+        totals: dict = {}
+        for entry in entries:
+            for value, count in entry["value_counts"].items():
+                totals[value] = totals.get(value, 0) + count
+        modal_value, modal_count = max(totals.items(), key=lambda pair: pair[1])
+        present = n_rows - n_null
+
+        rows.append(
+            {
+                "column": col,
+                "n_rows": int(n_rows),
+                "n_null": int(n_null),
+                "zero_share": n_zero / max(n_rows, 1),
+                "modal_value": modal_value,
+                "modal_share": modal_count / max(present, 1),
+                "modal_share_exact": bool(exact),
+                "n_files": len(entries),
+            }
+        )
+
+    frame = pd.DataFrame(rows)
+    return frame.sort_values(
+        ["modal_share", "zero_share"], ascending=False
+    ).reset_index(drop=True)
 
 
 # --------------------------------------------------------------------------
