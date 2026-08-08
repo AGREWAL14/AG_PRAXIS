@@ -292,3 +292,46 @@ bootstrap True and every other setting at the default, and its specified 100 tre
 and sqrt max_features are the defaults rather than choices. Leaf size is therefore
 the whole of the difference. That run is the one reporting 0.8418 macro-F1, and it
 is the forest any comparison against their 0.551 is about.
+
+---
+
+## 2026-08-07 — Dadkhah et al. (2024): three claims checked against the PDF
+
+**Decision:** Three claims in the entry above were read off the source PDF rather than
+carried on report: Table 7's four 19-class figures, the Section 5 split description,
+and Table 8's forest parameters. All three hold as written. This is appended rather
+than folded into that entry, because the log is append-only.
+
+**Evidence:** Table 7's 19-class block gives F1-Score 0.432 for Logistic Regression,
+0.141 for AdaBoost, 0.522 for the Deep Neural Network and 0.551 for Random Forest,
+matching the four figures recorded. Section 5 describes the division as "defining a
+group of PCAP files comprising 80% ('train') and 20% ('test') of all PCAP files
+available", which is file-level and not row-level. Table 8 lists the forest as
+n_estimators=100, criterion='gini', min_samples_split=2, min_samples_leaf=1,
+min_weight_fraction_leaf=0.0, max_features='sqrt', min_impurity_decrease=0.0,
+bootstrap=True, oob_score=False, warm_start=False, ccp_alpha=0.0.
+
+On the averaging question the check is firmer than the earlier entry could be. The
+words "macro", "micro" and "weighted" do not appear anywhere in the paper's 22 pages.
+F1 is defined once, by equation (4) in Section 5, as twice precision times recall over
+precision plus recall, with precision and recall given by equations (3) and (2) in
+their two-class form, and nothing anywhere states how those are aggregated across 19
+classes. One placement in the earlier entry is wrong: Table 7 and Table 8 sit in
+Section 7, "Machine Learning (ML) evaluation", not Section 5, which is "Methodology"
+and carries the split description and the four equations. The substance of that entry
+is unaffected.
+
+**Consequence:** All eleven parameters Table 8 lists for the forest are scikit-learn
+defaults, so the earlier reading of their model as a stock forest is confirmed from the
+source, and `max_features` sqrt now matches ours as well as the tree count, leaving
+`min_samples_leaf` as the only difference. Two errors in the source are recorded here
+because they bear on how much its own metric definitions can be asked to carry.
+Equation (4) is the harmonic mean of precision and recall, and the text calls it the
+geometric average. Section 5 announces "five widely used ML techniques" and then names
+four, which is the number evaluated throughout. Separately, Table 5's caption
+attributes the feature list to reference [28], which is Neto et al.'s CICIoT2023 paper,
+so the CICIoT2023 lineage recorded in `config/feature_families.yaml` is an explicit
+citation rather than an inference from the methodology text. That does not close the
+open item there: the seven extra columns are precisely the ones absent from Table 5,
+and checking them still needs Neto et al.'s own feature table. H1, H2 and H3 are
+unchanged.
