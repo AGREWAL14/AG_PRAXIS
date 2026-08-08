@@ -7,7 +7,7 @@ Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.4 · 8 August 2026**
+**Version 1.5 · 8 August 2026**
 
 ---
 
@@ -217,7 +217,7 @@ in which Duration is the TTL header field rather than a measure of time.
 | Least separable pair | Recon-OS_Scan / Recon-Port_Scan, 0.6850 on Rate |
 | Top feature by mutual information, 19-class | IAT, 2.1500 nats of 2.1940 available |
 | Top feature, four weakest classes | IAT, 0.9703 of 1.1777 |
-| Features zero in more than 90% of rows | 15 of 44 |
+| Features zero in more than 90% of rows | 15 of 44 — reproduced by NB01 on 2026-08-08 |
 | Feature pairs above r 0.95 | 14 |
 | Largest between-recording shift | Protocol Type, ratio 0.23 on DoS-UDP |
 
@@ -265,6 +265,15 @@ timing-minus-Duration probe would settle it. The column stays in the timing fami
 the 44 by deliberate decision, for comparability with runs already executed.
 `DECISIONS.md` under 2026-08-07 and `config/feature_families.yaml` under
 `duration_family_placement` carry the reasoning.
+
+NB01's near-constancy table, re-run on 2026-08-08, reproduces the modal share as 93.5743%
+at 64.0 and flags it as a lower bound rather than an exact figure. The scan keeps exact
+value counts only for columns taking fewer than 200 distinct values, and Duration exceeds
+that cap, so the share it reports is at least 93.5743% and could be higher. The recorded
+93.57% is consistent with that bound. Nineteen columns are more constant than Duration and
+fourteen of those sit above 99%, so any rule that dropped a column for near-constancy would
+reach those before it reached this one. `data/processed/near_constancy.json` holds the
+table.
 
 **Per class, attack held fixed:** DDoS-ICMP 0.8532 (chance 0.100) · DDoS-SYN 0.8784 (0.200)
 · DDoS-TCP 0.8232 (0.200) · DDoS-UDP 0.6869 (0.100) · DoS-ICMP 0.7863 (0.200) · DoS-SYN
