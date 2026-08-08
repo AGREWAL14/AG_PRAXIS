@@ -486,3 +486,28 @@ constancy, with eighteen features more single-valued than it and eight of those 
 ece_flag_number in 610. Any rule that drops a column for near-constancy reaches those
 eight well before it reaches Duration. `config/feature_families.yaml` and
 `PROJECT_RECORD.md` were corrected in place in the same commit as this entry.
+
+---
+
+## 2026-08-08 — Dadkhah et al.'s baselines reported as a shared benchmark anchor
+
+**Decision:** The published baselines from Dadkhah et al. (2024) Table 7, 19-class F1 of
+0.432 for Logistic Regression, 0.141 for AdaBoost, 0.522 for the DNN and 0.551 for Random
+Forest, are reported as a benchmark anchor in NB05, NB08 and NB10. They are a reported
+reference point, not a hypothesis comparator.
+
+**Reasoning:** Mohammadi et al. (2024), the foundation model this work reproduces, already
+cites these same Dadkhah figures as its own point of comparison. Reporting them here puts
+this work and the CNN paper on one shared anchor, so a reader can place both against the
+dataset's originating baselines without a second translation step.
+
+**Consequence:** This adds a second reported comparator and alters no hypothesis. H2's
+comparator remains the published CNN under Amendment 5, with its threshold and class set
+untouched. Any reading of Dadkhah's 0.551 against `forest_19class` at 0.8418 macro carries
+three confounds that must travel with it: their averaging method is not stated anywhere in
+the paper, their split is file-level by PCAP where ours is capture-disjoint, and their
+feature count is unsettled at 39 listed against 45 shipped against the 44 used here. The
+comparison is a benchmark reference under a more rigorous protocol, not a controlled
+head-to-head result. The 2026-08-07 entries above record the source checks these figures
+rest on. `PROJECT_RECORD.md` Sections 3 and 5 were updated in the same commit as this
+entry. H1, H2 and H3 are unchanged.

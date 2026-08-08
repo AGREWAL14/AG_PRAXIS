@@ -94,6 +94,7 @@ applies to the H2 class set under Amendment 6.
 | Leave-one-family-out generalisation | 08 | Robustness |
 | Attribution stability, Kendall's tau | 09 | Reported with the mapping |
 | MAUDE cyber-attributable share | 09 | Surveillance coverage |
+| Dadkhah et al. published baselines (RF 0.551, DNN 0.522, etc.) | 05 | Shared published-baseline anchor; also the comparator Mohammadi et al. cite. Context, not an H2 test. |
 
 Dadkhah et al.'s own baselines are context rather than a result of this project. Verified
 against the source PDF on 2026-08-07: 19-class Random Forest F1 0.551 from their Table 7, a
@@ -348,6 +349,18 @@ only classes no model reaches F1 0.50 on.
 
 The weighted minus macro gap is 0.2474 on the two-tier nineteen-class run and 0.2730 on
 the shipped one. Accuracy reads 0.985 and 0.986 on the same predictions.
+
+Dadkhah et al.'s own published random forest, F1 0.551 at nineteen classes on their
+file-level split with the averaging method unstated, sits alongside `forest_19class` at
+0.8418 macro on the capture-disjoint split as the published anchor for this task. It is
+the same anchor Mohammadi et al. cite, which is why it is recorded here rather than only
+in the literature section. Reading the two numbers against each other carries three
+confounds. Their averaging method is unknown, so 0.551 may not be a macro figure at all.
+The split protocol differs, theirs by PCAP file and ours by capture session. The feature
+count differs, since the paper lists 39, ships 45 and never says which its models used,
+against the 44 used here. The comparison is a benchmark reference showing where this work
+sits under a more rigorous protocol, not a controlled head-to-head win. Section 6 under
+"Benchmark baselines — Dadkhah et al. (2024)" carries the verification detail.
 
 ### Reproduced baseline — Mohammadi et al., shipped split
 
