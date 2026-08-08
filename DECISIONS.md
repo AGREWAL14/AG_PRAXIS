@@ -335,3 +335,18 @@ citation rather than an inference from the methodology text. That does not close
 open item there: the seven extra columns are precisely the ones absent from Table 5,
 and checking them still needs Neto et al.'s own feature table. H1, H2 and H3 are
 unchanged.
+
+---
+
+## 2026-08-07 — Superseded wording in 7c4b790 on the CICIoT2023 lineage
+
+**Correction:** The entry committed at 7c4b790 describes the seven extra columns as
+"attributed to the CICIoT2023 pipeline on Dadkhah et al.'s stated claim alone". That
+phrasing is superseded. Section 5, the methodology, never mentions CICIoT2023; it
+describes extraction as TCPDUMP and DPKT with window averaging. The only link in the
+paper is the caption of Table 5, "Features extracted from PCAP files [28]", where [28]
+is Neto et al.'s CICIoT2023 paper, confirmed against the source PDF. The correct
+account is in `config/feature_families.yaml` under `table5_reconciliation`, in
+`provenance_of_extras`, updated the same day. This entry exists to mark the wording in
+7c4b790 as outdated on that one point. The substance is unchanged and is not reopened
+here: the seven columns remain cited but unverified.
