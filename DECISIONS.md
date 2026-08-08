@@ -424,3 +424,29 @@ whether it earns a place in the modelling set. Nothing has been changed. The fam
 assignment stands as it is, Duration remains among the 44 modelling features, and both
 decisions are deliberately unmade pending a call, because either one alters what NB09
 excludes or what the models are trained on. H1, H2 and H3 are unchanged.
+
+---
+
+## 2026-08-07 — Duration stays in the timing family and in the modelling set
+
+**Decision:** Duration remains where it is, in the timing family and among the 44
+modelling features. Both questions left open by the full scan above are answered by
+changing nothing.
+
+**Reasoning:** NB03, NB05 and NB06 were all executed with Duration where it is.
+Moving a family boundary or altering the feature set now would break those banked
+results against anything run afterwards, which is the comparability the
+one-change-per-run rule protects. The column is confirmed as the Time-To-Live header
+field by the full scan recorded above, so this is a deliberate choice made against
+the evidence rather than an assignment left standing by oversight: a header field is
+knowingly kept in the timing family, and a column that is 99.57% constant is knowingly
+kept in the modelling set.
+
+**Consequence:** One inaccuracy travels with the decision and must be stated wherever
+the timing family is used. That family contains a header field, and NB03's 0.9301
+capture-identification figure for it was measured with Duration included. At 99.57%
+constant the column's contribution to that figure should be near zero, but that is
+reasoned and not measured. A timing-family-minus-Duration robustness probe in NB08
+would settle it, and is optional rather than required. The item is marked resolved in
+`config/feature_families.yaml` under `duration_family_placement`, which carries the
+same terms. H1, H2 and H3 are unchanged.

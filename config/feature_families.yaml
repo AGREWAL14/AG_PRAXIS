@@ -193,17 +193,24 @@ table5_reconciliation:
     CSV header has it, and the name rules in src/inventory.py match both
     spellings, so a corrected header would land in the same family.
   duration_family_placement: >-
-    Open, and raised by this reconciliation rather than settled by it. The
-    families block above puts Duration in timing, assigned by a name rule that
-    matches the word "duration". If the column holds Time-To-Live it is a header
-    field, not a timing measurement, and that assignment is wrong on the same
-    what-is-measured basis the rationale above uses to separate protocol from
-    statistical. It matters downstream: NB09 excludes the timing family and would
-    be excluding a header field alongside Rate, Srate and IAT, and NB03's 0.9301
-    capture-identification figure for that family was measured with Duration in
-    it. Nothing has been changed here. Moving the column would alter what NB09
-    excludes and break comparability with the NB03 figure, so the decision is
-    left open rather than taken as a side effect of a naming reconciliation.
+    Resolved on 2026-08-07. Duration stays in the timing family and stays among
+    the 44 modelling features, and nothing changes. The reason is comparability.
+    NB03, NB05 and NB06 have all been executed with Duration where it is, and
+    moving a family boundary or altering the feature set mid-stream would break
+    those banked results against anything run afterwards, which is what the
+    one-change-per-run rule exists to prevent. The choice is deliberate and made
+    on evidence rather than left standing by oversight. Duration is confirmed as
+    the Time-To-Live header field by a full scan of all 72 files and 8,775,013
+    rows, recorded in DECISIONS.md under this date, and it is knowingly kept in
+    the timing family despite being a header field, and knowingly kept in the
+    modelling set despite being 99.57% constant. One inaccuracy travels with the
+    decision and has to be stated wherever the family is used: the timing family
+    contains one header field, Duration, and NB03's 0.9301 capture-identification
+    figure for that family was measured with it included. Because the column is
+    99.57% constant its contribution to that figure should be near zero, but that
+    is reasoned rather than measured. A timing-family-minus-Duration robustness
+    probe in NB08 would settle it if an airtight figure is wanted. Optional, not
+    required.
   effect_on_downstream: >-
     None on the working set. Drate is the only column constant across the whole
     dataset (NB01 full scan, all 8,775,013 rows) and is the one dropped, leaving
