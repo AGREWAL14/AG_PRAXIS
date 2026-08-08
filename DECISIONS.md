@@ -391,3 +391,36 @@ family and NB03 measured that family at 0.9301 for capture identification, both 
 Duration in it. No family assignment has been changed, because moving the column would
 alter what NB09 excludes and break comparability with the NB03 figure. H1, H2 and H3
 are unchanged, and the 44-feature working set is unchanged.
+
+---
+
+## 2026-08-07 — Duration confirmed as Time-To-Live by full scan
+
+**Decision:** Duration holds the TTL header field. This is settled on the whole
+dataset rather than on the reference file, and it confirms the reading taken from
+Neto et al. earlier today rather than revising it. Two decisions that follow from it,
+where Duration belongs among the families and whether it belongs in the modelling set
+at all, are left open. This entry records evidence, not a resolution.
+
+**Evidence:** Duration was read from all 72 CSVs, 8,775,013 rows, matching the
+inventory total exactly, with no nulls. The global minimum is 0 and the global maximum
+is 255 exactly. No row anywhere exceeds 255, and 702 rows sit on it across 11 files,
+which is the ceiling of an eight-bit field rather than a value a duration would happen
+to stop at. The distribution is the stronger evidence: 8,211,161 values, 99.57% of the
+column, are exactly 64, the Linux default TTL, and the tail falls on the other standard
+defaults — 60 for older macOS, 128 for Windows, 255 for network equipment, 32 for
+legacy stacks. The 527,983 non-integer values, 6.02%, are what window averaging
+predicts, since CICIoMT2024 averages packets in windows of 10 and 100 and a window
+spanning hosts of different TTLs yields a fractional mean. The lowest per-file maximum
+is 67.44, a fraction just above 64.
+
+**Consequence:** The two consequences recorded under `duration_family_placement` in
+`config/feature_families.yaml` now rest on the full dataset. NB09 excludes the timing
+family, which contains this header field, and NB03's 0.9301 capture-identification
+figure for that family was measured with Duration in it. The scan adds a third point
+that bears on both. At 99.57% constant the column carries almost no information
+wherever it is filed, so the question is not only which family it belongs to but
+whether it earns a place in the modelling set. Nothing has been changed. The family
+assignment stands as it is, Duration remains among the 44 modelling features, and both
+decisions are deliberately unmade pending a call, because either one alters what NB09
+excludes or what the models are trained on. H1, H2 and H3 are unchanged.
