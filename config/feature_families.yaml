@@ -154,16 +154,25 @@ table5_reconciliation:
     rather than label or metadata columns, which is why label_columns above is
     empty and stays empty.
   provenance_of_extras: >-
-    Dadkhah et al.'s methodology section says their extraction pipeline follows
-    the one used for CICIoT2023, and the seven extras are consistent with that.
-    This is inferred, not verified, and the inference is thinner than it first
-    looks. Neto et al.'s original CICIoT2023 feature table has not been checked,
-    and this project holds no record of that schema to check against either: it
-    is not documented in this file, and a search of the repository on the date
-    above found no description of it anywhere else. The attribution rests on
-    Dadkhah et al.'s statement about their own pipeline and on nothing this
-    project has independently read. Anyone who needs the provenance of these
-    seven columns to hold should read the CICIoT2023 paper first.
+    Table 5 carries the caption "Features extracted from PCAP files [28]", and
+    reference [28] is Neto et al.'s CICIoT2023 paper. The lineage is therefore an
+    explicit citation with a named source, checked against the source PDF on
+    2026-08-07 and recorded in DECISIONS.md under that date. An earlier version
+    of this entry credited the claim to Dadkhah et al.'s methodology section
+    instead. That was wrong: Section 5 describes the extraction as TCPDUMP and
+    DPKT with window averaging and does not mention CICIoT2023 at all, so the
+    citation in the Table 5 caption is the whole of the support and is firmer
+    than what it replaces. None of this settles the seven columns. The citation
+    covers the 39 features Table 5 lists, and the seven extras are exactly the
+    columns that table does not list, so they sit outside what is cited rather
+    than inside it. Neto et al.'s own feature table still has not been read, and
+    this project holds no record of that schema to check against: it is not
+    documented in this file, and a search of the repository found no description
+    of it anywhere else. The seven stay unverified. What has changed is the kind
+    of unverified — a cited claim whose source can be looked up, rather than an
+    attribution resting on the paper's own account of its pipeline. Anyone who
+    needs the provenance of these seven columns to hold should read Neto et al.
+    directly.
   magnitue_spelling: >-
     "Magnitue" is the released dataset's misspelling of "Magnitude". The
     statistical family above carries the column under the released spelling, so
