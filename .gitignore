@@ -14,3 +14,8 @@ archive/data/*.csv
 # NB05 predictions: int8 encoded, ~1.2MB each, needed for McNemar and pairwise F1
 !results/NB05/*/y_true.npy
 !results/NB05/*/y_pred.npy
+
+# NB07 predictions: same 49,159 test windows as NB06 and each other, so McNemar
+# in NB08 pairs them directly. ~49KB each, 10 files.
+!results/NB07/*/y_true.npy
+!results/NB07/*/y_pred.npy
