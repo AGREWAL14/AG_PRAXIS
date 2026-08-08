@@ -450,3 +450,39 @@ reasoned and not measured. A timing-family-minus-Duration robustness probe in NB
 would settle it, and is optional rather than required. The item is marked resolved in
 `config/feature_families.yaml` under `duration_family_placement`, which carries the
 same terms. H1, H2 and H3 are unchanged.
+
+---
+
+## 2026-08-07 — Duration's constancy figure corrected from 99.57% to 93.57%
+
+**Correction:** The earlier entries of this date record Duration as 99.57% constant. The
+figure is 93.57%. The error was a conditional share reported as an unconditional one:
+99.57% was computed over integer-valued rows only, 8,211,161 of 8,247,030, and labelled
+as a share of the column. Against all 8,775,013 rows the modal value 64 covers
+8,211,161, which is 93.57%. So 563,974 rows carry a value other than 64, not the
+36,000 or so the earlier number implies.
+
+**Evidence:** A near-constancy scan of all 44 modelling features over the full 8,775,013
+rows, run after the entries above. Two independent checks say the scan is sound: Drate
+returns exactly 100.0000% with no non-modal row, matching NB01's finding that it is the
+only constant column, and the fifteen features whose zero-share exceeds 90% reproduce
+NB02's existing count of 15 of 44 in Section 5 of `PROJECT_RECORD.md`.
+
+**What this does not change:** The identification of Duration as Time-To-Live stands
+untouched, resting on the global maximum of exactly 255, the modal value of 64 and a
+tail falling on the standard default TTLs, none of which depend on the share. Option C
+stands: it rests on comparability with NB03, NB05 and NB06, not on how constant the
+column is. The 0.9301 figure itself, the 44-feature count, H1, H2 and H3 are all
+unaffected.
+
+**What this does change:** The reasoning that Duration's contribution to NB03's 0.9301
+is near zero is less emphatic than recorded. Six point four percent of rows vary, not
+zero point four. The contribution is still likely small, but it is reasoned rather than
+measured and it is not as airtight as the earlier wording implies. A
+timing-family-minus-Duration probe in NB08 remains what would settle it. The same scan
+strengthens option C from another direction: Duration ranks eleventh of the 44 in
+constancy, with eighteen features more single-valued than it and eight of those above
+99.9% — IGMP varies in 299 rows of 8.77 million, DHCP in 535, cwr_flag_number in 602,
+ece_flag_number in 610. Any rule that drops a column for near-constancy reaches those
+eight well before it reaches Duration. `config/feature_families.yaml` and
+`PROJECT_RECORD.md` were corrected in place in the same commit as this entry.

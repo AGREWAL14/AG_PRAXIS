@@ -256,13 +256,14 @@ others and chance is one over the number of recordings.
 
 **Duration is the TTL header field, and it was inside every figure above.** It sits within
 the timing family for the 0.9301 row and among all 44 for 0.8010 and 0.8280. A full scan of
-all 72 files and 8,775,013 rows puts its global maximum at exactly 255 and 99.57% of its
+all 72 files and 8,775,013 rows puts its global maximum at exactly 255 and 93.57% of its
 values at 64, so the column carries Time-To-Live and the timing family contains one header
-field. Because it is 99.57% constant its contribution to these figures should be near zero,
-but that is reasoned rather than measured; an NB08 timing-minus-Duration probe would settle
-it. The column stays in the timing family and in the 44 by deliberate decision, for
-comparability with runs already executed. `DECISIONS.md` under 2026-08-07 and
-`config/feature_families.yaml` under `duration_family_placement` carry the reasoning.
+field. With 93.57% of rows at the modal value, 6.4% of them vary, so its contribution to
+these figures is likely small rather than near zero — reasoned, not measured; an NB08
+timing-minus-Duration probe would settle it. The column stays in the timing family and in
+the 44 by deliberate decision, for comparability with runs already executed.
+`DECISIONS.md` under 2026-08-07 and `config/feature_families.yaml` under
+`duration_family_placement` carry the reasoning.
 
 **Per class, attack held fixed:** DDoS-ICMP 0.8532 (chance 0.100) · DDoS-SYN 0.8784 (0.200)
 · DDoS-TCP 0.8232 (0.200) · DDoS-UDP 0.6869 (0.100) · DoS-ICMP 0.7863 (0.200) · DoS-SYN
