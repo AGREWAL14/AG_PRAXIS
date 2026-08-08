@@ -363,3 +363,226 @@ Full 19-class table, sorted by difference ascending:
 | Spoofing | 0.343826 | 0.765306 | +0.421480 |
 | Recon-VulScan | 0.000000 | 0.538462 | +0.538462 |
 | Recon-OS_Scan | 0.034306 | 0.606061 | +0.571754 |
+
+---
+
+### NB07 — class balancing (2026-08-08)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB07_class_balancing.ipynb |
+| run date | 2026-08-08 |
+| git sha | 45f376d |
+| seed | 42 |
+| pass reported | full |
+| runs | 5, one intervention each, of which 0 were read back from an earlier session |
+| runtime | fast 1.6 min, full 212.3 min |
+| parent | sequence_cnn_lstm_19class, macro F1 0.7138 |
+| input | 50 records at stride 25, 44 features, two-tier split |
+| role | reported result, per-class benefit and cost. Not a hypothesis test, no significance computed |
+| artifacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB07, copied to results/NB07/ |
+| status | reference run |
+
+| run | Recon-VulScan | Recon-OS_Scan | MQTT-DDoS-Publish_Flood | Spoofing | MQTT-Malformed_Data | volumetric mean | macro F1 |
+|---|---|---|---|---|---|---|---|
+| sequence_cnn_lstm_19class (parent) | 0.5385 | 0.6061 | 0.0796 | 0.7653 | 0.8421 | 0.7613 | 0.7138 |
+| class_weighted_loss | 0.3729 | 0.6667 | 0.0717 | 0.4295 | 0.6000 | 0.6614 | 0.6481 |
+| focal_loss | 0.3333 | 0.3377 | 0.0631 | 0.6667 | 0.9500 | 0.7524 | 0.6838 |
+| logit_adjustment | 0.4746 | 0.5730 | 0.0631 | 0.7442 | 0.8706 | 0.7720 | 0.7238 |
+| threshold_tuning | 0.3902 | 0.8193 | 0.0804 | 0.8406 | 0.8732 | 0.7643 | 0.7320 |
+| window_resampling | 0.3768 | 0.8142 | 0.0541 | 0.8547 | 0.9756 | 0.7788 | 0.7699 |
+
+### NB07 — class_weighted_loss (2026-08-08)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB07_class_balancing.ipynb |
+| git sha | 45f376d |
+| seed | 42 |
+| written | 1 of 5 |
+| intervention | class_weighted_loss, changes what the model learns |
+| parent | sequence_cnn_lstm_19class |
+| the one change | class_weight = inverse frequency, N / (K * n), normalised to mean 1 |
+| training windows | 249,061 |
+| test windows | 49,159 |
+| accuracy | 0.7056 |
+| weighted P / R / F1 | 0.7632 / 0.7056 / 0.6965 |
+| macro P / R / F1 | 0.6887 / 0.7461 / 0.6481 |
+| macro F1 against the parent | 0.6481 against 0.7138, -0.0657 |
+| the five classes, F1 | Recon-VulScan 0.3729 (-0.1656), Recon-OS_Scan 0.6667 (+0.0606), MQTT-DDoS-Publish_Flood 0.0717 (-0.0079), Spoofing 0.4295 (-0.3358), MQTT-Malformed_Data 0.6000 (-0.2421) |
+| of the five, detected at 0.50 | 2 of 5, parent 4 of 5 |
+| the eight volumetric classes, mean F1 | 0.6614 against 0.7613, -0.1000 |
+| of the eight, detected at 0.50 | 5 of 8, parent 7 of 8 |
+| four weakest classes | MQTT-DDoS-Publish_Flood 0.07, DoS-ICMP 0.35, Recon-VulScan 0.37, Recon-Ping_Sweep 0.38 |
+| too few windows to interpret | Recon-Ping_Sweep (4 test); Recon-VulScan (18 test); MQTT-Malformed_Data (40 test) |
+| gate | 9 checks, all passed |
+| train seconds | 2,425.7 |
+| inference seconds | 6.9 |
+| artifacts | results/NB07/class_weighted_loss |
+| status | reference run |
+
+### NB07 — focal_loss (2026-08-08)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB07_class_balancing.ipynb |
+| git sha | 45f376d |
+| seed | 42 |
+| written | 2 of 5 |
+| intervention | focal_loss, changes what the model learns |
+| parent | sequence_cnn_lstm_19class |
+| the one change | loss = categorical_focal_crossentropy, gamma 2.0, alpha 0.25 |
+| training windows | 249,061 |
+| test windows | 49,159 |
+| accuracy | 0.8213 |
+| weighted P / R / F1 | 0.8196 / 0.8213 / 0.7989 |
+| macro P / R / F1 | 0.7910 / 0.6866 / 0.6838 |
+| macro F1 against the parent | 0.6838 against 0.7138, -0.0300 |
+| the five classes, F1 | Recon-VulScan 0.3333 (-0.2051), Recon-OS_Scan 0.3377 (-0.2684), MQTT-DDoS-Publish_Flood 0.0631 (-0.0166), Spoofing 0.6667 (-0.0986), MQTT-Malformed_Data 0.9500 (+0.1079) |
+| of the five, detected at 0.50 | 2 of 5, parent 4 of 5 |
+| the eight volumetric classes, mean F1 | 0.7524 against 0.7613, -0.0090 |
+| of the eight, detected at 0.50 | 7 of 8, parent 7 of 8 |
+| four weakest classes | Recon-Ping_Sweep 0.00, MQTT-DDoS-Publish_Flood 0.06, DoS-ICMP 0.16, Recon-VulScan 0.33 |
+| too few windows to interpret | Recon-Ping_Sweep (4 test); Recon-VulScan (18 test); MQTT-Malformed_Data (40 test) |
+| gate | 9 checks, all passed |
+| train seconds | 2,466.0 |
+| inference seconds | 6.8 |
+| artifacts | results/NB07/focal_loss |
+| status | reference run |
+
+### NB07 — logit_adjustment (2026-08-08)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB07_class_balancing.ipynb |
+| git sha | 45f376d |
+| seed | 42 |
+| written | 3 of 5 |
+| intervention | logit_adjustment, changes how a trained model decides |
+| parent | sequence_cnn_lstm_19class |
+| the one change | decision_rule = logit adjustment, tau 1.0, priors counted on the training windows |
+| training windows | 249,061 |
+| test windows | 49,159 |
+| accuracy | 0.8150 |
+| weighted P / R / F1 | 0.8148 / 0.8150 / 0.8095 |
+| macro P / R / F1 | 0.7516 / 0.8000 / 0.7238 |
+| macro F1 against the parent | 0.7238 against 0.7138, +0.0100 |
+| the five classes, F1 | Recon-VulScan 0.4746 (-0.0639), Recon-OS_Scan 0.5730 (-0.0330), MQTT-DDoS-Publish_Flood 0.0631 (-0.0166), Spoofing 0.7442 (-0.0211), MQTT-Malformed_Data 0.8706 (+0.0285) |
+| of the five, detected at 0.50 | 3 of 5, parent 4 of 5 |
+| the eight volumetric classes, mean F1 | 0.7720 against 0.7613, +0.0106 |
+| of the eight, detected at 0.50 | 7 of 8, parent 7 of 8 |
+| four weakest classes | MQTT-DDoS-Publish_Flood 0.06, DoS-ICMP 0.38, Recon-Ping_Sweep 0.47, Recon-VulScan 0.47 |
+| too few windows to interpret | Recon-Ping_Sweep (4 test); Recon-VulScan (18 test); MQTT-Malformed_Data (40 test) |
+| gate | 9 checks, all passed |
+| train seconds | 2,433.3 |
+| inference seconds | 6.8 |
+| artifacts | results/NB07/logit_adjustment |
+| status | reference run |
+
+### NB07 — threshold_tuning (2026-08-08)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB07_class_balancing.ipynb |
+| git sha | 45f376d |
+| seed | 42 |
+| written | 4 of 5 |
+| intervention | threshold_tuning, changes how a trained model decides |
+| parent | sequence_cnn_lstm_19class |
+| the one change | decision_rule = one threshold per class, tuned on validation, largest divided score wins |
+| training windows | 249,061 |
+| test windows | 49,159 |
+| accuracy | 0.8168 |
+| weighted P / R / F1 | 0.8271 / 0.8168 / 0.8071 |
+| macro P / R / F1 | 0.7797 / 0.7830 / 0.7320 |
+| macro F1 against the parent | 0.7320 against 0.7138, +0.0182 |
+| the five classes, F1 | Recon-VulScan 0.3902 (-0.1482), Recon-OS_Scan 0.8193 (+0.2132), MQTT-DDoS-Publish_Flood 0.0804 (+0.0007), Spoofing 0.8406 (+0.0753), MQTT-Malformed_Data 0.8732 (+0.0311) |
+| of the five, detected at 0.50 | 3 of 5, parent 4 of 5 |
+| the eight volumetric classes, mean F1 | 0.7643 against 0.7613, +0.0030 |
+| of the eight, detected at 0.50 | 6 of 8, parent 7 of 8 |
+| four weakest classes | MQTT-DDoS-Publish_Flood 0.08, Recon-VulScan 0.39, DoS-TCP 0.45, DoS-ICMP 0.46 |
+| too few windows to interpret | Recon-Ping_Sweep (4 test); Recon-VulScan (18 test); MQTT-Malformed_Data (40 test) |
+| gate | 9 checks, all passed |
+| train seconds | 2,446.5 |
+| inference seconds | 1.7 |
+| artifacts | results/NB07/threshold_tuning |
+| status | reference run |
+
+### NB07 — window_resampling (2026-08-08)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB07_class_balancing.ipynb |
+| git sha | 45f376d |
+| seed | 42 |
+| written | 5 of 5 |
+| intervention | window_resampling, changes what the model learns |
+| parent | sequence_cnn_lstm_19class |
+| the one change | resampling = window-level oversampling to the median class size, with replacement |
+| training windows | 295,925 |
+| test windows | 49,159 |
+| accuracy | 0.8393 |
+| weighted P / R / F1 | 0.8298 / 0.8393 / 0.8229 |
+| macro P / R / F1 | 0.8044 / 0.8074 / 0.7699 |
+| macro F1 against the parent | 0.7699 against 0.7138, +0.0561 |
+| the five classes, F1 | Recon-VulScan 0.3768 (-0.1616), Recon-OS_Scan 0.8142 (+0.2081), MQTT-DDoS-Publish_Flood 0.0541 (-0.0256), Spoofing 0.8547 (+0.0894), MQTT-Malformed_Data 0.9756 (+0.1335) |
+| of the five, detected at 0.50 | 3 of 5, parent 4 of 5 |
+| the eight volumetric classes, mean F1 | 0.7788 against 0.7613, +0.0174 |
+| of the eight, detected at 0.50 | 7 of 8, parent 7 of 8 |
+| four weakest classes | MQTT-DDoS-Publish_Flood 0.05, DoS-ICMP 0.30, Recon-VulScan 0.38, DoS-TCP 0.50 |
+| too few windows to interpret | Recon-Ping_Sweep (4 test); Recon-VulScan (18 test); MQTT-Malformed_Data (40 test) |
+| gate | 9 checks, all passed |
+| train seconds | 2,894.7 |
+| inference seconds | 6.8 |
+| artifacts | results/NB07/window_resampling |
+| status | reference run |
+
+### NB07 — follow-up note (2026-08-08)
+
+Figures re-read from `results/NB07/*/metrics.json` after the artifacts were copied into
+the repository. The five macro-F1 values on disk match the run output to four decimals.
+
+All five runs are one key from `sequence_cnn_lstm_19class` and none was read back from an
+earlier session, so the five are directly comparable to each other and to the parent. All
+six rows are scored on the same 49,159 test windows, which is what makes the per-class
+columns above a paired comparison rather than six runs' own scores. No significance test
+was computed here; that is NB08's.
+
+**Window resampling gives the largest gain, and three of the five raise macro-F1 and the
+volumetric mean together.** Window resampling reaches 0.7699 macro against the parent's
+0.7138 and 0.7788 volumetric mean against 0.7613, the largest movement on both of any
+intervention. Logit adjustment (+0.0100 macro, +0.0106 volumetric) and threshold tuning
+(+0.0182 macro, +0.0030 volumetric) also move both upward by smaller amounts. Window
+resampling is the highest macro-F1 any sequence model has reached in this project, and it
+remains below `forest_19class` at 0.8418 on single records.
+
+**Recon-VulScan falls under every intervention.** 0.5385 at the parent, and between 0.3333
+and 0.4746 across the five. It is the class NB06 lifted across the 0.50 threshold, and all
+five balancing methods push it back under. This is why no run improves on the parent's 4 of
+5 detected: the count is 3 of 5 or 2 of 5 everywhere. The class rests on 18 test sequences
+and carries the Amendment 4 caveat, so a single misclassified window moves its F1
+substantially. The direction is consistent across five runs; the magnitude is not
+interpretable.
+
+**MQTT-DDoS-Publish_Flood does not respond to any intervention.** 0.0541 to 0.0804 across
+all five, against a parent of 0.0796, with no run reaching a tenth of the 0.50 threshold.
+Five different treatments of class imbalance produce no movement. `PREREGISTRATION.md`
+Objective 2 fixed the reading of this outcome in advance: evidence that the failure is not
+caused by imbalance, directing attention to feature separability instead. NB02 is
+consistent with that, placing the class in two of the eleven pairs below AUC 0.90,
+against MQTT-Malformed_Data at 0.8753 and Spoofing at 0.8930.
+
+**DoS-ICMP under each intervention**, against the parent's 0.3178: focal_loss 0.1594,
+window_resampling 0.2995, class_weighted_loss 0.3516, logit_adjustment 0.3769,
+threshold_tuning 0.4590. No intervention returns it above 0.50 and two leave it lower than
+the parent. What these five figures measure is whether balancing recovers the class, not
+what caused the regression. The interventions were not designed to diagnose it and this run
+does not diagnose it.
+
+**Cost to the eight volumetric classes.** Two interventions lower the volumetric mean,
+class_weighted_loss by -0.1000 and focal_loss by -0.0090; three raise it, threshold_tuning
+by +0.0030, logit_adjustment by +0.0106 and window_resampling by +0.0174. No H2 clause
+sets a limit on this quantity — `PREREGISTRATION.md` Amendment 10 records that the cost
+clause of Amendment 2 did not survive the Amendment 5 replacement — so these figures are
+reported without a pass mark.
+

@@ -511,3 +511,42 @@ comparison is a benchmark reference under a more rigorous protocol, not a contro
 head-to-head result. The 2026-08-07 entries above record the source checks these figures
 rest on. `PROJECT_RECORD.md` Sections 3 and 5 were updated in the same commit as this
 entry. H1, H2 and H3 are unchanged.
+
+---
+
+## 2026-08-08 — Correction: NB07 follow-up note overstated window resampling's uniqueness
+
+**What was written:** The first draft of the NB07 follow-up note in `RESULTS_LEDGER.md`
+stated that window resampling was "the only intervention that raises macro-F1 and the
+volumetric mean together".
+
+**What is true:** Three of the five do. Window resampling raises macro-F1 by +0.0561 and
+the volumetric mean by +0.0174; logit adjustment raises them by +0.0100 and +0.0106; and
+threshold tuning by +0.0182 and +0.0030. What is true of window resampling alone is that
+its gain on each of the two is the largest of any intervention. The claim as drafted named
+a property three runs share and attributed it to one.
+
+**How it was caught:** Re-reading every claim in the note against the five
+`results/NB07/*/metrics.json` files before the file was committed. The figure that
+contradicts it — the per-run volumetric mean, +0.0106 for logit adjustment and +0.0030 for
+threshold tuning — was already stated correctly two paragraphs below in the same note,
+under the cost-to-volumetric-classes paragraph. The note contradicted itself and read
+fluently either way.
+
+**Scope:** The error was confined to one sentence of drafted prose. It reached no commit,
+so no file, chapter or downstream claim carried it. The tables in the same entry were
+written by the notebook from `metrics.json` and gate-checked at 9 of 9, and every figure in
+them verified correct on the same pass. Corrected before the entry was committed. In the
+same pass the DoS-ICMP figures in that paragraph were widened from two decimals to four:
+0.1594, 0.2995, 0.3516, 0.3769, 0.4590.
+
+**Why it is recorded:** The failure mode is the one the 2026-08-07 correction to the
+Duration modal share already demonstrated — a summary statement written from memory of the
+numbers rather than from the numbers, plausible enough to survive a read-through. Catching
+it required going back to the artifacts, which is the same discipline that produced the
+99.57% to 93.57% correction. Recording it keeps the count of such errors honest rather than
+resetting it each time one is caught early.
+
+**What this does not change:** No hypothesis, threshold, class set or comparator. All
+NB07 tables, all per-class figures and all five macro-F1 values stand as written and as
+verified against the artifacts on disk.

@@ -7,7 +7,7 @@ Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.3 · 7 August 2026**
+**Version 1.4 · 8 August 2026**
 
 ---
 
@@ -439,6 +439,53 @@ that cross the threshold.
 Training took 2,427.7 seconds and inference 7.0 seconds over 49,159 windows, 6,985 windows
 a second, recorded as a feasibility observation.
 
+### Class balancing
+
+From the NB07 reference run: five runs, full pass, 212 minutes. Seed 42, window 50 and
+stride 25, the two-tier split, and the 44 features that remain after Drate is dropped. Each
+run is one key from `sequence_cnn_lstm_19class`, which is the parent throughout, and all six
+rows are scored on the same 49,159 test windows, so every difference below is a difference
+on the same items. No significance test is computed here; that is NB08's.
+
+| run | Recon-VulScan | Recon-OS_Scan | MQTT-DDoS-Publish_Flood | Spoofing | MQTT-Malformed_Data | volumetric mean | macro F1 |
+|---|---|---|---|---|---|---|---|
+| sequence_cnn_lstm_19class (parent) | 0.5385 | 0.6061 | 0.0796 | 0.7653 | 0.8421 | 0.7613 | 0.7138 |
+| class_weighted_loss | 0.3729 | 0.6667 | 0.0717 | 0.4295 | 0.6000 | 0.6614 | 0.6481 |
+| focal_loss | 0.3333 | 0.3377 | 0.0631 | 0.6667 | 0.9500 | 0.7524 | 0.6838 |
+| logit_adjustment | 0.4746 | 0.5730 | 0.0631 | 0.7442 | 0.8706 | 0.7720 | 0.7238 |
+| threshold_tuning | 0.3902 | 0.8193 | 0.0804 | 0.8406 | 0.8732 | 0.7643 | 0.7320 |
+| window_resampling | 0.3768 | 0.8142 | 0.0541 | 0.8547 | 0.9756 | 0.7788 | 0.7699 |
+
+Window resampling gives the largest gain on both quantities, 0.7699 macro-F1 against the
+parent's 0.7138 and 0.7788 volumetric mean against 0.7613. Logit adjustment and threshold
+tuning also raise both by smaller margins. Class-weighted loss and focal loss lower both.
+Window resampling is the highest macro-F1 any sequence model has reached in this project
+and remains below `forest_19class` at 0.8418 on single records.
+
+**No intervention raises the count of the five detected at F1 0.50.** The parent detects
+four of the five. Every intervention detects three or two. The cause is Recon-VulScan,
+which falls under all five, from 0.5385 to somewhere between 0.3333 and 0.4746. It is the
+class NB06 lifted across the threshold, and every balancing method pushes it back under.
+It rests on 18 test sequences and carries the Amendment 4 caveat, so the direction is
+consistent across five runs while the magnitude is not interpretable.
+
+**MQTT-DDoS-Publish_Flood does not respond to any intervention**, scoring 0.0541 to 0.0804
+against a parent of 0.0796, with no run reaching a tenth of the threshold. Five different
+treatments of class imbalance produce no movement. `PREREGISTRATION.md` Objective 2 fixed
+the reading of this outcome before any of it was run: evidence that the failure is not
+caused by imbalance, directing attention to feature separability instead. NB02 is
+consistent, placing the class in two of the eleven pairs below AUC 0.90.
+
+**DoS-ICMP against the parent's 0.3178:** focal_loss 0.1594, window_resampling 0.2995,
+class_weighted_loss 0.3516, logit_adjustment 0.3769, threshold_tuning 0.4590. No
+intervention returns it above 0.50 and two leave it lower. These figures measure whether
+balancing recovers the class, not what caused the regression.
+
+The volumetric mean moves -0.1000, -0.0090, +0.0030, +0.0106 and +0.0174 across the five.
+No H2 clause sets a limit on this quantity, since `PREREGISTRATION.md` Amendment 10 records
+that Amendment 2's cost clause did not survive the Amendment 5 replacement, so these are
+reported without a pass mark. The per-run detail is in `RESULTS_LEDGER.md`.
+
 ---
 
 ## 6. Relation to prior work
@@ -661,5 +708,5 @@ position; the pre-registration states how it was reached.
 | Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
 | Low-rate group listing in Section 3, resolved | Section 3's low-rate bullet no longer lists Recon-Ping_Sweep, matching the group fixed by `PREREGISTRATION.md` Amendment 4, and the exclusion and its basis are now stated beneath the bullets. H1 names the median again in the same edit, restoring the aggregation Amendment 3 stated and v1.0 dropped. Both changes are recorded in Amendment 8 |
 | Section 5 sentence on classes below F1 0.50, resolved | Both statements re-derived from `results/NB05/*/metrics.json` and corrected. First: five classes, not three, are below F1 0.50 in both convolutional runs — Spoofing and MQTT-Malformed_Data were missing — and the forest resolves three of the five, MQTT-Malformed_Data reaching 0.6752. Second: no run on disk produces the "Reproduced baseline" figures, so that block now carries a note recording that it comes from an earlier reproduction and that every figure cited in Chapter 4 comes from the artifacts in `results/NB05/` |
-| DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H2 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB08's five-seed runs will show if it holds across seeds; NB07's balancing interventions may show if it is fixable. Not yet investigated. |
+| DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H2 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB07 has now measured whether the five balancing interventions recover it: none returns it above 0.50, the five values being 0.1594, 0.2995, 0.3516, 0.3769 and 0.4590 against the parent's 0.3178, and two of the five leave it lower than the parent. That measures recovery under balancing, not cause; the interventions were not designed to diagnose the regression and this run does not diagnose it. NB08's five-seed runs will show if it holds across seeds. |
 | RF comparator naming, resolved | Two random forests exist in this project and are easy to conflate. `results/NB05/forest_19class`, at 0.8418 macro-F1, is the classifier that serves as H2's third comparison and is the correct forest to cite against Dadkhah et al.'s published baseline of F1 0.551, recorded in `DECISIONS.md` under 2026-08-07. The NB03 capture-identification probe is a separate forest that tests whether recording provenance is recoverable from features; it does not classify attack classes and is not a comparator for H1 or H2. The two were conflated while the primary-source verification entry in `DECISIONS.md` was being drafted, and corrected before that entry was committed. Recorded here so they are not mixed up again |
