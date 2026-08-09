@@ -586,3 +586,45 @@ sets a limit on this quantity — `PREREGISTRATION.md` Amendment 10 records that
 clause of Amendment 2 did not survive the Amendment 5 replacement — so these figures are
 reported without a pass mark.
 
+### NB05 — forest_19class_dadkhah_leaf1 (2026-08-08)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB05_baseline_models.ipynb |
+| git sha | 407d5a7 |
+| seed | 42 |
+| model | random_forest |
+| task | 19-class, 19 classes |
+| split | two_tier |
+| parent | forest_19class |
+| the one change | min_samples_leaf 20 to 1, the value in Dadkhah et al. (2024) Table 8 |
+| hyperparameters from | Dadkhah et al. (2024), Table 8: 100 trees, max_features sqrt, min_samples_leaf 1 |
+| training rows | 999,998 |
+| test rows | 1,229,711 |
+| accuracy | 0.9928 (chance 0.0526, largest class 0.1591) |
+| weighted P / R / F1 | 0.9943 / 0.9928 / 0.9916 |
+| macro P / R / F1 | 0.9441 / 0.8526 / 0.8680 |
+| macro F1 against the parent | 0.8680 against 0.8418, +0.0262 |
+| weighted F1 minus macro F1 | 0.1236 |
+| cross-validation | 5-fold on training, macro-F1 0.9427 +/- 0.0046 |
+| classes at F1 0.00 | none |
+| four weakest classes | MQTT-DDoS-Publish_Flood 0.19, Recon-VulScan 0.49, Recon-Ping_Sweep 0.71, Recon-OS_Scan 0.75 |
+| train seconds | 172.4 |
+| inference seconds | 15.5 (79,402 rows/s) |
+| not controlled | the feature set (39 listed, 45 shipped, 44 used here) and their averaging method, which the paper does not state |
+| artifacts | results/NB05/forest_19class_dadkhah_leaf1, config.json and metrics.json only; y_true.npy and y_pred.npy are on Drive at /content/drive/MyDrive/AG_PRAXIS_artifacts/NB05/forest_19class_dadkhah_leaf1 |
+| status | ablation, reported result, not a hypothesis test |
+
+Removing the leaf constraint trades precision for recall. Macro precision falls from the
+parent's 0.9603 to 0.9441 and macro recall rises from 0.8225 to 0.8526, and the net is
++0.0262 macro-F1. Per class the movement is concentrated in the small classes: Recon-VulScan
+0.4886 against 0.2536, MQTT-Malformed_Data 0.8272 against 0.6752, MQTT-DDoS-Publish_Flood
+0.1858 against 0.1186. Spoofing is the one that falls, 0.8399 against 0.8605.
+
+This run is reported for what it says about evaluation protocol, not as a comparison
+between two models. Dadkhah et al.'s published random forest reads F1 0.551 at nineteen
+classes on their file-level split; the same configuration on the capture-disjoint split
+reads 0.8680 here, and the leaf setting itself accounts for 0.0262 of the 0.3170 between
+them. The feature set and the averaging method are not controlled by this run. H2's
+comparator is unchanged.
+

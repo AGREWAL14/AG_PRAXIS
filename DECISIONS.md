@@ -550,3 +550,66 @@ resetting it each time one is caught early.
 **What this does not change:** No hypothesis, threshold, class set or comparator. All
 NB07 tables, all per-class figures and all five macro-F1 values stand as written and as
 verified against the artifacts on disk.
+
+---
+
+## 2026-08-08 — Dadkhah's own forest configuration run under the capture-disjoint split
+
+**Decision:** The ablation `forest_19class_dadkhah_leaf1` is recorded as a reported result
+in `PROJECT_RECORD.md` Sections 3 and 5 and in `RESULTS_LEDGER.md`. It takes the random
+forest settings from Dadkhah et al. (2024) Table 8, of which `min_samples_leaf` 1 is the
+only one that differs from `forest_19class`, and scores them on the capture-disjoint
+two-tier split. Macro-F1 0.8680 against the parent's 0.8418. Same 44 features, seed 42,
+same 1,229,711 test rows.
+
+**Reasoning:** Dadkhah et al. publish 0.551 for their nineteen-class random forest and this
+project's forest reads 0.8418. Two things differ between those numbers at once, the model
+configuration and the evaluation protocol, and without separating them the distance is
+uninterpretable. Running their configuration under this project's split holds the model
+fixed and leaves the protocol as the thing that changed.
+
+**Consequence:** The leaf constraint accounts for 0.0262 of the 0.3170 between 0.551 and
+0.8680, so it explains almost none of the distance. What the run supports is that Dadkhah's
+own configuration, evaluated under a capture-disjoint split, scores far above their
+published figure, which locates the difference in evaluation protocol rather than model
+capacity. Protocol here means the split and the averaging method together, since the paper
+states no averaging method and 0.551 may not be a macro figure. The run does not control
+the feature set, the paper listing 39 and shipping 45 against the 44 used here, and does
+not control the averaging method either. Those two confounds are unchanged. This is a
+reported result, not a hypothesis test, and it is not a controlled win over published work.
+H1, H2 and H3 are unchanged, and H2's comparator remains the published CNN under Amendment
+5, with its threshold and class set untouched.
+
+---
+
+## 2026-08-08 — Open item: prediction arrays saved as label strings, 113 MB each
+
+**What happened:** `forest_19class_dadkhah_leaf1` wrote `y_true.npy` and `y_pred.npy` at
+113,133,540 bytes each, against 1,229,839 bytes for `forest_19class` on the identical
+1,229,711-row nineteen-class test set. Both exceed GitHub's 100 MB file limit, so the run
+is committed as `config.json` and `metrics.json` only, with the two arrays left on Drive at
+`/content/drive/MyDrive/AG_PRAXIS_artifacts/NB05/forest_19class_dadkhah_leaf1`.
+
+**Cause, verified from the npy headers:** the ablation's arrays carry dtype `<U23` and the
+parent's carry `|i1`. The ablation saved the class-name strings, padded to the width of the
+longest label, `MQTT-DDoS-Connect_Flood` at 23 characters, which is 92 bytes per element
+against one. It is not a float or object dtype; it is fixed-width unicode. The 92-fold size
+ratio matches the byte counts exactly.
+
+**Why it is logged rather than fixed now:** the metrics were computed inside the run and
+are unaffected, so nothing about the reported figures depends on this. The arrays are
+needed for later per-class and paired analysis, and the copies on Drive serve that.
+
+**What to watch:** NB08 runs five seeds. On the current save path that is ten arrays at
+113 MB each, all of them over the limit, hitting the same wall five times instead of once.
+Before NB08 runs, the save path must map the labels through the class list to integer class
+codes and save those, which is what `forest_19class` did. It is not a dtype cast. Calling
+`astype` on an array of class-name strings does not produce class codes; it either raises
+or produces something meaningless, because the strings are names and not numerals. The
+encoding step is the fix and the narrow dtype follows from it: nineteen classes fit `int8`,
+`int16` if a later notebook grows the class set. The class list in `metrics.json` under
+`labels` is the ordering to encode against, so the existing Drive copies can be encoded on
+read without re-running anything.
+
+**What this does not change:** no metric, no hypothesis, no comparator. The figures in
+`results/NB05/forest_19class_dadkhah_leaf1/metrics.json` stand as written.

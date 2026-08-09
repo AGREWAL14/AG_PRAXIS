@@ -95,6 +95,7 @@ applies to the H2 class set under Amendment 6.
 | Attribution stability, Kendall's tau | 09 | Reported with the mapping |
 | MAUDE cyber-attributable share | 09 | Surveillance coverage |
 | Dadkhah et al. published baselines (RF 0.551, DNN 0.522, etc.) | 05 | Shared published-baseline anchor; also the comparator Mohammadi et al. cite. Context, not an H2 test. |
+| RF ablation: Dadkhah Table 8 config on capture-disjoint split (macro-F1 0.8680) | 05 | Isolates split protocol from Dadkhah's published 0.551; context, not an H2 test. |
 
 Dadkhah et al.'s own baselines are context rather than a result of this project. Verified
 against the source PDF on 2026-08-07: 19-class Random Forest F1 0.551 from their Table 7, a
@@ -370,6 +371,28 @@ count differs, since the paper lists 39, ships 45 and never says which its model
 against the 44 used here. The comparison is a benchmark reference showing where this work
 sits under a more rigorous protocol, not a controlled head-to-head win. Section 6 under
 "Benchmark baselines — Dadkhah et al. (2024)" carries the verification detail.
+
+An ablation run, `forest_19class_dadkhah_leaf1`, puts Dadkhah et al.'s own Table 8 forest
+settings on the capture-disjoint split. It reaches 0.8680 macro-F1. The single change from
+`forest_19class` is `min_samples_leaf` from 20 to 1, which is their exact Table 8 value.
+The 44 features, seed 42, the two-tier split and the same 1,229,711 test rows are all
+unchanged, so what the run varies is the leaf constraint and nothing else. Three numbers
+now sit together: Dadkhah's published 0.551, their model configuration on their file-level
+split; this ablation's 0.8680, their model configuration on the capture-disjoint split; and
+`forest_19class` at 0.8418, the leaf setting chosen here on the same split. The leaf
+constraint accounts for almost none of the distance between the published figure and the
+runs here. It moves the score by 0.0262, 0.8680 at leaf 1 against 0.8418 at leaf 20, where
+the distance from 0.551 is 0.3170 and 0.2911 respectively. What the ablation supports is
+that the random forest configuration Dadkhah published, run under a capture-disjoint split,
+scores far above the 0.551 their table reports, which places the difference in how the
+result was evaluated rather than in what the model is capable of. The split protocol is one
+half of that and the averaging method is the other, since the paper states no averaging
+method and 0.551 may not be a macro figure at all. Neither the feature set nor the
+averaging method is controlled by this run. The paper lists 39 features and ships 45
+against the 44 used here, and the averaging remains unstated, so those two confounds stand
+exactly where they stood before. This is a reported result and not a hypothesis test. It is
+not a controlled comparison between two models, and it changes nothing about H2, whose
+comparator remains the published CNN under Amendment 5.
 
 ### Reproduced baseline — Mohammadi et al., shipped split
 
