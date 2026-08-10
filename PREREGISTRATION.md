@@ -707,3 +707,90 @@ remains excluded under Amendment 4.
 
 It sets no new threshold and changes no class set. F1 >= 0.80 is unchanged, the
 multiple stays at twice, and the direction stays as fixed in Amendment 8.
+
+---
+
+# Amendment 12 — 2026-08-10
+
+Made after NB08 was run. Restates the research questions and hypotheses, reorders
+and renumbers them, and changes the metric the observation hypothesis is measured
+on. No result changes.
+
+## The reordering and renumbering
+
+The three questions are reordered detector, observation, interpretation. The
+sequence hypothesis carried as H2 from Amendment 5 onward becomes H1. The
+observation hypothesis carried as H1 from Amendment 7 onward becomes H2. H3 is
+unchanged in position.
+
+Every reference to H1, H2 and H3 in PROJECT_RECORD.md, PREREGISTRATION.md,
+DECISIONS.md, RESULTS_LEDGER.md and the notebooks is renumbered accordingly, in one
+pass on this date. Amendments 1 through 11 are not edited. Where they name H1 or H2
+they mean the numbering in force when they were written, and this amendment is the
+key to reading them.
+
+## H1 — the sequence hypothesis, formerly H2
+
+**H1.** Sequence-based modelling improves detection of specific hard-to-detect
+classes relative to single-record models.
+
+The class set is unchanged, fixed by Amendment 6 as Recon-VulScan, Recon-OS_Scan,
+MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data. The threshold is
+unchanged at F1 0.50, fixed by Amendment 5. The comparator is unchanged as the
+published CNN.
+
+The claim is class-specific and is not a claim of general improvement. The
+aggregate macro-F1 difference against the published CNN is +0.0028 against a
+cross-seed standard deviation of 0.0233 at k = 50, and is not reported as a gain.
+
+## H2 — the observation hypothesis, formerly H1
+
+**H2.** Low-rate classes require more observation to reach detection saturation
+than volumetric classes.
+
+Metric: the observation budget at which each class reaches saturation, defined as
+the smallest budget within epsilon = 0.02 of that class's own achievable ceiling
+across the budget grid, following Silvey & Liu (JMIR 2024) and Mohr et al. (arXiv
+2201.12150). Group medians compared.
+
+### The metric changes from records-to-threshold to saturation
+
+The previous statement measured records observed to reach F1 >= 0.80 and required
+the low-rate median to be at least twice the volumetric median. NB08 measured that
+and it was not evaluable: three of five low-rate classes do not reach F1 0.80 within
+50 records, so the low-rate median is not determinate. That handling was fixed in
+Amendment 11 before the run, and the direction was reported instead.
+
+The records-to-threshold measurement is retained and reported. It is no longer what
+H2 stands or falls on.
+
+### No numeric multiple
+
+H2 states the direction only.
+
+The previous twofold requirement was not evaluable under the previous metric. Under
+the saturation metric both medians are determinate and the ratio is known, so
+stating a multiple now would set a threshold against a figure already in hand. The
+direction is stated and the ratio is reported as an observed figure without a pass
+mark.
+
+### The question wording
+
+RQ2 asks how much traffic must be observed before each attack class stops improving.
+It previously asked when each class becomes reliably detectable.
+
+Saturation marks where a class stops improving, not where it becomes reliably
+detected. Eight of nineteen classes saturate at an F1 below 0.80. The narrower
+question is what the metric measures. The reliability reading is retained through
+the records-to-threshold figures, which are reported alongside.
+
+## H3 — unchanged
+
+Unchanged in substance from Amendment 9. The 70% threshold and the reference
+standard are unchanged.
+
+## What this amendment does not do
+
+No result changes. No class set, no comparator and no F1 threshold moves. The
+budget grid, the censoring rule and the group definitions stand as fixed in
+Amendment 11 and PROJECT_RECORD.md Section 3.
