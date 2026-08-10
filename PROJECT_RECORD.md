@@ -7,7 +7,7 @@ Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.5 · 8 August 2026**
+**Version 1.6 · 10 August 2026**
 
 ---
 
@@ -439,6 +439,11 @@ it is +0.0028. The random forest on single records remains the highest macro-F1 
 in this project at 0.8418. Accuracy falls from 0.9852 on the parent to 0.8197, and the
 weighted minus macro gap falls from 0.2474 to 0.0926.
 
+NB08 places this figure in a cross-seed distribution: 0.7373 plus or minus 0.0233 over
+five seeds at k = 50, of which 0.7138 is one. The +0.0028 difference against
+`published_cnn_19class` is an order of magnitude inside that spread and is not reported
+as a gain.
+
 **The five classes the published run scores below F1 0.50:**
 
 | class | published_cnn | ours_cnn | forest | sequence |
@@ -517,6 +522,72 @@ The volumetric mean moves -0.1000, -0.0090, +0.0030, +0.0106 and +0.0174 across 
 No H2 clause sets a limit on this quantity, since `PREREGISTRATION.md` Amendment 10 records
 that Amendment 2's cost clause did not survive the Amendment 5 replacement, so these are
 reported without a pass mark. The per-run detail is in `RESULTS_LEDGER.md`.
+
+### Observation budgets and cross-seed variation
+
+From the NB08 reference run: seven runs trained here, plus the NB06 parent loaded
+without retraining. Seed 42 for the budget runs, seeds 43 to 46 at k = 50, window 50
+and stride 25, the two-tier split, and the 44 features that remain after Drate is
+dropped. Observation budget k in {5, 10, 25, 50} taken as prefixes of the NB04
+windows, so all runs score the same 49,159 test windows. Parameters 214,227 in every
+run, unchanged by the budget.
+
+| budget | macro F1 | classes at F1 >= 0.80 |
+|---|---|---|
+| k = 5 | 0.6295 | 9 |
+| k = 10 | 0.6837 | 9 |
+| k = 25 | 0.7323 | 11 |
+| k = 50 | 0.7138 | 10 |
+
+**Records to threshold (H1).** Eight of nineteen classes do not reach F1 0.80 within
+50 records and are recorded as right-censored under `PREREGISTRATION.md` Amendment 11,
+reported as "> 50" and never as 50.
+
+Low-rate: Recon-Port_Scan 5, MQTT-Malformed_Data 25, Recon-OS_Scan > 50,
+Recon-VulScan > 50, Spoofing > 50. Median not reached within 50 records, three of five
+censored.
+
+Volumetric: DDoS-SYN 5, DDoS-TCP 5, DDoS-UDP 5, DoS-SYN 5, DoS-UDP 5, DDoS-ICMP > 50,
+DoS-ICMP > 50, DoS-TCP > 50. Median 5, three of eight censored. The even-sized group
+reading is recorded in `DECISIONS.md` under 2026-08-09.
+
+The twofold comparison is not evaluated, since the low-rate median is not determinate.
+The direction is reported instead: the low-rate median sits above the budget ceiling
+while the volumetric median is 5, so low-rate classes require more observed records.
+The size of the difference is not measurable on a grid that stops at 50.
+
+Two figures qualify that reading. DDoS-ICMP is censored at a best F1 of 0.7998, short
+of the threshold by 0.0002 against a cross-seed standard deviation of 0.0075 on that
+class. Recon-Port_Scan reaches 0.8878 at k = 5, so the fastest class in the study is a
+low-rate one. The group definitions are fixed by the benchmark taxonomy in Section 3
+and were not derived from these measurements.
+
+Censoring marks two different situations. DoS-ICMP, DoS-TCP and Recon-VulScan sit at
+their maximum F1 at k = 50, so their "> 50" records a ceiling rather than an unmet
+observation requirement. DDoS-ICMP, Recon-OS_Scan and Spoofing peak at a smaller budget
+and score lower at 50.
+
+**Saturation (additional analysis, no threshold).** The smallest budget within 0.02 of
+each class's own best score across the four budgets, following Silvey & Liu (JMIR 2024)
+and Mohr et al. (arXiv 2201.12150). Seven of nineteen classes stop improving at k = 5.
+Eight saturate at an F1 below 0.80, so saturation marks where a class stops improving
+and not where it becomes reliably detectable. Per-class figures are in
+`RESULTS_LEDGER.md`.
+
+**Cross-seed variation.** Macro-F1 0.7373 plus or minus 0.0233 across five seeds at
+k = 50. The NB06 figure of 0.7138 is one seed of those five and sits about one standard
+deviation below the mean.
+
+**Significance.** Eleven McNemar tests with Holm-Bonferroni correction, applied within
+each family of six budget pairs and five intervention pairs, and again across all
+eleven. Five of six budget pairs and three of five intervention pairs are significant at
+alpha 0.05. The k = 25 against k = 50 pair is significant favouring k = 25, but only
+k = 50 carries replicates and its cross-seed spread of 0.0233 exceeds the 0.0185 gap
+between the two, so the curve is read as flat from k = 25 rather than declining.
+
+No McNemar test is computed against `published_cnn_19class`. The two are scored on
+different units, 49,159 windows against 1,614,182 rows, and on different splits, so no
+item-level pairing exists. No substitute test was computed.
 
 ---
 
@@ -740,5 +811,6 @@ position; the pre-registration states how it was reached.
 | Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
 | Low-rate group listing in Section 3, resolved | Section 3's low-rate bullet no longer lists Recon-Ping_Sweep, matching the group fixed by `PREREGISTRATION.md` Amendment 4, and the exclusion and its basis are now stated beneath the bullets. H1 names the median again in the same edit, restoring the aggregation Amendment 3 stated and v1.0 dropped. Both changes are recorded in Amendment 8 |
 | Section 5 sentence on classes below F1 0.50, resolved | Both statements re-derived from `results/NB05/*/metrics.json` and corrected. First: five classes, not three, are below F1 0.50 in both convolutional runs — Spoofing and MQTT-Malformed_Data were missing — and the forest resolves three of the five, MQTT-Malformed_Data reaching 0.6752. Second: no run on disk produces the "Reproduced baseline" figures, so that block now carries a note recording that it comes from an earlier reproduction and that every figure cited in Chapter 4 comes from the artifacts in `results/NB05/` |
-| DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H2 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB07 has now measured whether the five balancing interventions recover it: none returns it above 0.50, the five values being 0.1594, 0.2995, 0.3516, 0.3769 and 0.4590 against the parent's 0.3178, and two of the five leave it lower than the parent. That measures recovery under balancing, not cause; the interventions were not designed to diagnose the regression and this run does not diagnose it. NB08's five-seed runs will show if it holds across seeds. |
+| DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H2 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB07 has now measured whether the five balancing interventions recover it: none returns it above 0.50, the five values being 0.1594, 0.2995, 0.3516, 0.3769 and 0.4590 against the parent's 0.3178, and two of the five leave it lower than the parent. That measures recovery under balancing, not cause; the interventions were not designed to diagnose the regression and this run does not diagnose it. Resolved by NB08. Across seeds 42 to 46 the class scores 0.3178, 0.3099, 0.3450, 0.2690 and 0.2938, so the regression is a stable property of window-based sequencing rather than a seed-42 artifact. What causes it remains undiagnosed. |
 | RF comparator naming, resolved | Two random forests exist in this project and are easy to conflate. `results/NB05/forest_19class`, at 0.8418 macro-F1, is the classifier that serves as H2's third comparison and is the correct forest to cite against Dadkhah et al.'s published baseline of F1 0.551, recorded in `DECISIONS.md` under 2026-08-07. The NB03 capture-identification probe is a separate forest that tests whether recording provenance is recoverable from features; it does not classify attack classes and is not a comparator for H1 or H2. The two were conflated while the primary-source verification entry in `DECISIONS.md` was being drafted, and corrected before that entry was committed. Recorded here so they are not mixed up again |
+| H1's twofold comparison not evaluable on the NB08 grid | NB08 measured records to threshold at k in {5, 10, 25, 50}. Three of five low-rate classes do not reach F1 0.80 within 50 records, so the low-rate median is not determinate and the twofold comparison H1 states is not evaluated. The direction is reported instead, under `PREREGISTRATION.md` Amendment 11, which fixed this handling before the run. Extending the grid past 50 would require rebuilding the sequences at a longer window and is ruled out by the same amendment. Section 5 carries the figures |
