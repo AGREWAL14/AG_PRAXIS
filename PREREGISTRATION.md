@@ -662,3 +662,48 @@ outside that set and does not bear on whether H2 is supported.
 
 Whether a majority-class safeguard should be reinstated is left open. This
 amendment sets no such threshold.
+
+# Amendment 11 — 2026-08-09
+
+Made after NB07, before NB08 was run. Records the observation-budget grid and the
+rule for classes that do not reach the H1 threshold within it.
+
+## The budget grid, fixed here
+
+Observation budget k in {5, 10, 25, 50}, measured in records. Budgets are taken as
+prefixes of the sequences already built in NB04 at window 50 and stride 25: at budget
+k the first k records of each window are visible and the remainder are not. Sequence
+membership and count are identical at every budget, so all four budgets are scored on
+the same 49,159 test windows.
+
+A separate model is trained at each budget. Budget 50 is the existing
+`sequence_cnn_lstm_19class` run and is not retrained.
+
+The grid is not extended beyond 50. Doing so would require rebuilding the sequences at
+a longer window, which would change the sequence count per class and make the runs
+incomparable with those already executed.
+
+## Right-censoring
+
+H1 measures records observed to reach F1 >= 0.80, per class, compared as group medians.
+A class that does not reach F1 >= 0.80 at k = 50 has no such value. It is recorded as
+right-censored at 50 and reported as "> 50", not as 50 and not as any imputed figure.
+
+A group median is reported as a number only when it is determined by the uncensored
+values alone, that is, when the value at the median position is uncensored. Otherwise
+the group median is reported as not reached within 50 records.
+
+The twofold comparison H1 states is evaluated only when both group medians are
+determinate. When either is not, H1 is reported on the direction of the difference,
+with the censored classes and the budget ceiling stated alongside.
+
+## Group membership
+
+Unchanged. Low-rate: Recon-OS_Scan, Recon-Port_Scan, Recon-VulScan, Spoofing,
+MQTT-Malformed_Data. Volumetric: the eight DDoS and DoS classes. Recon-Ping_Sweep
+remains excluded under Amendment 4.
+
+## What this amendment does not do
+
+It sets no new threshold and changes no class set. F1 >= 0.80 is unchanged, the
+multiple stays at twice, and the direction stays as fixed in Amendment 8.
