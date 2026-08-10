@@ -136,6 +136,28 @@ def reshape(X):
     return X.reshape((X.shape[0], X.shape[1], X.shape[2], 1))
 
 
+def prefix(X, k: int):
+    """The first `k` records of every window, as a contiguous array.
+
+    An observation budget is how much of a window the model is allowed to see. Taking
+    it as a prefix of windows that already exist keeps the number of windows and which
+    records fall in which window exactly as they were built, so two budgets are two
+    models scored on the same items. Cutting the windows again at a shorter length
+    would change both, and the runs would no longer be comparable.
+
+    The copy is made here rather than left as a view. A slice along the second axis is
+    not contiguous, and the reshape that follows would make the copy anyway, at a point
+    where the memory it needs is harder to see.
+    """
+    X = np.asarray(X)
+    k = int(k)
+    if not 1 <= k <= X.shape[1]:
+        raise ValueError(f"budget {k} is not between 1 and the {X.shape[1]} records in a window")
+    if k == X.shape[1]:
+        return X
+    return np.ascontiguousarray(X[:, :k])
+
+
 def describe(n_features: int, n_classes: int, *, window: int, lstm_units: int = LSTM_UNITS) -> dict:
     """The model as plain data, for the run's config file."""
     return {
@@ -325,6 +347,7 @@ def fit_and_save(
     loss=None,
     class_weight=None,
     decision_rule=None,
+    code_dtype="int8",
 ):
     """Seed, build, fit, predict, score and write the run, in one statement.
 
@@ -333,8 +356,8 @@ def fit_and_save(
     model is constructed, so no code can run between the two.
 
     `y_train` and `y_test` are integer positions into `classes`, and that is what
-    `y_true.npy` and `y_pred.npy` hold: int8 codes, with the list they index in
-    `metrics.json`.
+    `y_true.npy` and `y_pred.npy` hold: integer codes at `code_dtype`, with the
+    list they index in `metrics.json`.
 
     `extra_metrics` is a function of the metrics document that returns more
     fields to put in it. It runs here rather than in the caller so that whatever
@@ -399,10 +422,10 @@ def fit_and_save(
     inference_seconds = time.perf_counter() - started
 
     if decide is None:
-        y_pred_codes = np.asarray(probabilities).argmax(axis=1).astype("int8")
+        y_pred_codes = np.asarray(probabilities).argmax(axis=1).astype(code_dtype)
     else:
-        y_pred_codes = np.asarray(decide(probabilities)).astype("int8")
-    y_true_codes = np.asarray(y_test).astype("int8")
+        y_pred_codes = np.asarray(decide(probabilities)).astype(code_dtype)
+    y_true_codes = np.asarray(y_test).astype(code_dtype)
 
     metrics = rn.classification_metrics(
         classes[y_true_codes.astype("int64")],
@@ -415,7 +438,7 @@ def fit_and_save(
     metrics["n_train"] = int(len(y_train))
     metrics["n_parameters"] = int(model.count_params())
     metrics["label_encoding"] = (
-        "y_true.npy and y_pred.npy hold int8 positions into the labels list above"
+        f"y_true.npy and y_pred.npy hold {code_dtype} positions into the labels list above"
     )
     if rule_record is not None:
         metrics["decision_rule"] = rule_record
@@ -435,6 +458,7 @@ def fit_and_save(
         y_pred=y_pred_codes,
         labels=classes.tolist(),
         model=model,
+        code_dtype=code_dtype,
     )
 
 

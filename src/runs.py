@@ -205,14 +205,36 @@ def save_run(out_dir, name=None, *, config, metrics, y_true, y_pred, model=None)
     }
 
 
-def save_run_codes(out_dir, name=None, *, config, metrics, y_true, y_pred, labels, model=None) -> dict:
+def save_run_codes(
+    out_dir,
+    name=None,
+    *,
+    config,
+    metrics,
+    y_true,
+    y_pred,
+    labels,
+    model=None,
+    code_dtype="int8",
+) -> dict:
     """The same five files as `save_run`, with the labels written as codes.
 
-    `y_true.npy` and `y_pred.npy` hold int8 positions into `labels` rather than
+    `y_true.npy` and `y_pred.npy` hold integer positions into `labels` rather than
     the class names themselves, and `labels` is the list those positions index,
     carried in `metrics.json`. Fifty thousand predictions are fifty thousand
     single bytes instead of fifty thousand strings, and the arrays this project
     stores its rows in already hold their labels the same way.
+
+    An array of class names is not merely larger, it is larger by a factor that
+    depends on the longest name: numpy stores fixed-width unicode, so every element
+    of an array holding one twenty-three character label occupies ninety-two bytes
+    whatever it says. A million-row run saved that way runs to over a hundred
+    megabytes and will not go into a git repository.
+
+    `code_dtype` is the width those codes are written at. The default is one byte,
+    which holds this project's nineteen classes with room to spare; a caller that
+    wants headroom for a wider class set can ask for `int16` and pay two bytes.
+    The width is checked against the number of labels rather than assumed.
 
     `labels` is required rather than inferred. A file of integers with no list to
     read it against says nothing at all, so the list has to be written by the same
@@ -222,9 +244,11 @@ def save_run_codes(out_dir, name=None, *, config, metrics, y_true, y_pred, label
     labels = [str(v) for v in labels]
     if not labels:
         raise ValueError("labels is empty, so the codes in y_true and y_pred index nothing")
-    if len(labels) > 127:
+    limit = int(np.iinfo(np.dtype(code_dtype)).max)
+    if len(labels) > limit:
         raise ValueError(
-            f"{len(labels)} classes do not fit in int8. Use save_run for a problem this wide."
+            f"{len(labels)} classes do not fit in {code_dtype}, which reaches {limit}. "
+            "Ask for a wider code_dtype."
         )
     if metrics.get("labels") != labels:
         raise ValueError(
@@ -235,11 +259,17 @@ def save_run_codes(out_dir, name=None, *, config, metrics, y_true, y_pred, label
     coded = {}
     for which, values in (("y_true", y_true), ("y_pred", y_pred)):
         codes = np.asarray(values)
+        if codes.dtype.kind not in "iu":
+            raise TypeError(
+                f"{which} arrived as {codes.dtype}, not an integer type. These files hold "
+                "positions into the label list, and casting names to integers does not "
+                "produce them."
+            )
         if codes.size and (codes.min() < 0 or codes.max() >= len(labels)):
             raise ValueError(
                 f"{which} holds a code outside 0..{len(labels) - 1}, so it does not index labels"
             )
-        coded[which] = codes.astype("int8")
+        coded[which] = codes.astype(code_dtype)
 
     name = str(config["run_id"]) if name is None else str(name)
     missing = [k for k in ("train_seconds", "inference_seconds") if k not in metrics]
@@ -270,6 +300,33 @@ def save_run_codes(out_dir, name=None, *, config, metrics, y_true, y_pred, label
         "metrics": metrics,
         "labels": labels,
     }
+
+
+def write_label_map(path, labels, *, code_dtype="int8", written_by=None) -> dict:
+    """Write the code-to-name mapping the saved arrays index, once, beside the runs.
+
+    Every run already carries its label list inside `metrics.json`, so this file
+    adds nothing a run cannot answer on its own. What it adds is one place to look
+    when several runs sit under one directory, and a check that they all mean the
+    same thing by the same integer: the map is written once and every run's list is
+    compared against it rather than each being read on its own terms.
+    """
+    labels = [str(v) for v in labels]
+    document = {
+        "written_by": written_by,
+        "code_dtype": str(code_dtype),
+        "n_classes": len(labels),
+        "labels": labels,
+        "code_to_label": {str(i): label for i, label in enumerate(labels)},
+        "reading": (
+            "y_true.npy and y_pred.npy under each run directory hold positions into labels, "
+            "in the order listed here. The same order is in every run's metrics.json."
+        ),
+    }
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(document, indent=2) + "\n")
+    return document
 
 
 # --------------------------------------------------------------------------
