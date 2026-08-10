@@ -659,3 +659,25 @@ comparator is unchanged.
 | records-to-threshold, volumetric | DDoS-SYN 5, DDoS-TCP 5, DDoS-UDP 5, DoS-SYN 5, DoS-UDP 5, DDoS-ICMP > 50, DoS-ICMP > 50, DoS-TCP > 50 |
 | saturation budget, per class | low-rate: Spoofing 10, MQTT-Malformed_Data 25, Recon-OS_Scan 25, Recon-Port_Scan 50, Recon-VulScan 50. volumetric: DDoS-ICMP 5, DDoS-SYN 5, DDoS-TCP 5, DoS-SYN 5, DDoS-UDP 25, DoS-UDP 25, DoS-ICMP 50, DoS-TCP 50 |
 | saturation below the reliability threshold | 6 classes saturate at F1 below 0.80, including DDoS-ICMP at 0.7998 at k=5 and DoS-ICMP at 0.3178 at k=50 |
+
+### NB08 — correction to the count of classes saturating below F1 0.80 (2026-08-10)
+
+The NB08 entry above gives the count as 6. It is 8.
+
+Read from `data/processed/NB08/tables/saturation.csv`, the classes whose F1 at their own
+saturation budget is below 0.80 are DDoS-ICMP 0.7998 at k=5, MQTT-DoS-Publish_Flood
+0.7488 at k=5, MQTT-DDoS-Publish_Flood 0.0889 at k=10, Spoofing 0.7941 at k=10,
+Recon-OS_Scan 0.6105 at k=25, DoS-ICMP 0.3178 at k=50, DoS-TCP 0.5161 at k=50 and
+Recon-VulScan 0.5385 at k=50. That is eight of nineteen.
+
+The two classes the earlier line names are both correct and are among the eight. What is
+wrong is the count.
+
+`src/nb08_tables.py` carries this count as one of the checks it runs against
+`PROJECT_RECORD.md` Section 5. Section 5 states eight, the script derives eight from the
+artifacts, and the check passes at 24 of 24, so the earlier line is the only place the
+figure reads 6.
+
+The line is left as written, since this file is append-only. Nothing else in the NB08
+entry depends on the count: no per-class saturation budget, no group median, no
+records-to-threshold figure and no significance result moves.
