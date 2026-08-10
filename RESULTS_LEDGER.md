@@ -251,7 +251,7 @@ things worse. A correction is a new entry, never an edit to an old one.
 | shipped split | saved as file lists and row ranges only, train 7,160,831 rows, test 1,614,182; NB05 reads those CSVs itself and fits its own scaler, so the baseline is reproduced as published |
 | artefacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB04, 9 files, 4.4 GB: records_train.npz, sequences_train.npz, records_val.npz, sequences_val.npz, records_test.npz, sequences_test.npz, splits.json, scaler.joblib, NB04_manifest.json. Individual sizes are not recorded for this run |
 
-Stated limitation: 11 of 19 classes have one recording each. Their training, validation and test rows are consecutive stretches of that single recording, so anything a model learns about the session helps it on all three sides. Their scores are not evidence of generalisation to a new recording. Those classes are 8.05% of the rows and 8.61% of the test partition. Two Tier B classes have partitions that cross their file boundary. Recon-VulScan trains on the whole of its train file plus rows 0 to 71 of its test file, and Spoofing tests on rows 15,122 to 16,047 of its train file plus the whole of its test file. Both follow the concatenate-and-cut rule fixed in PREREGISTRATION.md Amendment 4, and both classes are in the H1 class set.
+Stated limitation: 11 of 19 classes have one recording each. Their training, validation and test rows are consecutive stretches of that single recording, so anything a model learns about the session helps it on all three sides. Their scores are not evidence of generalisation to a new recording. Those classes are 8.05% of the rows and 8.61% of the test partition. Two Tier B classes have partitions that cross their file boundary. Recon-VulScan trains on the whole of its train file plus rows 0 to 71 of its test file, and Spoofing tests on rows 15,122 to 16,047 of its train file plus the whole of its test file. Both follow the concatenate-and-cut rule fixed in PREREGISTRATION.md Amendment 4, and both classes are in the H2 class set.
 
 ### NB04 row-order check — reading of the IAT result (2026-08-06)
 
@@ -332,12 +332,12 @@ full precision.
   entry above.
 - One class crossed below the 0.50 detection threshold: DoS-ICMP, 0.9960 to 0.3178,
   a loss of -0.6782, larger in magnitude than any single class's gain among the five
-  H1 classes.
+  H2 classes.
 - The five largest losses are all volumetric classes: DoS-ICMP, DoS-TCP, DDoS-ICMP,
   DoS-SYN, DDoS-TCP, summing -1.7662, which is 88% of the total negative movement.
 - Four classes crossed above the 0.50 threshold: MQTT-Malformed_Data, Spoofing,
   Recon-VulScan, Recon-OS_Scan.
-- MQTT-DDoS-Publish_Flood, the fifth H1 class, did not cross: 0.1858 to 0.0796, a
+- MQTT-DDoS-Publish_Flood, the fifth H2 class, did not cross: 0.1858 to 0.0796, a
   further loss.
 
 Full 19-class table, sorted by difference ascending:
@@ -581,7 +581,7 @@ does not diagnose it.
 
 **Cost to the eight volumetric classes.** Two interventions lower the volumetric mean,
 class_weighted_loss by -0.1000 and focal_loss by -0.0090; three raise it, threshold_tuning
-by +0.0030, logit_adjustment by +0.0106 and window_resampling by +0.0174. No H1 clause
+by +0.0030, logit_adjustment by +0.0106 and window_resampling by +0.0174. No H2 clause
 sets a limit on this quantity — `PREREGISTRATION.md` Amendment 10 records that the cost
 clause of Amendment 2 did not survive the Amendment 5 replacement — so these figures are
 reported without a pass mark.
@@ -625,7 +625,7 @@ This run is reported for what it says about evaluation protocol, not as a compar
 between two models. Dadkhah et al.'s published random forest reads F1 0.551 at nineteen
 classes on their file-level split; the same configuration on the capture-disjoint split
 reads 0.8680 here, and the leaf setting itself accounts for 0.0262 of the 0.3170 between
-them. The feature set and the averaging method are not controlled by this run. H1's
+them. The feature set and the averaging method are not controlled by this run. H2's
 comparator is unchanged.
 
 ### NB08 — evaluation and significance (2026-08-10)
