@@ -125,6 +125,118 @@ def fit_model(model, X, y_codes, callbacks, *, n_classes: int, class_weight=None
     )
 
 
+def fit_group_dro(
+    model,
+    X,
+    y_codes,
+    groups,
+    callbacks,
+    *,
+    n_classes: int,
+    weights,
+    group_names,
+    seed: int = 42,
+    checkpoint_path=None,
+    verbose: int = 2,
+):
+    """The baseline's ten epochs at batch 32, with the batches weighted by group.
+
+    A Keras loss sees the targets and the predictions and nothing else, so a run
+    whose objective depends on which capture a window came from cannot be
+    expressed by replacing the loss. Neither can it be expressed by
+    `class_weight`, because eight classes hold thirty-four captures between them
+    and a per-class weight cannot tell those apart. So the loop is written out.
+
+    What it is not is a second training procedure. The number of epochs, the size
+    of a batch and whether the data is shuffled are read from the baseline's own
+    `FIT` rather than written again here, so they cannot drift from the published
+    ones, and the model is the same compiled model every other run trains, with
+    the same optimizer. What differs is one line: the loss the gradient is taken
+    of is a weighted sum over the batch rather than a mean over it.
+
+    The model stays an ordinary `Sequential`, so the run saves and loads back like
+    every other run in the project. Nothing here is a subclass and nothing has to
+    be registered by name before `model.keras` can be read.
+
+    `weights` is an `interventions.GroupWeights`. It supplies the per-window
+    weights for a batch and is updated from the group losses that batch produced.
+    With `eta` at zero it never moves, which is how the loop is checked against
+    `model.fit`.
+
+    Shuffling is seeded per epoch rather than left to Keras, because the loop has
+    to know which windows are in a batch in order to know which groups are.
+    """
+    import keras
+
+    if keras.backend.backend() != "tensorflow":
+        raise RuntimeError(
+            f"the group-weighted loop needs the tensorflow backend and keras reports "
+            f"{keras.backend.backend()!r}. It takes gradients itself rather than through "
+            "model.fit, and this project has only run it on tensorflow."
+        )
+    import tensorflow as tf
+
+    y_codes = np.asarray(y_codes).astype("int64")
+    groups = np.asarray(groups).astype("int64")
+    if len(groups) != len(y_codes):
+        raise ValueError(f"{len(groups)} group codes for {len(y_codes)} windows")
+
+    targets = keras.utils.to_categorical(y_codes, num_classes=int(n_classes))
+    epochs = int(mo.FIT["epochs"])
+    batch_size = int(mo.FIT["batch_size"])
+    shuffle = bool(mo.FIT["shuffle"])
+    n = len(y_codes)
+
+    optimizer = model.optimizer
+    history = {"loss": [], "worst_group_loss": [], "mean_group_loss": []}
+
+    for epoch in range(epochs):
+        rng = np.random.default_rng(int(seed) + epoch)
+        order = rng.permutation(n) if shuffle else np.arange(n)
+
+        epoch_loss, epoch_windows = 0.0, 0
+        seen = {}
+        for start in range(0, n, batch_size):
+            index = order[start : start + batch_size]
+            xb = tf.convert_to_tensor(X[index])
+            yb = tf.convert_to_tensor(targets[index])
+            wb = tf.convert_to_tensor(weights.batch_weights(groups[index]), dtype=tf.float32)
+
+            with tf.GradientTape() as tape:
+                probabilities = model(xb, training=True)
+                per_window = keras.losses.categorical_crossentropy(yb, probabilities)
+                loss = tf.reduce_sum(wb * tf.cast(per_window, tf.float32))
+            optimizer.apply_gradients(zip(tape.gradient(loss, model.trainable_variables),
+                                          model.trainable_variables))
+
+            observed = np.asarray(per_window)
+            weights.update(groups[index], observed)
+            epoch_loss += float(observed.sum())
+            epoch_windows += len(index)
+            for code, value in zip(groups[index], observed):
+                total, count = seen.get(int(code), (0.0, 0))
+                seen[int(code)] = (total + float(value), count + 1)
+
+        group_means = np.array([total / count for total, count in seen.values()])
+        history["loss"].append(epoch_loss / max(epoch_windows, 1))
+        history["worst_group_loss"].append(float(group_means.max()))
+        history["mean_group_loss"].append(float(group_means.mean()))
+        weights.snapshot(epoch=epoch + 1, group_names=group_names)
+
+        if checkpoint_path is not None:
+            model.save(checkpoint_path)
+        if verbose:
+            print(f"  epoch {epoch + 1}/{epochs}  mean loss {history['loss'][-1]:.4f}  "
+                  f"worst group {history['worst_group_loss'][-1]:.4f}  "
+                  f"heaviest weight {weights.q.max():.4f}")
+
+    for callback in callbacks or ():
+        if hasattr(callback, "on_train_end"):
+            callback.on_train_end(None)
+
+    return type("GroupDROHistory", (), {"history": history})()
+
+
 def reshape(X):
     """`(samples, window, features)` to `(samples, window, features, 1)`.
 
@@ -346,6 +458,9 @@ def fit_and_save(
     verbose=2,
     loss=None,
     class_weight=None,
+    groups=None,
+    group_weights=None,
+    group_names=None,
     decision_rule=None,
     code_dtype="int8",
 ):
@@ -372,6 +487,12 @@ def fit_and_save(
     under `decision_rule`. A rule is built after the fit and before the test
     partition is touched, so a rule that needs a fitted model to choose its
     settings can have one without any of them being chosen on test.
+
+    `groups`, `group_weights` and `group_names` are for a run whose one change is
+    the training objective. With them the fit goes through `fit_group_dro` rather
+    than `fit_model`, because an objective that depends on which capture a window
+    came from cannot be expressed as a loss or as a class weighting. They are None
+    for every other run, which leaves the fit exactly where it was.
     """
     import keras
 
@@ -392,7 +513,7 @@ def fit_and_save(
     )
 
     callbacks = []
-    if checkpoint:
+    if checkpoint and group_weights is None:
         # A full pass is a long time to lose. The checkpoint is written to Drive
         # after every epoch, so a dropped session costs the epoch it was in.
         callbacks.append(
@@ -402,15 +523,30 @@ def fit_and_save(
         )
 
     started = time.perf_counter()
-    history = fit_model(
-        model,
-        X_train,
-        np.asarray(y_train),
-        callbacks,
-        n_classes=len(classes),
-        class_weight=class_weight,
-        verbose=verbose,
-    )
+    if group_weights is None:
+        history = fit_model(
+            model,
+            X_train,
+            np.asarray(y_train),
+            callbacks,
+            n_classes=len(classes),
+            class_weight=class_weight,
+            verbose=verbose,
+        )
+    else:
+        history = fit_group_dro(
+            model,
+            X_train,
+            np.asarray(y_train),
+            groups,
+            callbacks,
+            n_classes=len(classes),
+            weights=group_weights,
+            group_names=group_names,
+            seed=int(seed) if seed is not None else 42,
+            checkpoint_path=(run_dir / "checkpoint.keras") if checkpoint else None,
+            verbose=verbose,
+        )
     train_seconds = time.perf_counter() - started
 
     decide, rule_record = (None, None)
@@ -442,6 +578,8 @@ def fit_and_save(
     )
     if rule_record is not None:
         metrics["decision_rule"] = rule_record
+    if group_weights is not None:
+        metrics["group_dro"] = group_weights.record(group_names)
     if history is not None and getattr(history, "history", None):
         metrics["history"] = {
             key: [float(v) for v in values] for key, values in history.history.items()

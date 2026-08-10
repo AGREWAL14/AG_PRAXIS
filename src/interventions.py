@@ -316,3 +316,158 @@ def mean_f1(metrics, parent, classes) -> dict:
         "this_run": here,
         "difference": here - there,
     }
+
+
+# --------------------------------------------------------------------------
+# the sixth, which changes what the run optimises rather than what it sees
+# --------------------------------------------------------------------------
+
+
+def group_codes(names) -> tuple:
+    """Integer codes per window, and the group names those codes index.
+
+    The names are whatever the caller decides a group is. For NB07b they are
+    capture identifiers derived from the recording each window was cut from, so
+    the objective's groups are capture sessions and nothing here has to know
+    that.
+    """
+    names = np.asarray(names).astype(str)
+    groups, codes = np.unique(names, return_inverse=True)
+    return codes.astype("int64"), [str(g) for g in groups]
+
+
+def group_sizes(codes, n_groups: int) -> np.ndarray:
+    """How many windows each group holds, including any holding none."""
+    return np.bincount(np.asarray(codes).astype("int64"), minlength=int(n_groups))
+
+
+class GroupWeights:
+    """Weights over the groups, updated by exponentiated gradient and carried on.
+
+    The objective is a weighted mean of the groups' mean losses rather than the
+    mean loss over the windows. `q` is what does the weighting, and how it starts
+    decides what the run is optimising before any update has happened.
+
+    Three starts, because the same class serves the run and the check that the
+    training loop is sound.
+
+    `uniform` gives every group 1/n. This is the standard group-DRO start and it
+    is what NB07b uses. Note what it means: a group of 24 windows and a group of
+    8,290 carry the same weight from the first batch, so the run departs from its
+    parent by group balancing before worst-group weighting has moved anything.
+
+    `proportional` gives each group its share of the training windows. Under this
+    weighting the weighted mean of group means is the mean over the windows in
+    expectation, so it is the parent's objective written in this notation.
+
+    `batch_share` takes the weights from the batch in front of it rather than
+    carrying any state, which makes the objective exactly the mean loss over the
+    batch. That is the parent's objective exactly rather than in expectation, and
+    it is what the reproduction check runs: any difference from `model.fit` under
+    it belongs to the loop and not to the weighting.
+
+    The update is `q_g <- q_g * exp(eta * L_g)` over the groups present in the
+    batch, followed by renormalising the whole vector. A group not in the batch
+    keeps its unnormalised weight, so nothing about it is inferred from a batch it
+    did not appear in; the renormalisation then rescales every group by the same
+    constant, which leaves the absent groups' weights unchanged relative to each
+    other and moves them relative to the groups that were updated. There is no way
+    to renormalise that avoids that, and it is stated here rather than left for a
+    reader to work out.
+
+    `eta` of zero freezes `q` where it started, which is how the check runs.
+    """
+
+    def __init__(self, sizes, *, eta: float, start: str = "uniform"):
+        sizes = np.asarray(sizes, dtype="float64")
+        if start not in ("uniform", "proportional", "batch_share"):
+            raise ValueError(f"start is {start!r}, not uniform, proportional or batch_share")
+        if start == "batch_share" and float(eta) != 0.0:
+            raise ValueError("batch_share carries no state, so eta has to be 0")
+
+        self.sizes = sizes
+        self.n_groups = int(len(sizes))
+        self.eta = float(eta)
+        self.start = str(start)
+
+        if start == "proportional":
+            self.q = sizes / max(sizes.sum(), 1.0)
+        else:
+            self.q = np.full(self.n_groups, 1.0 / max(self.n_groups, 1), dtype="float64")
+
+        self.n_updates = np.zeros(self.n_groups, dtype="int64")
+        self.trajectory = []
+
+    def batch_weights(self, codes) -> np.ndarray:
+        """The weight each window in the batch carries, summing to 1 over the batch.
+
+        A group's weight is divided among its windows, so a group contributes its
+        weight whether it brought one window or ten. The weights of the groups
+        present are renormalised to sum to 1, so the size of the loss does not
+        depend on how many groups happened to turn up.
+        """
+        codes = np.asarray(codes).astype("int64")
+        present, inverse, counts = np.unique(codes, return_inverse=True, return_counts=True)
+        share = counts / counts.sum() if self.start == "batch_share" else self.q[present]
+        share = share / max(share.sum(), 1e-12)
+        return (share[inverse] / counts[inverse]).astype("float64")
+
+    def update(self, codes, losses) -> None:
+        """One exponentiated-gradient step from the group losses in this batch."""
+        if self.eta == 0.0:
+            return
+        codes = np.asarray(codes).astype("int64")
+        losses = np.asarray(losses, dtype="float64")
+        present, inverse = np.unique(codes, return_inverse=True)
+        means = np.bincount(inverse, weights=losses) / np.bincount(inverse)
+        self.q[present] *= np.exp(self.eta * means)
+        self.q /= max(self.q.sum(), 1e-12)
+        self.n_updates[present] += 1
+
+    def snapshot(self, *, epoch: int, group_names) -> dict:
+        """The weights as they stand, recorded once an epoch."""
+        order = np.argsort(-self.q)
+        entry = {
+            "epoch": int(epoch),
+            "max_weight": float(self.q.max()),
+            "min_weight": float(self.q.min()),
+            "effective_groups": float(1.0 / max((self.q**2).sum(), 1e-12)),
+            "heaviest": [
+                {"group": str(group_names[i]), "weight": float(self.q[i]),
+                 "windows": int(self.sizes[i])}
+                for i in order[:5]
+            ],
+            "weights": {str(group_names[i]): float(self.q[i]) for i in range(self.n_groups)},
+        }
+        self.trajectory.append(entry)
+        return entry
+
+    def record(self, group_names) -> dict:
+        """What the weighting did over the run, for the run's metrics."""
+        return {
+            "rule": "q_g <- q_g * exp(eta * L_g) over the groups in the batch, then renormalised",
+            "start": self.start,
+            "eta": self.eta,
+            "n_groups": self.n_groups,
+            "carried_across_batches": True,
+            "absent_groups": (
+                "keep their unnormalised weight; the renormalisation rescales every group "
+                "by the same constant"
+            ),
+            "no_floor": (
+                "no group-size floor, no weight cap and no warmup. The trajectory below is "
+                "what shows whether the weighting collapsed onto the smallest groups"
+            ),
+            "group_windows": {
+                str(name): int(n) for name, n in zip(group_names, self.sizes.astype("int64"))
+            },
+            "batches_each_group_appeared_in": {
+                str(name): int(n) for name, n in zip(group_names, self.n_updates)
+            },
+            "trajectory": self.trajectory,
+        }
+
+
+def worst_group_dro(sizes, *, eta: float, start: str = "uniform") -> GroupWeights:
+    """Weights over the groups for a worst-group objective, in one call."""
+    return GroupWeights(sizes, eta=float(eta), start=str(start))

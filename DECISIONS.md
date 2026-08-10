@@ -746,3 +746,90 @@ and Amendment 13's "Not yet verified against the primary PDF" stands as written.
 amendment is made: a citation's verification status is not a design change, and Amendment
 13's claim, warrant and metric are unchanged. The narrowing is carried by this entry and by
 `NOTES_FOR_WRITING.md`.
+
+---
+
+## 2026-08-10 — NB07b's group-DRO objective: exponentiated gradient, eta fixed at 1e-4
+
+**Decision:** The worst-group objective is exponentiated-gradient group DRO with one
+hyperparameter, `eta`, fixed at 1e-4 before the run. Weights start uniform over the 45
+training groups. No group-size floor, no weight cap and no warmup. Implemented in
+`src/interventions.py` as `GroupWeights` and trained by `src/sequence.py fit_group_dro`.
+
+**The update:** `q_g <- q_g * exp(eta * L_g)` over the groups present in a batch,
+followed by renormalising the whole vector. A group absent from a batch keeps its
+unnormalised weight, so nothing about it is inferred from a batch it did not appear in.
+The renormalisation then rescales every group by the same constant, which leaves absent
+groups unchanged relative to each other and moves them relative to the groups that were
+updated. No renormalisation avoids that.
+
+**Weights persist across batches, and that is a smoother.** Carrying `q` from one batch
+to the next is not the same as taking the worst group in each batch independently, and
+it is not accurate to describe the run as unstabilised. The persistence is the
+stabiliser, and it is the only one.
+
+**Why eta is 1e-4.** Derived from the arithmetic of this training set rather than taken
+from a published default. 249,061 training windows at batch 32 over 10 epochs is about
+77,800 batches. Group presence is very unequal: the largest group is 3.33% of the
+windows and appears in roughly 65% of batches, about 50,000 updates, while
+Recon-Ping_Sweep's 24 windows are 0.0096% and appear in about 0.3% of batches, about 240
+updates. A group with a persistent loss excess of Delta gains eta * Delta * n of
+log-weight over the n batches it appears in. Taking Delta = 0.5 nats as a working
+assumption about the spread of group losses, and not as a measurement, a well-represented
+group accumulates 25 nats at eta 1e-3, which is complete collapse inside the first epoch;
+2.5 nats at 1e-4, which moves it from 1/45 = 0.022 to about 0.22; and 0.25 nats at 1e-5,
+which barely leaves uniform. 1e-4 is the value at which the weights can traverse the
+range over the run.
+
+**Not tuned.** No validation search was run. Tuning eta would make NB07b a
+hyperparameter study rather than one intervention, and the one-change-per-run rule fixes
+it as one run. The weight trajectory is what the reader reads in place of a search: the
+weights are written to `metrics.json` at the end of every epoch, with the heaviest
+groups, the minimum and maximum weight, the effective number of groups and the number of
+batches each group appeared in.
+
+**A group-size floor was considered and rejected.** The largest training group holds
+8,290 windows and the smallest 24, a ratio of 345 to 1, and at batch 32 across 45 groups
+most groups are absent from any given batch. A floor would reduce the chance that the
+objective collapses onto the smallest groups. It was rejected because collapse is the
+failure mode the trajectory exists to expose, and a floor would prevent the artifact from
+recording it. If the weights collapse, that is a result about this objective on this
+corpus and is reported as one.
+
+**The weights start uniform, which is already an objective change.** The parent
+minimises the mean loss over the windows. Uniform weights minimise the unweighted mean
+of the group means, so the run departs from the parent by group balancing from the first
+update, before any worst-group weighting. `PREREGISTRATION.md` Amendment 17 records what
+that means on the Amendment 6 class set.
+
+**The loop is checked before the result is read.** `GroupWeights` also takes
+`start="batch_share"`, which takes its weights from the batch in front of it and makes
+the objective exactly the mean loss over the batch. NB07b runs the loop that way with eta
+at 0 before it runs the intervention. If it does not reproduce the parent, the loop
+differs from `model.fit` in some way not yet found and every figure in the notebook
+carries that difference.
+
+**The interval the check uses, fixed here before the run.** The run passes if its
+macro-F1 falls in [0.690480, 0.737104]. The centre is 0.713792, the NB06 parent's own
+macro-F1 read from `data/processed/NB06/metrics.json`, because what the check asks is
+whether the loop reproduces the parent. The half-width is 0.023312, the cross-seed
+standard deviation of this configuration measured in NB08 over seeds 42 to 46, whose
+macro-F1 values are 0.713792, 0.755196, 0.765181, 0.737731 and 0.714422. That spread is
+the right width because the loop shuffles with its own seeded generator and is therefore
+a different draw from `model.fit` even at seed 42, so another run of the same
+configuration is the reference class.
+
+An interval of one standard deviation centred on the cross-seed mean of 0.737264 was
+considered and rejected: it is [0.713952, 0.760576], and the parent's 0.713792 falls
+below it by 0.00016, so a loop that reproduced the parent exactly would fail the check.
+The parent is the smallest of the five seeds, so no interval of one standard deviation
+centred on their mean can contain it.
+
+**The check is weak by construction.** An interval a full cross-seed standard deviation
+wide will not catch a subtle error in the loop. It catches an error large enough to move
+the result outside the spread of runs of the same configuration, and nothing finer. It is
+recorded as a check on the plumbing, not as evidence that the loop is correct.
+
+**What this does not change:** No class set, no threshold, no comparator and no feature
+set. The per-sample loss is still categorical cross-entropy, and the run's config records
+`loss` unchanged from the parent with `training_objective` as the single changed key.
