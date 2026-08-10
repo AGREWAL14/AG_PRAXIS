@@ -7,7 +7,7 @@ Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.6 · 10 August 2026**
+**Version 1.7 · 10 August 2026**
 
 ---
 
@@ -125,6 +125,10 @@ work; they do not test it. Section 6 carries the detail.
   directions, with one direction failing to beat a majority-class baseline. Protocol
   encodings differ substantially between the corpora. Leave-one-family-out within
   CICIoMT2024 is the generalisation test.
+- **Conformal prediction** — run as a feasibility probe in `NB06b_cp_scores` and
+  `NB06c_cp_feasibility`, whose executed copies are in `runs/`. The probe returned a
+  negative and conformal prediction was dropped. `DECISIONS.md` under 2026-08-09
+  records the outcome.
 
 ---
 
@@ -680,11 +684,14 @@ which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 | 01 | Dataset Inventory | Reads every file, counts what is in them, works out how the recordings are organised | Setup |
 | 02 | Exploratory Analysis | Looks at what the measurements contain and which attacks are hard to tell apart | Setup |
 | 03 | Feature Provenance Check | Tests whether the measurements identify the recording session rather than the attack | Justifies 09 |
+| 03b | Timing Feature Ablation | Measures how much of the recording-identification result comes from the TTL column | Premise for 07b |
 | 04 | Preprocessing and Splits | Cleans the data, builds train and test splits, groups records into sequences | All |
 | 05 | Baseline Models | Rebuilds the published model and a simple comparison model | H1 |
 | 06 | Sequence Model | Builds the model that reads sequences of records instead of single ones | **H1, H2** |
 | 07 | Class Balancing | Tests five ways of making the rare attacks visible, one at a time | H1 |
+| 07b | Capture-Invariant Training | Trains the model so it cannot tell the recordings apart, and checks which attacks come back | H1 |
 | 08 | Evaluation and Significance | Repeats runs across seeds, tests whether differences are real, measures how few records are needed | **H1, H2** |
+| 08b | Adaptive Earliness | Lets the model decide when it has seen enough, instead of fixing the budget in advance | RO2 |
 | 09 | Explainability and Threat Mapping | Explains what the model used, maps it to CAPEC and STRIDE, checks against MAUDE | **H3** |
 | 10 | Results Consolidation | Builds every table and figure for the results chapter | Chapter 4 |
 
@@ -836,3 +843,7 @@ position; the pre-registration states how it was reached.
 | DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H1 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB07 has now measured whether the five balancing interventions recover it: none returns it above 0.50, the five values being 0.1594, 0.2995, 0.3516, 0.3769 and 0.4590 against the parent's 0.3178, and two of the five leave it lower than the parent. That measures recovery under balancing, not cause; the interventions were not designed to diagnose the regression and this run does not diagnose it. Resolved by NB08. Across seeds 42 to 46 the class scores 0.3178, 0.3099, 0.3450, 0.2690 and 0.2938, so the regression is a stable property of window-based sequencing rather than a seed-42 artifact. What causes it remains undiagnosed. |
 | RF comparator naming, resolved | Two random forests exist in this project and are easy to conflate. `results/NB05/forest_19class`, at 0.8418 macro-F1, is the classifier that serves as H1's third comparison and is the correct forest to cite against Dadkhah et al.'s published baseline of F1 0.551, recorded in `DECISIONS.md` under 2026-08-07. The NB03 capture-identification probe is a separate forest that tests whether recording provenance is recoverable from features; it does not classify attack classes and is not a comparator for H1 or H2. The two were conflated while the primary-source verification entry in `DECISIONS.md` was being drafted, and corrected before that entry was committed. Recorded here so they are not mixed up again |
 | H2's twofold comparison not evaluable on the NB08 grid, superseded | NB08 measured records to threshold at k in {5, 10, 25, 50}. Three of five low-rate classes do not reach F1 0.80 within 50 records, so the low-rate median is not determinate and the twofold comparison the hypothesis then stated is not evaluated. The direction is reported instead, under `PREREGISTRATION.md` Amendment 11, which fixed this handling before the run. Extending the grid past 50 would require rebuilding the sequences at a longer window and is ruled out by the same amendment. The hypothesis is now H2 and Amendment 12 measures it on saturation, where both group medians are determinate, and states no numeric multiple. Records to threshold is retained as a reported result. Section 5 carries the figures |
+| Conformal prediction scope, resolved | Run as a feasibility probe in `NB06b_cp_scores` and `NB06c_cp_feasibility`. The probe returned a negative and conformal prediction was dropped. Recorded in `DECISIONS.md` under 2026-08-09 and in Section 3 under scope exclusions |
+| Title and thesis statement | Update pending. Handled outside this pass |
+| Abstract | Section 1a to be added. Handled outside this pass |
+| Hypothesis approval marking | Sign-off obtained from the advisory committee. Section 3 records no approval status; the approval marking and its date are added in a later pass |

@@ -660,3 +660,12 @@ reach F1 >= 0.80 at small budgets, so the even case is likely to be moot; it is
 recorded because that expectation is not a result.
 
 Implemented in `notebooks/AG_PRAXIS_NB08_evaluation_and_significance.ipynb`.
+
+---
+
+## 2026-08-10 — Goldschmidt & Chudá citation not yet verified
+
+**Decision:** The reference cited in `PREREGISTRATION.md` Amendment 13 — Goldschmidt, J.
+and Chudá, D., *Network Intrusion Datasets: A Survey, Limitations, and Recommendations*,
+arXiv:2502.06688 — is not yet verified against the primary PDF. Verification is required
+before the claim enters Chapter 2.

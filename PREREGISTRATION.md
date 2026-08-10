@@ -794,3 +794,109 @@ standard are unchanged.
 No result changes. No class set, no comparator and no F1 threshold moves. The
 budget grid, the censoring rule and the group definitions stand as fixed in
 Amendment 11 and PROJECT_RECORD.md Section 3.
+
+
+---
+
+# Amendment 13 — 2026-08-10
+
+Adds NB03b as a reported result. It is not a hypothesis test. Made before NB03b
+was run.
+
+## What NB03b measures
+
+Capture-identification accuracy with Duration removed from the timing family,
+measured under the NB03 protocol. The comparison figures are NB03's: 0.9301 for
+the timing family, and 0.8010 and 0.8280 for all 44 features.
+
+## Duration
+
+Duration is the TTL header field. Published guidance on intrusion-detection
+benchmarks names TTL among the features that cause spurious correlation and
+inflate reported performance, alongside IP addresses, port numbers, timestamps
+and flow IDs: Goldschmidt, J. and Chudá, D., *Network Intrusion Datasets: A
+Survey, Limitations, and Recommendations*, arXiv:2502.06688. Not yet verified
+against the primary PDF.
+
+## The feature set does not change
+
+Duration stays in the 44 features for all previously executed runs. This probe
+measures the column's contribution to the NB03 figures; it does not change the
+feature set.
+
+---
+
+# Amendment 14 — 2026-08-10
+
+Adds capture-invariant training as an additional intervention under H1. Made
+before NB07b was run.
+
+## The intervention
+
+Capture-invariant training joins the five interventions NB07 tested, on the same
+footing: one change per run, evaluated on the class set and threshold H1 already
+fixes. The parent is `sequence_cnn_lstm_19class` and the single change is the
+training objective.
+
+## What is held fixed
+
+- The class set fixed in Amendment 6: Recon-VulScan, Recon-OS_Scan,
+  MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data.
+- The F1 0.50 threshold fixed in Amendment 5.
+- The same 49,159 test windows.
+
+## The environment variable
+
+The environment variable is `capture_id` from the NB04 manifest, 57 captures.
+
+## Dependent variables
+
+First, per-class F1 on the five classes and macro-F1, as for the five
+interventions already run.
+
+Second, capture identifiability measured off the learned representation. The LSTM
+output for each test window is taken as the representation, the NB03 RandomForest
+capture-identification protocol is fitted on it, and the accuracy is reported
+against the NB03 figures.
+
+## No cost clause is reinstated
+
+No cost clause on majority-class F1 is reinstated. Amendment 10 records that
+Amendment 2's cost clause did not survive the Amendment 5 replacement. This
+amendment sets no such threshold.
+
+---
+
+# Amendment 15 — 2026-08-10
+
+Adds NB08b as a reported result under RO2. It is not a hypothesis test. Made
+before NB08b was run.
+
+## H2 and records to threshold are unchanged
+
+H2 stands as measured on saturation under Amendment 12. Records to threshold
+remains a reported result, right-censored under Amendment 11. NB08b re-tests
+neither.
+
+## The metric
+
+Earliness at a per-class confidence trigger, reported against macro-F1 across a
+sweep of the trigger threshold tau.
+
+## The halting rule
+
+Each test window is stepped through one record at a time. The window halts at the
+first record where the top-class softmax score crosses tau and is classified at
+that point. A window whose score never crosses tau is classified on the full 50
+records.
+
+## The tau grid
+
+0.50 to 0.90 in steps of 0.05, then 0.95, 0.97 and 0.99. Twelve values. The grid
+is non-uniform: resolution is concentrated in the upper tail because that is where
+windows begin failing to reach tau within 50 records, and the share of windows
+that never trigger is one of the reported quantities.
+
+## Earliness averaging
+
+Earliness is averaged over correctly classified windows only.
