@@ -681,3 +681,39 @@ figure reads 6.
 The line is left as written, since this file is append-only. Nothing else in the NB08
 entry depends on the count: no per-class saturation budget, no group median, no
 records-to-threshold figure and no significance result moves.
+
+### NB03b — timing feature ablation (2026-08-10)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB03b_timing_ablation.ipynb |
+| run date | 2026-08-10 |
+| git sha | 8beebb7, working tree clean |
+| seed | 42 |
+| pass reported | full, 8,000 rows drawn from each recording |
+| registered under | PREREGISTRATION.md Amendment 13 |
+| column removed | Duration, the TTL header field |
+| protocol | NB03's, unchanged: RandomForest, 50 trees, min leaf 100, 30% held out, target the recording |
+| recordings | 50, from the 8 classes recorded more than once |
+| rows used | 400,000, 8,000 from every recording |
+| NB03 figures read from | data/processed/NB03_verdict.json, run 2026-08-04 at 1229f85 |
+| runs written | 11: timing_minus_duration, all_minus_duration, duration_only, and within_<class>_minus_duration for the 8 classes |
+| timing family without Duration, 3 features (chance 0.0200) | 0.8935 accuracy, 0.8932 macro-F1, against NB03's 0.9301 for the family with it, difference -0.0366 |
+| all features without Duration, 43 features (chance 0.0200) | 0.7495 accuracy, 0.7457 macro-F1, against NB03's 0.8010 for all 44, difference -0.0515 |
+| all features without Duration, attack class held fixed | 0.8504 mean accuracy over the 8 classes, chance 0.1750, against NB03's 0.8280, difference +0.0225 |
+| Duration alone (chance 0.0200) | 0.0299 accuracy, 0.0164 macro-F1. No NB03 counterpart, so no difference is computed |
+| reproduction check | run 1 reproduces NB03's capture_timing_three exactly: 0.893475 here against 0.893475, difference 0.000000, inside the 0.0001 allowed |
+| per-class direction, attack held fixed | up on five of the eight classes, down on three, one of them by 0.0001 |
+| per-class aggregate, attack held fixed | the five increases sum to +0.2173 and the three decreases to -0.0376 |
+| seed replicates | none. Every figure above is a single run at seed 42 |
+| artifacts, repository | data/processed/NB03b/duration_ablation.json, and config.json and metrics.json for each of the 11 runs under results/NB03b/ |
+| artifacts, Drive | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB03b, which also holds y_true.npy, y_pred.npy and model.joblib per run |
+| status | reported result, not a hypothesis test |
+
+Per class, attack held fixed, without Duration against NB03 with it: DDoS-ICMP 0.8702 (0.8532) ·
+DDoS-SYN 0.8783 (0.8784) · DDoS-TCP 0.8856 (0.8232) · DDoS-UDP 0.7158 (0.6869) · DoS-ICMP
+0.8339 (0.7863) · DoS-SYN 0.9106 (0.9178) · DoS-TCP 0.8904 (0.8291) · DoS-UDP 0.8186 (0.8489)
+
+Duration stays in the timing family and in the 44 features for every run already executed.
+This notebook measures the column's contribution to the NB03 figures and does not change the
+feature set.

@@ -89,6 +89,7 @@ applies to the H1 class set under Amendment 6.
 | Result | Notebook | Role |
 |---|---|---|
 | Capture identifiability | 03 | Justifies running SHAP on a timing-excluded model |
+| Duration ablation, capture identification with the TTL column removed | 03b | Measures Duration's contribution to the NB03 figures, under `PREREGISTRATION.md` Amendment 13 |
 | Baseline reproduction, macro vs weighted | 05 | Comparison point |
 | Class-imbalance interventions, per-class costs | 07 | Per-class benefit, which classes gain most from intervention |
 | Leave-one-family-out generalisation | 08 | Robustness |
@@ -264,12 +265,22 @@ others and chance is one over the number of recordings.
 the timing family for the 0.9301 row and among all 44 for 0.8010 and 0.8280. A full scan of
 all 72 files and 8,775,013 rows puts its global maximum at exactly 255 and 93.57% of its
 values at 64, so the column carries Time-To-Live and the timing family contains one header
-field. With 93.57% of rows at the modal value, 6.4% of them vary, so its contribution to
-these figures is likely small rather than near zero — reasoned, not measured; an NB08
-timing-minus-Duration probe would settle it. The column stays in the timing family and in
-the 44 by deliberate decision, for comparability with runs already executed.
-`DECISIONS.md` under 2026-08-07 and `config/feature_families.yaml` under
-`duration_family_placement` carry the reasoning.
+field. With 93.57% of rows at the modal value, 6.4% of them vary. What that is worth is
+measured rather than reasoned: NB03b ran the NB03 protocol again with Duration removed and
+nothing else changed. On the fifty-way task, removing it costs 0.0366 on the timing
+family, 0.9301 down to 0.8935, and 0.0515 across all features, 0.8010 down to 0.7495.
+Duration alone identifies the recording at 0.0299 against a chance rate of 0.0200. With
+the attack class held fixed, removing it raises the mean accuracy to 0.8504 from 0.8280,
+up on five of the eight classes and down on three, one of them by 0.0001, and the five
+increases sum to +0.2173 against -0.0376 for the three decreases. Every figure there is a
+single run at seed 42 with no seed replicates, so what is measured is one run rather than
+an estimate carrying a spread. The figure the timing-excluded SHAP design rests on is the
+one with the attack class held fixed, and it does not fall when Duration is removed, so
+the capture identifiability NB03 reports is not carried by the header field. The column
+stays in the timing family and in the 44 by deliberate decision, for comparability with
+runs already executed, and NB03b measures its contribution rather than changing the
+feature set. `DECISIONS.md` under 2026-08-07 and 2026-08-10, and
+`config/feature_families.yaml` under `duration_family_placement`, carry the decision.
 
 NB01's near-constancy table, re-run on 2026-08-08, reproduces the modal share as 93.5743%
 at 64.0 and flags it as a lower bound rather than an exact figure. The scan keeps exact

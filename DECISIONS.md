@@ -701,3 +701,48 @@ and that Recon-Ping_Sweep, at two calibration windows, has no finite threshold a
 either target coverage NB06c ran and is admitted to every prediction set by
 construction. Both properties travel with the exchangeability note wherever the
 coverage caveat is used.
+
+---
+
+## 2026-08-10 — duration_family_placement, reasoned on 2026-08-07 and now measured
+
+**Decision:** Unchanged. Duration stays in the timing family and stays among the 44
+modelling features.
+
+**What was reasoned and is now measured:** The 2026-08-07 entry recorded the column's
+contribution to NB03's capture-identification figures as reasoned rather than measured.
+NB03b measured it, under the NB03 protocol with Duration removed and nothing else changed.
+Duration alone identifies the recording at 0.0299 against a chance rate of 0.0200. With the
+attack class held fixed, removing it raises the mean accuracy to 0.8504 from 0.8280, so
+identification does not fall when the column is removed. On the fifty-way task removing it
+takes the timing family from 0.9301 to 0.8935 and all 44 features to 0.7495 from 0.8010.
+
+Single runs at seed 42, no seed replicates. Figures in
+`data/processed/NB03b/duration_ablation.json` and `results/NB03b/`, from
+`notebooks/AG_PRAXIS_NB03b_timing_ablation.ipynb`, run at 8beebb7.
+
+**What this does not change:** No metric, no hypothesis, no comparator and no feature set.
+The 44 features stand as executed.
+
+---
+
+## 2026-08-10 — Goldschmidt & Chudá citation, verification status narrowed
+
+**Decision:** The earlier entry under this date, "Goldschmidt & Chudá citation not yet
+verified", is narrowed. The reference is verified; one sentence in it is not.
+
+**Verified against the primary PDF:** Patrik Goldschmidt (Brno University of Technology and
+the Kempelen Institute of Intelligent Technologies) and Daniela Chudá (the Kempelen
+Institute of Intelligent Technologies and the Slovak University of Technology).
+arXiv:2502.06688v3 [cs.CR], 22 May 2025. Submitted to *Computers & Security* in April 2025,
+so cited as a preprint unless later publication is confirmed. A systematic review of 89
+public NIDS datasets across 13 properties, covering datasets published to 2023 inclusive.
+
+**Outstanding:** The TTL sentence. It sits in Section 6 and has not been located to a
+section or page.
+
+**What this does not change:** The claim in `PREREGISTRATION.md` Amendment 13 is unchanged,
+and Amendment 13's "Not yet verified against the primary PDF" stands as written. No
+amendment is made: a citation's verification status is not a design change, and Amendment
+13's claim, warrant and metric are unchanged. The narrowing is carried by this entry and by
+`NOTES_FOR_WRITING.md`.

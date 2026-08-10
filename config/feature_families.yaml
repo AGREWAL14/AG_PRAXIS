@@ -208,10 +208,16 @@ table5_reconciliation:
     decision and has to be stated wherever the family is used: the timing family
     contains one header field, Duration, and NB03's 0.9301 capture-identification
     figure for that family was measured with it included. The column takes its
-    modal value of 64 in 93.57% of rows, so 6.4% of them vary and its
-    contribution to that figure is likely small rather than near zero. That is
-    reasoned, not measured. A timing-family-minus-Duration robustness probe in
-    NB08 would settle it if a measured figure is wanted. Optional, not required.
+    modal value of 64 in 93.57% of rows, so 6.4% of them vary. Its contribution
+    is measured, not reasoned. NB03b
+    (notebooks/AG_PRAXIS_NB03b_timing_ablation.ipynb, run 2026-08-10 at 8beebb7)
+    ran the NB03 protocol again with Duration removed and nothing else changed.
+    Removing it takes the timing family from 0.9301 to 0.8935 and all features
+    from 0.8010 to 0.7495 on the fifty-way task. Duration alone reaches 0.0299
+    against a chance rate of 0.0200. With the attack class held fixed the mean
+    rises to 0.8504 from 0.8280, up on five of the eight classes and down on
+    three, one of them by 0.0001. Single runs at seed 42, no seed replicates.
+    Figures in data/processed/NB03b/duration_ablation.json and results/NB03b/.
   effect_on_downstream: >-
     None on the working set. Drate is the only column constant across the whole
     dataset (NB01 full scan, all 8,775,013 rows) and is the one dropped, leaving
