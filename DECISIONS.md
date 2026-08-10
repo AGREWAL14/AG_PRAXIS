@@ -613,3 +613,27 @@ read without re-running anything.
 
 **What this does not change:** no metric, no hypothesis, no comparator. The figures in
 `results/NB05/forest_19class_dadkhah_leaf1/metrics.json` stand as written.
+
+---
+
+## 2026-08-09 — Conformal prediction feasibility-tested and dropped
+
+**Decision:** Conformal prediction is dropped. It was evaluated as a possible supporting
+analysis by a feasibility probe, NB06c, which ran class-conditional split-conformal on the
+NB06 sequence model's saved probabilities. No further CP work is planned.
+
+**Reasoning:** Basic set sizes, under the nonconformity score 1 - p_true, did not track
+per-class difficulty. The rank correlation between mean set size and per-class F1 was
+-0.46. They also did not corroborate the pre-registered MQTT-DDoS-Publish_Flood
+feature-separability finding: that class ranked 15th of 19 by set size, placing it among
+the least ambiguous rather than the most. The ordering chosen before the probe ran, easy
+below hard, did not hold.
+
+**Consequence:** CP was an optional supporting layer and not a core contribution. On this
+evidence it does not support the findings and mildly contradicts them on the separability
+class, so it is dropped rather than built out. A more sophisticated CP variant, adaptive
+prediction sets for instance, was not pursued, because the effort is better spent on the
+two unbuilt core pillars, observation budgets and threat mapping. NB06b's saved
+probabilities remain on Drive as intermediate artifacts.
+
+**What this does not change:** The four core contributions stand without it.
