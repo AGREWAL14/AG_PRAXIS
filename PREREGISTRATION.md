@@ -975,3 +975,40 @@ tested.
 It changes no class set, no threshold, no comparator and no group variable. The
 intervention, the parent, the fixed quantities and the first dependent variable stand as
 Amendment 14 states them.
+
+---
+
+# Amendment 17 — 2026-08-10
+
+Records what the objective in Amendment 14 optimises before any update has happened.
+Made before NB07b was run.
+
+## The starting weights
+
+The objective weights the groups' mean losses rather than the windows themselves. The
+weights start uniform, at 1/45, which is the standard group-DRO initialisation and is
+what NB07b uses.
+
+Under that start a group of 24 training windows and a group of 8,290 carry the same
+weight from the first update. The parent's objective is the mean over the windows,
+which in this notation is the weighting that gives each group its share of them. So
+from the first update the run differs from its parent by group balancing, before any
+worst-group weighting has moved anything.
+
+## What that means on the Amendment 6 class set
+
+Amendment 16 records that 11 of the 45 training groups are single-capture classes where
+the group and the class are the same set of windows, and that all five classes fixed in
+Amendment 6 are among them. With the weights starting uniform, those five are equally
+weighted in the objective from the first update whatever their window counts, which are
+Recon-VulScan 86, MQTT-Malformed_Data 191, Spoofing 497, Recon-OS_Scan 577 and
+MQTT-DDoS-Publish_Flood 1,008.
+
+On that class set the first dependent variable therefore measures the parent plus class
+balancing plus worst-group weighting, and not the parent plus capture invariance.
+
+## What this amendment does not do
+
+It changes no class set, no threshold, no comparator and no group variable. The
+intervention, the parent, the fixed quantities and both dependent variables stand as
+Amendments 14 and 16 state them.
