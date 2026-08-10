@@ -356,11 +356,11 @@ SECTION_5_CLAIMS = {
     "volumetric classes censored": 3,
     "DDoS-ICMP best F1": 0.7998,
     "Recon-Port_Scan F1 at k=5": 0.8878,
-    # These two sentences follow the H1 paragraphs and are read as scoped to the classes
-    # in the two named groups, which is the only reading under which they are complete.
-    # Across all eight censored classes there are two more: MQTT-DoS-Publish_Flood sits
-    # at its maximum at fifty, and MQTT-DDoS-Publish_Flood peaks at ten and scores lower
-    # at fifty. Both are in neither group, so neither sentence reaches them.
+    # These two sentences state their own scope, "of the censored classes in the two named
+    # groups", so the check is scoped the same way and the two match. The two censored
+    # classes outside both groups, MQTT-DoS-Publish_Flood at its maximum at fifty and
+    # MQTT-DDoS-Publish_Flood peaking at ten, are named in the sentence that follows them
+    # and are not part of either list here.
     "censored, at their maximum at k=50": "DoS-ICMP, DoS-TCP, Recon-VulScan",
     "censored, peak earlier and score lower at 50": "DDoS-ICMP, Recon-OS_Scan, Spoofing",
     "classes saturating at k=5": 7,

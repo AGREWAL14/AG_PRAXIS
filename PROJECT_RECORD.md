@@ -562,10 +562,13 @@ class. Recon-Port_Scan reaches 0.8878 at k = 5, so the fastest class in the stud
 low-rate one. The group definitions are fixed by the benchmark taxonomy in Section 3
 and were not derived from these measurements.
 
-Censoring marks two different situations. DoS-ICMP, DoS-TCP and Recon-VulScan sit at
-their maximum F1 at k = 50, so their "> 50" records a ceiling rather than an unmet
-observation requirement. DDoS-ICMP, Recon-OS_Scan and Spoofing peak at a smaller budget
-and score lower at 50.
+Censoring marks two different situations. Of the censored classes in the two named
+groups, DoS-ICMP, DoS-TCP and Recon-VulScan sit at their maximum F1 at k = 50, so
+their "> 50" records a ceiling rather than an unmet observation requirement.
+DDoS-ICMP, Recon-OS_Scan and Spoofing peak at a smaller budget and score lower at 50.
+Two classes outside both groups follow the same two patterns: MQTT-DoS-Publish_Flood
+sits at its maximum at 50, and MQTT-DDoS-Publish_Flood peaks at 10 and scores lower
+at 50.
 
 **Saturation (additional analysis, no threshold).** The smallest budget within 0.02 of
 each class's own best score across the four budgets, following Silvey & Liu (JMIR 2024)
