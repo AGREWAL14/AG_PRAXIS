@@ -628,3 +628,34 @@ reads 0.8680 here, and the leaf setting itself accounts for 0.0262 of the 0.3170
 them. The feature set and the averaging method are not controlled by this run. H2's
 comparator is unchanged.
 
+### NB08 — evaluation and significance (2026-08-10)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB08_evaluation_and_significance.ipynb |
+| git sha | d193464 |
+| seeds | 42, 43, 44, 45, 46 |
+| parent | sequence_cnn_lstm_19class, unchanged and not retrained |
+| runs trained here | 7: sequence_budget_05, sequence_budget_10, sequence_budget_25, sequence_seed_43, sequence_seed_44, sequence_seed_45, sequence_seed_46 |
+| budgets | k in 5, 10, 25, 50 records, taken as prefixes of the NB04 windows at window 50 stride 25 |
+| test items | 49,159 windows, identical across every run, asserted |
+| parameters | 214,227 in every run, unchanged by the budget |
+| macro F1 by budget | k5 0.6295, k10 0.6837, k25 0.7323, k50 0.7138 |
+| classes at F1 0.80 by budget | k5 9, k10 9, k25 11, k50 10 |
+| censored at k=50 | 8 of 19 classes, reported as "> 50" and never as 50 |
+| H1 median, low-rate | not reached within 50 (3 of 5 censored) |
+| H1 median, volumetric | 5 (3 of 8 censored) |
+| H1 twofold comparison | not evaluated, at least one median is not determinate; direction reported instead |
+| saturation, additional analysis | epsilon 0.02, classes stopping at k=5: 7 of 19 |
+| cross-seed macro F1 | 0.7373 plus or minus 0.0233 over 5 seeds at k=50 |
+| DoS-ICMP across seeds | 0.3178, 0.3099, 0.3450, 0.2690, 0.2938 |
+| McNemar | 11 paired tests, Holm-Bonferroni at alpha 0.05: 5 of 6 budget pairs and 3 of 5 intervention pairs significant within their family |
+| not computed | McNemar against published_cnn_19class. Different units and different splits, so no item-level pairing exists. No substitute test was computed |
+| label encoding | int16 codes into label_map.json, written beside the runs |
+| artifacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB08 |
+| status | H1 measurement and cross-seed variation; the saturation analysis is additional and carries no threshold |
+
+| H1 records-to-threshold, low-rate | Recon-Port_Scan 5, MQTT-Malformed_Data 25, Recon-OS_Scan > 50, Recon-VulScan > 50, Spoofing > 50 |
+| H1 records-to-threshold, volumetric | DDoS-SYN 5, DDoS-TCP 5, DDoS-UDP 5, DoS-SYN 5, DoS-UDP 5, DDoS-ICMP > 50, DoS-ICMP > 50, DoS-TCP > 50 |
+| saturation budget, per class | low-rate: Spoofing 10, MQTT-Malformed_Data 25, Recon-OS_Scan 25, Recon-Port_Scan 50, Recon-VulScan 50. volumetric: DDoS-ICMP 5, DDoS-SYN 5, DDoS-TCP 5, DoS-SYN 5, DDoS-UDP 25, DoS-UDP 25, DoS-ICMP 50, DoS-TCP 50 |
+| saturation below the reliability threshold | 6 classes saturate at F1 below 0.80, including DDoS-ICMP at 0.7998 at k=5 and DoS-ICMP at 0.3178 at k=50 |
