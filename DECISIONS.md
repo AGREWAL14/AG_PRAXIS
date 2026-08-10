@@ -637,3 +637,26 @@ two unbuilt core pillars, observation budgets and threat mapping. NB06b's saved
 probabilities remain on Drive as intermediate artifacts.
 
 **What this does not change:** The four core contributions stand without it.
+
+## 2026-08-09 — Amendment 11's median position, read for an even-sized group
+
+Amendment 11 states that a group median is reported as a number only when the value
+at the median position is uncensored. The low-rate group has five classes, so the
+median position is a single value and the rule reads directly. The volumetric group
+has eight, so the median falls between the fourth and fifth ordered values and there
+is no single value at that position.
+
+Read as: both middle values must be uncensored, and the median is their mean. If
+either is censored the group median is reported as not reached within 50 records,
+on the same footing as the odd-sized case.
+
+This interprets the rule rather than changing it. No threshold, class set or metric
+moves. The reading follows the ordinary definition of a median for an even-sized
+group, and the censoring condition is the same one Amendment 11 states — that the
+value the median is read from must be known.
+
+Recorded before NB08 was run. In practice the volumetric classes are expected to
+reach F1 >= 0.80 at small budgets, so the even case is likely to be moot; it is
+recorded because that expectation is not a result.
+
+Implemented in `notebooks/AG_PRAXIS_NB08_evaluation_and_significance.ipynb`.
