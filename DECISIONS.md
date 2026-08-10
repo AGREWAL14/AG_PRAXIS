@@ -669,3 +669,35 @@ Implemented in `notebooks/AG_PRAXIS_NB08_evaluation_and_significance.ipynb`.
 and Chudá, D., *Network Intrusion Datasets: A Survey, Limitations, and Recommendations*,
 arXiv:2502.06688 — is not yet verified against the primary PDF. Verification is required
 before the claim enters Chapter 2.
+
+---
+
+## 2026-08-10 — Conformal prediction reading, clarified
+
+The 2026-08-09 entry records the rank correlation between mean set size and per-class
+F1 as -0.46 and states that set size did not track per-class difficulty. NB06c's own
+reading bands place -0.46 in the range it labels as tracking difficulty weakly, not as
+not tracking it.
+
+The decision to drop conformal prediction is unchanged. It rests additionally on two
+unambiguous results recorded in the same entry: the pre-registered ordering did not
+hold, and MQTT-DDoS-Publish_Flood ranked 15th of 19 by set size.
+
+This clarifies the wording and changes no decision.
+
+---
+
+## 2026-08-10 — Conformal prediction and the capture-disjoint split
+
+NB06c records that its calibration and evaluation windows come from different capture
+sessions, so the exchangeability condition that split-conformal coverage rests on does
+not hold under the two-tier protocol.
+
+This is recorded as a property of the protocol, not as a reason for the NB06c result.
+It is retained for Chapter 5.
+
+NB06c also records that four of nineteen classes calibrate on fewer than 100 windows,
+and that Recon-Ping_Sweep, at two calibration windows, has no finite threshold at
+either target coverage NB06c ran and is admitted to every prediction set by
+construction. Both properties travel with the exchangeability note wherever the
+coverage caveat is used.
