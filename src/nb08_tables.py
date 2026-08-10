@@ -13,15 +13,16 @@ on a laptop in a few seconds.
 
 Three tables:
 
-`records_to_threshold.csv` is the measurement H1 is stated in terms of, the smallest
-observation budget at which each class reaches F1 0.80. A class that never reaches it
-within fifty records has no value on that scale and is written as "> 50", never as 50
-and never as an imputed figure, under `PREREGISTRATION.md` Amendment 11.
+`records_to_threshold.csv` is the smallest observation budget at which each class
+reaches F1 0.80. It was the measurement the observation hypothesis was stated in terms
+of until `PREREGISTRATION.md` Amendment 12, and it is retained and reported. A class
+that never reaches the threshold within fifty records has no value on that scale and is
+written as "> 50", never as 50 and never as an imputed figure, under Amendment 11.
 
 `saturation.csv` is the smallest budget within 0.02 of a class's own best score across
-the four budgets. It is an additional analysis carrying no threshold, and it answers a
-different question from the one above: where a class stops improving, rather than where
-it becomes usable.
+the four budgets. It is the measurement H2 is stated in terms of under Amendment 12,
+and it answers a different question from the one above: where a class stops improving,
+rather than where it becomes usable.
 
 `mcnemar.csv` is the eleven paired tests, six between budgets and five between the
 sequence parent and the class-balancing runs, with Holm-Bonferroni applied within each

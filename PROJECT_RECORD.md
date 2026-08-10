@@ -65,8 +65,8 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 
 | | Research Objective | Research Question | Hypothesis | Metric | Notebooks |
 |---|---|---|---|---|---|
-| **1** | Determine, using a sequence-based detector, how much observation each threat class requires before it becomes reliably identifiable. | How many records of IoMT device traffic must be observed before each threat class becomes reliably identifiable? | The median number of observed records that low-rate attack classes require to reach F1 >= 0.80 will be at least twice the median for volumetric flooding classes. | Records observed to reach F1 >= 0.80, per class | 04, 06, 08 |
-| **2** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack classes the published CNN model fails to detect. | Does modelling traffic as sequences rather than single records improve threat detection in remote patient hub (RPH) networks? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 change on the classes the published CNN fails to detect | 05, 06, 07, 08 |
+| **1** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack classes the published CNN model fails to detect. | Does modelling traffic as sequences rather than single records improve threat detection in remote patient hub (RPH) networks? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 change on the classes the published CNN fails to detect | 05, 06, 07, 08 |
+| **2** | Determine, using a sequence-based detector, how much observation each threat class requires before its detection stops improving. | How much traffic must be observed before each attack class stops improving, and does this differ across classes? | Low-rate classes require more observation to reach detection saturation than volumetric classes. | Observation budget to reach each class's saturation point, within epsilon = 0.02 of its achievable ceiling; group medians compared | 04, 06, 08 |
 | **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
 
 ### Group definitions — fixed by the benchmark taxonomy, not by measurement
@@ -82,7 +82,7 @@ Recon-Ping_Sweep is excluded from the low-rate median under `PREREGISTRATION.md`
 Amendment 4: at window 50 and stride 25 its 926 records yield 2 validation and 4 test
 sequences, too few for a per-class metric to be interpretable. Its per-class figures are
 reported, marked as resting on too few sequences to interpret. The same exclusion
-applies to the H2 class set under Amendment 6.
+applies to the H1 class set under Amendment 6.
 
 ### Reported results — not hypothesis tests
 
@@ -94,13 +94,13 @@ applies to the H2 class set under Amendment 6.
 | Leave-one-family-out generalisation | 08 | Robustness |
 | Attribution stability, Kendall's tau | 09 | Reported with the mapping |
 | MAUDE cyber-attributable share | 09 | Surveillance coverage |
-| Dadkhah et al. published baselines (RF 0.551, DNN 0.522, etc.) | 05 | Shared published-baseline anchor; also the comparator Mohammadi et al. cite. Context, not an H2 test. |
-| RF ablation: Dadkhah Table 8 config on capture-disjoint split (macro-F1 0.8680) | 05 | Isolates split protocol from Dadkhah's published 0.551; context, not an H2 test. |
+| Dadkhah et al. published baselines (RF 0.551, DNN 0.522, etc.) | 05 | Shared published-baseline anchor; also the comparator Mohammadi et al. cite. Context, not an H1 test. |
+| RF ablation: Dadkhah Table 8 config on capture-disjoint split (macro-F1 0.8680) | 05 | Isolates split protocol from Dadkhah's published 0.551; context, not an H1 test. |
 
 Dadkhah et al.'s own baselines are context rather than a result of this project. Verified
 against the source PDF on 2026-08-07: 19-class Random Forest F1 0.551 from their Table 7, a
 file-level 80/20 split by PCAP file from their Section 5, and no averaging method stated
-anywhere in the paper. H2's comparator remains the published CNN. These figures position the
+anywhere in the paper. H1's comparator remains the published CNN. These figures position the
 work; they do not test it. Section 6 carries the detail.
 
 ### Scope exclusions and their basis
@@ -391,7 +391,7 @@ method and 0.551 may not be a macro figure at all. Neither the feature set nor t
 averaging method is controlled by this run. The paper lists 39 features and ships 45
 against the 44 used here, and the averaging remains unstated, so those two confounds stand
 exactly where they stood before. This is a reported result and not a hypothesis test. It is
-not a controlled comparison between two models, and it changes nothing about H2, whose
+not a controlled comparison between two models, and it changes nothing about H1, whose
 comparator remains the published CNN under Amendment 5.
 
 ### Reproduced baseline — Mohammadi et al., shipped split
@@ -434,7 +434,7 @@ same unit, and the shipped and two-tier splits hold out different rows, so these
 runs' own scores rather than a paired comparison.
 
 Macro-F1 is 0.7138. Against the parent, the same encoder reading one record at a time on
-the same split, that is -0.0218. Against `published_cnn_19class`, the comparator H2 names,
+the same split, that is -0.0218. Against `published_cnn_19class`, the comparator H1 names,
 it is +0.0028. The random forest on single records remains the highest macro-F1 recorded
 in this project at 0.8418. Accuracy falls from 0.9852 on the parent to 0.8197, and the
 weighted minus macro gap falls from 0.2474 to 0.0926.
@@ -519,7 +519,7 @@ intervention returns it above 0.50 and two leave it lower. These figures measure
 balancing recovers the class, not what caused the regression.
 
 The volumetric mean moves -0.1000, -0.0090, +0.0030, +0.0106 and +0.0174 across the five.
-No H2 clause sets a limit on this quantity, since `PREREGISTRATION.md` Amendment 10 records
+No H1 clause sets a limit on this quantity, since `PREREGISTRATION.md` Amendment 10 records
 that Amendment 2's cost clause did not survive the Amendment 5 replacement, so these are
 reported without a pass mark. The per-run detail is in `RESULTS_LEDGER.md`.
 
@@ -539,9 +539,11 @@ run, unchanged by the budget.
 | k = 25 | 0.7323 | 11 |
 | k = 50 | 0.7138 | 10 |
 
-**Records to threshold (H1).** Eight of nineteen classes do not reach F1 0.80 within
-50 records and are recorded as right-censored under `PREREGISTRATION.md` Amendment 11,
-reported as "> 50" and never as 50.
+**Records to threshold, a reported result.** This was the measurement the observation
+hypothesis was stated on until `PREREGISTRATION.md` Amendment 12 moved H2 onto
+saturation. It is retained and reported. Eight of nineteen classes do not reach F1 0.80
+within 50 records and are recorded as right-censored under Amendment 11, reported as
+"> 50" and never as 50.
 
 Low-rate: Recon-Port_Scan 5, MQTT-Malformed_Data 25, Recon-OS_Scan > 50,
 Recon-VulScan > 50, Spoofing > 50. Median not reached within 50 records, three of five
@@ -551,10 +553,12 @@ Volumetric: DDoS-SYN 5, DDoS-TCP 5, DDoS-UDP 5, DoS-SYN 5, DoS-UDP 5, DDoS-ICMP 
 DoS-ICMP > 50, DoS-TCP > 50. Median 5, three of eight censored. The even-sized group
 reading is recorded in `DECISIONS.md` under 2026-08-09.
 
-The twofold comparison is not evaluated, since the low-rate median is not determinate.
-The direction is reported instead: the low-rate median sits above the budget ceiling
-while the volumetric median is 5, so low-rate classes require more observed records.
-The size of the difference is not measurable on a grid that stops at 50.
+The twofold comparison the earlier statement of the hypothesis required is not
+evaluated, since the low-rate median is not determinate. The direction is reported
+instead: the low-rate median sits above the budget ceiling while the volumetric median
+is 5, so low-rate classes require more observed records. The size of the difference is
+not measurable on a grid that stops at 50. Amendment 12 states H2 with no numeric
+multiple, so no comparison here carries a pass mark.
 
 Two figures qualify that reading. DDoS-ICMP is censored at a best F1 of 0.7998, short
 of the threshold by 0.0002 against a cross-seed standard deviation of 0.0075 on that
@@ -570,12 +574,27 @@ Two classes outside both groups follow the same two patterns: MQTT-DoS-Publish_F
 sits at its maximum at 50, and MQTT-DDoS-Publish_Flood peaks at 10 and scores lower
 at 50.
 
-**Saturation (additional analysis, no threshold).** The smallest budget within 0.02 of
-each class's own best score across the four budgets, following Silvey & Liu (JMIR 2024)
-and Mohr et al. (arXiv 2201.12150). Seven of nineteen classes stop improving at k = 5.
-Eight saturate at an F1 below 0.80, so saturation marks where a class stops improving
-and not where it becomes reliably detectable. Per-class figures are in
-`RESULTS_LEDGER.md`.
+**Saturation (H2).** The smallest budget within 0.02 of each class's own best score
+across the four budgets, following Silvey & Liu (JMIR 2024) and Mohr et al. (arXiv
+2201.12150). This is the metric H2 is stated on under Amendment 12. Seven of nineteen
+classes stop improving at k = 5. Eight saturate at an F1 below 0.80, so saturation
+marks where a class stops improving and not where it becomes reliably detectable.
+Per-class figures are in `RESULTS_LEDGER.md`.
+
+Group medians, read from `data/processed/NB08/tables/saturation.csv`. Low-rate:
+Spoofing 10, MQTT-Malformed_Data 25, Recon-OS_Scan 25, Recon-Port_Scan 50,
+Recon-VulScan 50, median 25. Volumetric: DDoS-ICMP 5, DDoS-SYN 5, DDoS-TCP 5,
+DoS-SYN 5, DDoS-UDP 25, DoS-UDP 25, DoS-ICMP 50, DoS-TCP 50, median 15, the mean of
+the fourth and fifth values under the even-sized group reading recorded in
+`DECISIONS.md` on 2026-08-09. Nothing is censored on this scale, since every class has
+a best score across the grid and so has a budget at which it reaches it, so both
+medians are determinate.
+
+The low-rate median is 25 against a volumetric 15, a ratio of 1.67. H2 states the
+direction only, so this is reported as an observed figure with no pass mark. The budget
+grid is {5, 10, 25, 50}, so a median can take only one of those four values or a
+midpoint between two of them. The ratio is therefore as much a property of the grid as
+of the classes, and a finer grid would move it.
 
 **Cross-seed variation.** Macro-F1 0.7373 plus or minus 0.0233 across five seeds at
 k = 50. The NB06 figure of 0.7138 is one seed of those five and sits about one standard
@@ -603,7 +622,7 @@ Reproduced without modification as the baseline. Their input tensor is
 sample is a single record. Restructuring to `(samples, T, features)` implements the
 temporal modelling their paper describes. Their Discussion identifies difficulty
 distinguishing closely related attack variants and names feature engineering as the
-needed direction — which is the gap RQ2 addresses.
+needed direction — which is the gap RQ1 addresses.
 
 **Rule: the baseline is never tuned, corrected, or improved.** Code lives in
 `baselines/mohammadi/`, pinned to a commit hash, separate from `src/`.
@@ -613,7 +632,7 @@ needed direction — which is the gap RQ2 addresses.
 Cited as prior work to extend, never critiqued. Four positive anchors:
 
 1. His future-work section names the nineteen-class imbalance problem as open — the
-   warrant for RQ2.
+   warrant for RQ1.
 2. He recommends alternative resampling methods — the warrant for the intervention set.
 3. He established macro-averaged evaluation on this dataset — credited as prior
    adoption, not claimed as novel.
@@ -642,8 +661,8 @@ which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 
 | RQ | What exists | The gap filled |
 |---|---|---|
-| 1 | Early detection on CICIDS-2017, CICIoT23-WEB, MQTT-IoT-IDS2020, IoTID20. "Earliness" is the established metric | No earliness study on CICIoMT2024; none per class. The partial-flow study names single-dataset reliance as future work |
-| 2 | CNN-LSTM for IoMT exists (SafetyMed; UNet++/LSTM) | Applied to the specific attack variants the foundation paper names as unresolved, with per-pair results |
+| 1 | CNN-LSTM for IoMT exists (SafetyMed; UNet++/LSTM) | Applied to the specific attack variants the foundation paper names as unresolved, with per-pair results |
+| 2 | Early detection on CICIDS-2017, CICIoT23-WEB, MQTT-IoT-IDS2020, IoTID20. "Earliness" is the established metric | No earliness study on CICIoMT2024; none per class. The partial-flow study names single-dataset reliance as future work |
 | 3 | SHAP on CICIoMT2024 is well populated. CAPEC mapping exists for IoT logs via LLM. STRIDE exists for device risk assessment | No pipeline connects SHAP attributions from IoMT network traffic to CAPEC and STRIDE. An April 2026 IoMT XAI review names inconsistent explainability metrics as a key gap |
 
 ### Not claimed as novel
@@ -662,9 +681,9 @@ which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 | 02 | Exploratory Analysis | Looks at what the measurements contain and which attacks are hard to tell apart | Setup |
 | 03 | Feature Provenance Check | Tests whether the measurements identify the recording session rather than the attack | Justifies 09 |
 | 04 | Preprocessing and Splits | Cleans the data, builds train and test splits, groups records into sequences | All |
-| 05 | Baseline Models | Rebuilds the published model and a simple comparison model | H2 |
+| 05 | Baseline Models | Rebuilds the published model and a simple comparison model | H1 |
 | 06 | Sequence Model | Builds the model that reads sequences of records instead of single ones | **H1, H2** |
-| 07 | Class Balancing | Tests five ways of making the rare attacks visible, one at a time | H2 |
+| 07 | Class Balancing | Tests five ways of making the rare attacks visible, one at a time | H1 |
 | 08 | Evaluation and Significance | Repeats runs across seeds, tests whether differences are real, measures how few records are needed | **H1, H2** |
 | 09 | Explainability and Threat Mapping | Explains what the model used, maps it to CAPEC and STRIDE, checks against MAUDE | **H3** |
 | 10 | Results Consolidation | Builds every table and figure for the results chapter | Chapter 4 |
@@ -806,14 +825,14 @@ position; the pre-registration states how it was reached.
 | `config/feature_families.yaml`, resolved | Reviewed and marked on 2026-08-04. The twelve columns ambiguous between protocol and statistical stay in protocol; the rationale, the evidence for it and the one open point are recorded in the file itself |
 | `SGKF` labels in Bogan's Table 3-1, resolved | A typographical error. `SGKF` appears six times, all within that one table. `SKF` appears throughout the abbreviations list, the research questions, all of Chapter 4 and both confusion matrix captions, and is defined as Stratified K-Fold. No `SGKF` entry exists in the abbreviations list. The prose immediately below the table describes plain stratified k-fold cross-validation, five folds with no reserved validation portion, and no grouping variable is defined anywhere in the methodology. Plain `StratifiedKFold` is therefore the correct comparison |
 | Benign split boundaries, resolved | Tier B classes concatenate their train and test files and cut at 70 and 85 percent of the whole, so a partition can span the file boundary. Benign trains on `Benign_train` rows 0 to 161,237, validates on `Benign_train` rows 161,237 to 192,732 plus `Benign_test` rows 0 to 3,056, and tests on the remainder of `Benign_test`. Stated as a design choice in Chapter 3 |
-| Recon-Ping_Sweep sequence counts | 24 train, 2 validation, 4 test at window 50 and stride 25, from 926 records. Excluded from the low-rate median in H1 by `PREREGISTRATION.md` Amendment 4. The same exclusion rule is applied to the H2 class set in Amendment 6, which drops it from the classes the published CNN fails to detect despite its F1 of 0.0107 on that run |
+| Recon-Ping_Sweep sequence counts | 24 train, 2 validation, 4 test at window 50 and stride 25, from 926 records. Excluded from the low-rate median in H2 by `PREREGISTRATION.md` Amendment 4. The same exclusion rule is applied to the H1 class set in Amendment 6, which drops it from the classes the published CNN fails to detect despite its F1 of 0.0107 on that run |
 | H3 reference standard, resolved | H3 tests STRIDE consistency against the attack semantics documented in the CICIoMT2024 benchmark paper. MITRE's CWE-CAPEC-ATT&CK chain is in scope as a secondary reference, attached to the mapping output as enrichment in the same way CVE identifiers are, and is not part of what H3 tests |
-| Wearable and RPH framing, resolved | The testbed splits by protocol: 7 real Wi-Fi devices, none a wearable; 15 simulated MQTT devices including several wearables; the remaining real devices on Bluetooth, almost all wearables. The 72 CSVs are Wi-Fi and MQTT only and Bluetooth is pcap-only, so no real wearable contributed a row to the modelled data. RQ1 no longer names wearables. Remote patient hub framing is retained: the Wi-Fi set includes a hub, an SOS pager, an SOS button and a baby monitor. Wearables remain in the dataset description in Section 4 |
+| Wearable and RPH framing, resolved | The testbed splits by protocol: 7 real Wi-Fi devices, none a wearable; 15 simulated MQTT devices including several wearables; the remaining real devices on Bluetooth, almost all wearables. The 72 CSVs are Wi-Fi and MQTT only and Bluetooth is pcap-only, so no real wearable contributed a row to the modelled data. RQ2 no longer names wearables. Remote patient hub framing is retained: the Wi-Fi set includes a hub, an SOS pager, an SOS button and a baby monitor. Wearables remain in the dataset description in Section 4 |
 | `MedSec-25.csv` and the cross-dataset transfer artefacts | Archived under `archive/data/` and excluded from git by size |
-| H2's single-record baseline, resolved | H2 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |
-| Row order and the sequence premise | H2 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
-| Low-rate group listing in Section 3, resolved | Section 3's low-rate bullet no longer lists Recon-Ping_Sweep, matching the group fixed by `PREREGISTRATION.md` Amendment 4, and the exclusion and its basis are now stated beneath the bullets. H1 names the median again in the same edit, restoring the aggregation Amendment 3 stated and v1.0 dropped. Both changes are recorded in Amendment 8 |
+| H1's single-record baseline, resolved | H1 names the published CNN as its comparator. The five classes it fails to detect — Recon-VulScan, Recon-OS_Scan, MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — and the 0.50 F1 threshold that defines both set membership and improvement are fixed in `PREREGISTRATION.md`, Amendments 5 and 6. The single-record random forest at 0.8418 macro-F1 is reported alongside as a third comparison, because it beats the published CNN |
+| Row order and the sequence premise | H1 assumes CSV row order preserves capture order. Tested in NB04 before sequences are built |
+| Low-rate group listing in Section 3, resolved | Section 3's low-rate bullet no longer lists Recon-Ping_Sweep, matching the group fixed by `PREREGISTRATION.md` Amendment 4, and the exclusion and its basis are now stated beneath the bullets. H2 names the median again in the same edit, restoring the aggregation Amendment 3 stated and v1.0 dropped. Both changes are recorded in Amendment 8 |
 | Section 5 sentence on classes below F1 0.50, resolved | Both statements re-derived from `results/NB05/*/metrics.json` and corrected. First: five classes, not three, are below F1 0.50 in both convolutional runs — Spoofing and MQTT-Malformed_Data were missing — and the forest resolves three of the five, MQTT-Malformed_Data reaching 0.6752. Second: no run on disk produces the "Reproduced baseline" figures, so that block now carries a note recording that it comes from an earlier reproduction and that every figure cited in Chapter 4 comes from the artifacts in `results/NB05/` |
-| DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H2 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB07 has now measured whether the five balancing interventions recover it: none returns it above 0.50, the five values being 0.1594, 0.2995, 0.3516, 0.3769 and 0.4590 against the parent's 0.3178, and two of the five leave it lower than the parent. That measures recovery under balancing, not cause; the interventions were not designed to diagnose the regression and this run does not diagnose it. Resolved by NB08. Across seeds 42 to 46 the class scores 0.3178, 0.3099, 0.3450, 0.2690 and 0.2938, so the regression is a stable property of window-based sequencing rather than a seed-42 artifact. What causes it remains undiagnosed. |
-| RF comparator naming, resolved | Two random forests exist in this project and are easy to conflate. `results/NB05/forest_19class`, at 0.8418 macro-F1, is the classifier that serves as H2's third comparison and is the correct forest to cite against Dadkhah et al.'s published baseline of F1 0.551, recorded in `DECISIONS.md` under 2026-08-07. The NB03 capture-identification probe is a separate forest that tests whether recording provenance is recoverable from features; it does not classify attack classes and is not a comparator for H1 or H2. The two were conflated while the primary-source verification entry in `DECISIONS.md` was being drafted, and corrected before that entry was committed. Recorded here so they are not mixed up again |
-| H1's twofold comparison not evaluable on the NB08 grid | NB08 measured records to threshold at k in {5, 10, 25, 50}. Three of five low-rate classes do not reach F1 0.80 within 50 records, so the low-rate median is not determinate and the twofold comparison H1 states is not evaluated. The direction is reported instead, under `PREREGISTRATION.md` Amendment 11, which fixed this handling before the run. Extending the grid past 50 would require rebuilding the sequences at a longer window and is ruled out by the same amendment. Section 5 carries the figures |
+| DoS-ICMP regression under the sequence model | NB06 shows DoS-ICMP falling from 0.9960 (published CNN) to 0.3178, crossing below the F1 0.50 line — a loss larger in magnitude than any single class's gain among the five H1 classes. Whether this is a seed-42 artifact or a stable property of window-based sequencing is unresolved. NB07 has now measured whether the five balancing interventions recover it: none returns it above 0.50, the five values being 0.1594, 0.2995, 0.3516, 0.3769 and 0.4590 against the parent's 0.3178, and two of the five leave it lower than the parent. That measures recovery under balancing, not cause; the interventions were not designed to diagnose the regression and this run does not diagnose it. Resolved by NB08. Across seeds 42 to 46 the class scores 0.3178, 0.3099, 0.3450, 0.2690 and 0.2938, so the regression is a stable property of window-based sequencing rather than a seed-42 artifact. What causes it remains undiagnosed. |
+| RF comparator naming, resolved | Two random forests exist in this project and are easy to conflate. `results/NB05/forest_19class`, at 0.8418 macro-F1, is the classifier that serves as H1's third comparison and is the correct forest to cite against Dadkhah et al.'s published baseline of F1 0.551, recorded in `DECISIONS.md` under 2026-08-07. The NB03 capture-identification probe is a separate forest that tests whether recording provenance is recoverable from features; it does not classify attack classes and is not a comparator for H1 or H2. The two were conflated while the primary-source verification entry in `DECISIONS.md` was being drafted, and corrected before that entry was committed. Recorded here so they are not mixed up again |
+| H2's twofold comparison not evaluable on the NB08 grid, superseded | NB08 measured records to threshold at k in {5, 10, 25, 50}. Three of five low-rate classes do not reach F1 0.80 within 50 records, so the low-rate median is not determinate and the twofold comparison the hypothesis then stated is not evaluated. The direction is reported instead, under `PREREGISTRATION.md` Amendment 11, which fixed this handling before the run. Extending the grid past 50 would require rebuilding the sequences at a longer window and is ruled out by the same amendment. The hypothesis is now H2 and Amendment 12 measures it on saturation, where both group medians are determinate, and states no numeric multiple. Records to threshold is retained as a reported result. Section 5 carries the figures |
