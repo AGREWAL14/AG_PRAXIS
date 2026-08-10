@@ -141,6 +141,15 @@ worth deriving in the notebook that raises it.
 - Every run is logged, including runs that made things worse.
 - `RESULTS_LEDGER.md` is append-only. Corrections are appended as new entries.
 
+### Append-only files
+
+`PREREGISTRATION.md`, `DECISIONS.md` and `RESULTS_LEDGER.md` are never edited
+retroactively and never renumbered. Entries dated before the current session record what
+was decided under the numbering and figures in force at the time. Corrections are
+appended as new dated entries citing the artifact they derive from. Amendments are the
+key for reading old numbering. Executed notebooks under `runs/` are records of what
+Colab ran and are not re-edited on the same basis.
+
 ---
 
 ## 5. Repository boundaries
