@@ -900,3 +900,78 @@ that never trigger is one of the reported quantities.
 ## Earliness averaging
 
 Earliness is averaged over correctly classified windows only.
+
+---
+
+# Amendment 16 — 2026-08-10
+
+Corrects the partition the second dependent variable in Amendment 14 is measured on,
+and records two counts about the group variable that were not established when
+Amendment 14 was written. Made before NB07b was run.
+
+## The correction
+
+Amendment 14 states that the LSTM output for each test window is taken as the
+representation. The partition is corrected from test to train.
+
+## Why test cannot carry the measurement
+
+The test partition holds 19 classes across 19 captures, one capture per class. The
+validation partition holds 19 classes across 19 captures, also one per class. A
+capture-identification measurement with the attack class held fixed asks which of a
+class's captures a window came from, and on either partition a class has one, so there
+is nothing to tell apart. Pooled across captures the same structure makes capture and
+class the same label, so identifying the capture is identifying the class under another
+name.
+
+The training partition holds 45 captures, of which 34 belong to the 8 classes recorded
+more than once: DDoS-ICMP 8, DDoS-UDP 8, DDoS-SYN 3, DDoS-TCP 3, DoS-ICMP 3, DoS-SYN 3,
+DoS-TCP 3 and DoS-UDP 3. That is the multi-capture structure NB03 measured on.
+
+Counts read from `data/processed/NB04_manifest.json`.
+
+## The chance rates
+
+Pooled over the 34 captures of those 8 classes, chance is 1/34 = 0.0294. With the attack
+class held fixed, chance is the mean of 1/n over the 8 classes, 0.2812.
+
+These differ from NB03's 0.0200 and 0.1750 because NB03 counted a capture's train file
+and its test file as two recordings and reached 50, while the unit here is the capture
+and only its training side exists.
+
+## What the measurement is on
+
+The probe measures identifiability on the partition the training objective optimised
+over. That is a limitation of the measurement and is reported as such wherever the
+figure appears.
+
+## The number of groups
+
+The group variable is unchanged. It is `capture_id`, derived from the recording name by
+`src/captures.py parse_capture`.
+
+Amendment 14 records 57 captures. That is the corpus-wide figure. The count over
+training windows is 45, and the objective is computed over training windows, so 45 is
+the number of groups it forms. The remaining 12 captures appear only in the validation
+or test partition and the objective cannot see them.
+
+## Where the group is the class
+
+Of the 45 training groups, 34 are captures within the 8 classes recorded more than once,
+and 11 are single-capture classes, where the group and the class are the same set of
+windows. For those 11, worst-group weighting and worst-class weighting are the same
+operation.
+
+All five classes fixed in Amendment 6 — Recon-VulScan, Recon-OS_Scan,
+MQTT-DDoS-Publish_Flood, Spoofing and MQTT-Malformed_Data — have one training capture
+each, so all five sit among those 11.
+
+The intervention is therefore capture-invariant on the 8 multi-capture classes, and on
+the remaining 11 it acts on the same axis as the class-imbalance interventions NB07
+tested.
+
+## What this amendment does not do
+
+It changes no class set, no threshold, no comparator and no group variable. The
+intervention, the parent, the fixed quantities and the first dependent variable stand as
+Amendment 14 states them.
