@@ -833,3 +833,51 @@ recorded as a check on the plumbing, not as evidence that the loop is correct.
 **What this does not change:** No class set, no threshold, no comparator and no feature
 set. The per-sample loss is still categorical cross-entropy, and the run's config records
 `loss` unchanged from the parent with `training_objective` as the single changed key.
+
+---
+
+## 2026-08-11 — NB07b's training loop compiled; the arithmetic is unchanged
+
+**Decision:** `fit_group_dro` compiles its per-batch step and does its per-group
+bookkeeping with counts rather than a Python loop. Nothing else changes.
+
+**What was wrong:** The loop ran eagerly. Every operation in the forward pass, the tape,
+the gradient and the optimizer update was dispatched from Python one at a time, and every
+batch ended with a blocking read of the per-window losses back from the device. On a
+confirmed A100-SXM4-40GB with TensorFlow 2.20.0 built with CUDA, and with the device
+visible to `tf.config.list_physical_devices`, epoch 1 did not finish in fifteen minutes
+and GPU memory sat at 0.7 of 40 GB for the whole period. NB06 trained the same model on
+the same windows for ten epochs in 41 minutes through `model.fit`, which compiles its
+train step. The device was idle because the work was in Python, not because of the
+hardware or the data.
+
+**The fix:** the batch step is wrapped in `tf.function` with the tape inside it, so it is
+traced once and reused; the optimizer's slot variables are built before the first trace,
+since creating variables inside a traced call raises; `reduce_retracing` is on because the
+last batch of an epoch is short; and the per-group epoch totals are accumulated with
+`np.bincount` instead of a per-window Python loop that ran to about two and a half million
+dictionary operations an epoch. The bincount accumulation was checked against the loop it
+replaces and agrees to 2.8e-16.
+
+**What is unchanged:** the objective, `eta` at 1e-4, the uniform start, the update rule,
+the handling of groups absent from a batch, the group variable, the class sets and the
+thresholds. This is how the arithmetic is scheduled, not what it is. No amendment is made,
+because nothing `PREREGISTRATION.md` Amendments 14, 16 or 17 fix is touched.
+
+**One read back per batch stays.** The weights a batch produces are what the next batch is
+weighted by, so the dependency is serial and a device-to-host read cannot be removed by
+compilation. Inside a compiled step it is 128 bytes after work the device was going to do
+anyway.
+
+**`q` stays in float64 numpy on the host.** Moving it to a device variable would remove
+that last read, and it was rejected: the exponentiated-gradient arithmetic would move from
+float64 on the host to device floats, which changes the arithmetic Amendment 14 fixes.
+That is not worth the last few percent of a training run.
+
+**The batch_share check now reads twice.** It was registered under the 2026-08-10 entry as
+a check that the loop reproduces the parent, against the interval [0.690480, 0.737104]. It
+now also reads as a check that compiling the loop did not change what the loop computes,
+because the loop it is run against is the compiled one and not the eager one it was
+specified for. Same measurement, same interval, second reading. It is recorded here so
+that a reader who finds the check described against an eager loop and run against a
+compiled one knows why.

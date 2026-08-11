@@ -188,6 +188,34 @@ def fit_group_dro(
     n = len(y_codes)
 
     optimizer = model.optimizer
+    # Keras creates an optimizer's slot variables the first time it is used. Inside a
+    # compiled function that would be variable creation on a traced call, which raises,
+    # so they are built here, before anything is traced.
+    optimizer.build(model.trainable_variables)
+
+    @tf.function(reduce_retracing=True)
+    def step(xb, yb, wb):
+        """One batch, compiled: the weighted loss, the update, the per-window losses back.
+
+        The tape is built inside this function rather than around the call to it, so it
+        is traced once and the graph is reused for every batch afterwards. Run without
+        this wrapper the loop dispatches every operation from Python one at a time and
+        blocks on the result of each batch, which leaves the device idle and the run
+        takes tens of minutes an epoch. The arithmetic is the same either way; what
+        changes is how it is scheduled.
+
+        `reduce_retracing` is on because the last batch of an epoch is short, so the
+        function sees two shapes rather than one.
+        """
+        with tf.GradientTape() as tape:
+            probabilities = model(xb, training=True)
+            per_window = keras.losses.categorical_crossentropy(yb, probabilities)
+            loss = tf.reduce_sum(wb * tf.cast(per_window, tf.float32))
+        optimizer.apply_gradients(
+            zip(tape.gradient(loss, model.trainable_variables), model.trainable_variables)
+        )
+        return per_window
+
     history = {"loss": [], "worst_group_loss": [], "mean_group_loss": []}
 
     for epoch in range(epochs):
@@ -195,29 +223,32 @@ def fit_group_dro(
         order = rng.permutation(n) if shuffle else np.arange(n)
 
         epoch_loss, epoch_windows = 0.0, 0
-        seen = {}
+        # Per-group totals for the epoch, accumulated with bincount rather than by
+        # looping over the windows of every batch in Python. The figures are the same
+        # and the loop was two and a half million dictionary operations an epoch.
+        totals = np.zeros(weights.n_groups, dtype="float64")
+        counts = np.zeros(weights.n_groups, dtype="int64")
         for start in range(0, n, batch_size):
             index = order[start : start + batch_size]
+            codes = groups[index]
             xb = tf.convert_to_tensor(X[index])
             yb = tf.convert_to_tensor(targets[index])
-            wb = tf.convert_to_tensor(weights.batch_weights(groups[index]), dtype=tf.float32)
+            wb = tf.convert_to_tensor(weights.batch_weights(codes), dtype=tf.float32)
 
-            with tf.GradientTape() as tape:
-                probabilities = model(xb, training=True)
-                per_window = keras.losses.categorical_crossentropy(yb, probabilities)
-                loss = tf.reduce_sum(wb * tf.cast(per_window, tf.float32))
-            optimizer.apply_gradients(zip(tape.gradient(loss, model.trainable_variables),
-                                          model.trainable_variables))
+            # One read back per batch, and it cannot be avoided: the weights this batch
+            # produces are what the next batch is weighted by, so the dependency is
+            # serial. Inside a compiled step it is a hundred and twenty-eight bytes after
+            # work the device was going to do anyway.
+            observed = np.asarray(step(xb, yb, wb))
 
-            observed = np.asarray(per_window)
-            weights.update(groups[index], observed)
+            weights.update(codes, observed)
             epoch_loss += float(observed.sum())
             epoch_windows += len(index)
-            for code, value in zip(groups[index], observed):
-                total, count = seen.get(int(code), (0.0, 0))
-                seen[int(code)] = (total + float(value), count + 1)
+            totals += np.bincount(codes, weights=observed, minlength=weights.n_groups)
+            counts += np.bincount(codes, minlength=weights.n_groups)
 
-        group_means = np.array([total / count for total, count in seen.values()])
+        present = counts > 0
+        group_means = totals[present] / counts[present]
         history["loss"].append(epoch_loss / max(epoch_windows, 1))
         history["worst_group_loss"].append(float(group_means.max()))
         history["mean_group_loss"].append(float(group_means.mean()))
