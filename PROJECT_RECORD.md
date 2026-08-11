@@ -801,7 +801,8 @@ AG_PRAXIS/
 ├── src/                   <- importable modules
 ├── baselines/mohammadi/   <- pinned, never modified
 ├── data/processed/        <- splits, schema, inventories
-└── results/               <- metrics JSONs, figures
+├── results/               <- metrics JSONs, figures
+└── tools/dry_run/         <- runs a notebook locally against a miniature fixture
 ```
 
 ### The loop

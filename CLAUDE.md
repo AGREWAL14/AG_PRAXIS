@@ -116,8 +116,23 @@ worth deriving in the notebook that raises it.
   argument, not an environment variable, and write to separate artifact folders.
   Notebooks with a single pass may use the FAST environment variable.
 - Cell 1 of every notebook mounts Drive, clones the repo, and captures the git SHA.
+- Every notebook records the environment it ran under. The setup cells build an
+  `ENVIRONMENT` dict holding the TensorFlow version, the Keras version, the backend and
+  the accelerator by name, print it, and put it into the run's config under
+  `observed.environment`. A wall time that cannot be read against the hardware it was
+  measured on is not a measurement, and a version that is remembered rather than recorded
+  is not evidence.
 - The final cell prints a ledger entry block ready to paste into
   `RESULTS_LEDGER.md`.
+- A notebook's cell source is a list of lines, each ending in a newline except the
+  last. Colab reads a cell whose lines have lost their newlines as one long line and
+  fails on it. Any check for this has to cover the one-element case as well: a source
+  collapsed into a single string runs, but the obvious way to write the check looks at
+  every element before the last and a one-element list has none, so it passes. That
+  gap has been hit twice, once shipping NB03b and once patching NB07b.
+- The dry run in `tools/dry_run/` is run before a notebook goes to Colab. It is not
+  optional. The first time it ran it found three defects, two of them written in the
+  same session as the code they were in.
 - Long runs include a per-epoch `ModelCheckpoint` writing to Drive.
 - Never cast a label or grouping column to category dtype. Pandas carries the
   categorical through groupby into the aggregation result, and later arithmetic on
@@ -160,6 +175,10 @@ Colab ran and are not re-edited on the same basis.
 - `runs/` receives executed copies from Colab only and is never re-edited.
 - Large artefacts (`.npy`, `.keras`) live on Drive, not in git. Only
   `metrics.json` is committed.
+- `tools/dry_run/` runs a notebook's real code locally against a miniature fixture, so
+  a notebook fails there rather than in a paid session. Every notebook gets a profile
+  before it is run in Colab. It cannot check GPU placement, wall time, or anything that
+  depends on the scale or distribution of the real data.
 
 ---
 
