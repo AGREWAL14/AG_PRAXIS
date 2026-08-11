@@ -217,3 +217,22 @@ figures and their sources.
 **Serves:** Chapter 4, where the finding is reported, and Chapter 5, where it is defended.
 
 **Added:** 2026-08-11
+
+---
+
+## Prose conventions — all chapters
+
+### The chapters do not name notebooks
+
+**Claim:** Chapter prose never refers to a notebook by number or by name. No "NB09", no
+"notebook 9", no "the sequence model notebook". The writing describes what was tested and
+what was found: a model trained on sequences of records rather than single ones, the
+timing feature ablation, capture identification with the attack class held fixed.
+Notebook numbering belongs to the governance files and the repository, not to the praxis.
+
+**Rests on:** Nothing measured. It is a register rule, fixed here, and it holds for every
+chapter rather than for one.
+
+**Serves:** All chapters.
+
+**Added:** 2026-08-11
