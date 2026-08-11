@@ -881,3 +881,37 @@ because the loop it is run against is the compiled one and not the eager one it 
 specified for. Same measurement, same interval, second reading. It is recorded here so
 that a reader who finds the check described against an eager loop and run against a
 compiled one knows why.
+
+---
+
+## 2026-08-11 — NB08b's prefix lengths: one length per batch, uniform from 1 to 50
+
+**Decision:** The model is trained on prefixes whose length is drawn uniformly from 1 to 50,
+one length per batch. No length is weighted. Implemented in `src/sequence.py` as
+`PrefixBatches` and `fit_mixed_length`, and recorded in the run's metrics as the lengths
+actually drawn.
+
+**Why every length.** The halting rule fixed in `PREREGISTRATION.md` Amendment 15 steps
+through a window one record at a time and can stop at any record from 1 to 50. A model asked
+to answer after any number of records has to have been trained after any number of records,
+so the training distribution covers the same range the rule can select from.
+
+**Per batch, not per window.** A batch is one array with one shape, so mixing lengths within
+a batch requires padding the shorter windows out to the longest. Under StandardScaler a
+padded zero is the training mean, so an unobserved record would read as an average record
+rather than as an absent one. Per-window sampling is rejected on that ground.
+
+**Uniform over 1 to 50, not over NB08's four budgets.** Drawing from {5, 10, 25, 50} was
+considered and rejected: it would leave 46 of the 50 lengths the halting rule can select
+untrained, so the rule could stop at a length the model had never been trained at.
+
+**What uniform costs, stated rather than corrected.** A five-record prefix gets the same
+share of the training as a fifty-record one although it carries a fraction of the
+information. That is a property of the design. No length weighting is applied, because
+choosing a weighting would be a second design choice inside a run whose one change is the
+training input, and the one-change-per-run rule fixes NB08b as one run.
+
+**What this does not change:** No class set, no threshold, no comparator and no feature set.
+The architecture, the split, the seed, the batch size and the ten epochs are the parent's.
+The tau grid, the halting rule and the earliness definition are Amendment 15's and nothing
+here touches them.

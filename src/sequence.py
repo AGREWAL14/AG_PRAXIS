@@ -59,7 +59,7 @@ def record_encoder(n_features: int, n_classes: int):
 
 
 def build_model(
-    n_features: int, n_classes: int, *, window: int, lstm_units: int = LSTM_UNITS, loss=None
+    n_features: int, n_classes: int, *, window, lstm_units: int = LSTM_UNITS, loss=None
 ):
     """The encoder over each record of the window, one LSTM across it, then softmax.
 
@@ -74,6 +74,14 @@ def build_model(
     `loss` replaces the baseline's cross-entropy for a run whose one change is the
     loss. Left at None the compile settings are the baseline's exactly, so a run
     that is not about the loss cannot differ from its parent in it by accident.
+
+    `window` at None builds the model over an unfixed number of records instead of
+    a fixed fifty. The encoder reads one record at a time and the LSTM reads across
+    however many it is given, so neither holds a weight that depends on the length,
+    and a model built this way has exactly the parameter count a model built at a
+    fixed length has. What it allows is one model asked for a prediction after five
+    records and again after fifty. Every batch still has to hold windows of one
+    length, because an array has one shape.
     """
     import keras
     from keras import layers
@@ -81,7 +89,9 @@ def build_model(
     encoder = record_encoder(int(n_features), int(n_classes))
     model = keras.Sequential(
         [
-            keras.Input(shape=(int(window), int(n_features), 1)),
+            keras.Input(
+                shape=(None if window is None else int(window), int(n_features), 1)
+            ),
             layers.TimeDistributed(encoder, name="per_record"),
             layers.LSTM(int(lstm_units), name="across_the_window"),
             layers.Dense(int(n_classes), activation="softmax", name="classifier"),
@@ -268,6 +278,109 @@ def fit_group_dro(
     return type("GroupDROHistory", (), {"history": history})()
 
 
+class PrefixBatches:
+    """Batches of windows, each batch cut to one length drawn at random.
+
+    A model that is asked to answer after any number of records has to have been
+    trained after any number of records. Every batch is cut to a single length
+    because an array has one shape, and the length is drawn per batch rather than
+    per window for the same reason.
+
+    The draw is uniform over every length the window allows, one to `window`. That
+    gives a five-record prefix the same share of the training as a fifty-record one
+    although it carries a fraction of the information. That is a property of the
+    design and it is stated rather than corrected: weighting the lengths would be a
+    second choice inside a run whose one change is the training input.
+
+    The permutation and the lengths are drawn from a generator seeded per epoch, so
+    a run repeats.
+    """
+
+    def __init__(self, X, y_codes, *, n_classes: int, batch_size: int, seed: int = 42):
+        self.X = X
+        self.y = np.asarray(y_codes).astype("int64")
+        self.n_classes = int(n_classes)
+        self.batch_size = int(batch_size)
+        self.seed = int(seed)
+        self.window = int(X.shape[1])
+        self.epoch = 0
+        self.lengths_drawn = []
+        self._shuffle()
+
+    def _shuffle(self):
+        rng = np.random.default_rng(self.seed + self.epoch)
+        self.order = rng.permutation(len(self.y))
+        self.lengths = rng.integers(1, self.window + 1, size=len(self))
+        self.lengths_drawn.append([int(v) for v in self.lengths])
+
+    def __len__(self):
+        return int(np.ceil(len(self.y) / self.batch_size))
+
+    def __getitem__(self, i):
+        import keras
+
+        index = self.order[i * self.batch_size : (i + 1) * self.batch_size]
+        k = int(self.lengths[i])
+        X = np.ascontiguousarray(self.X[index][:, :k])
+        y = keras.utils.to_categorical(self.y[index], num_classes=self.n_classes)
+        return X, y
+
+    def on_epoch_end(self):
+        self.epoch += 1
+        self._shuffle()
+
+
+def fit_mixed_length(model, X, y_codes, callbacks, *, n_classes: int, seed: int = 42, verbose: int = 2):
+    """The baseline's ten epochs at batch 32, each batch cut to its own length.
+
+    The epochs, the batch size and the shuffling are the baseline's `FIT` read
+    rather than written again, so they cannot drift from the published ones. What
+    differs from `fit_model` is the input: instead of one array of fifty-record
+    windows, the model is handed a batch at a time and each batch has been cut to a
+    length drawn uniformly from one to fifty.
+
+    Keras shuffles nothing here, because `PrefixBatches` shuffles itself and has to,
+    in order to draw a length for each batch it hands over.
+
+    `PrefixBatches` holds the state and knows nothing about Keras, so it can be read
+    and tested on its own. Keras 3 wants a `PyDataset` rather than any object with a
+    length and an index, so the wrapper that makes it one is built here, where keras
+    is already imported, rather than at the top of this module.
+    """
+    import keras
+
+    source = PrefixBatches(
+        X, y_codes, n_classes=int(n_classes), batch_size=int(mo.FIT["batch_size"]), seed=int(seed)
+    )
+
+    class _Batches(keras.utils.PyDataset):
+        def __len__(self):
+            return len(source)
+
+        def __getitem__(self, i):
+            return source[i]
+
+        def on_epoch_end(self):
+            source.on_epoch_end()
+
+    history = model.fit(
+        _Batches(),
+        epochs=mo.FIT["epochs"],
+        shuffle=False,
+        callbacks=list(callbacks),
+        verbose=verbose,
+    )
+    # Keras calls on_epoch_end once more than there are epochs, and its prefetching
+    # touches batches one epoch past the last it trains on, so the generator draws two
+    # lengths more than it uses. Counted rather than assumed: ten epochs of five batches
+    # execute fifty training steps against fifty-two __getitem__ calls spread over eleven
+    # epoch counters and twelve draws. The draws are positionally aligned from zero, the
+    # record at index n being the epoch that trained n+1, so the surplus is at the tail
+    # and the record is truncated there rather than shifted.
+    history.prefix_lengths = source.lengths_drawn[: int(mo.FIT["epochs"])]
+    return history
+
+
 def reshape(X):
     """`(samples, window, features)` to `(samples, window, features, 1)`.
 
@@ -313,12 +426,12 @@ def describe(n_features: int, n_classes: int, *, window: int, lstm_units: int = 
             "input_shape_per_record": [int(n_features), 1],
         },
         "added": [
-            f"TimeDistributed over {int(window)} records",
+            f"TimeDistributed over {'any number of' if window is None else int(window)} records",
             f"LSTM, {int(lstm_units)} units",
             "Dense n_classes, softmax",
         ],
-        "input_shape": [int(window), int(n_features), 1],
-        "window": int(window),
+        "input_shape": [None if window is None else int(window), int(n_features), 1],
+        "window": None if window is None else int(window),
         "lstm_units": int(lstm_units),
         "n_classes": int(n_classes),
         "compile": dict(mo.COMPILE),
@@ -489,6 +602,7 @@ def fit_and_save(
     verbose=2,
     loss=None,
     class_weight=None,
+    mixed_length=False,
     groups=None,
     group_weights=None,
     group_names=None,
@@ -538,7 +652,7 @@ def fit_and_save(
     model = build_model(
         int(n_features),
         len(classes),
-        window=int(window),
+        window=None if window is None else int(window),
         lstm_units=int(lstm_units),
         loss=loss,
     )
@@ -554,7 +668,17 @@ def fit_and_save(
         )
 
     started = time.perf_counter()
-    if group_weights is None:
+    if mixed_length:
+        history = fit_mixed_length(
+            model,
+            X_train,
+            np.asarray(y_train),
+            callbacks,
+            n_classes=len(classes),
+            seed=int(seed) if seed is not None else 42,
+            verbose=verbose,
+        )
+    elif group_weights is None:
         history = fit_model(
             model,
             X_train,
@@ -611,6 +735,16 @@ def fit_and_save(
         metrics["decision_rule"] = rule_record
     if group_weights is not None:
         metrics["group_dro"] = group_weights.record(group_names)
+    if mixed_length and getattr(history, "prefix_lengths", None) is not None:
+        drawn = [k for epoch in history.prefix_lengths for k in epoch]
+        metrics["prefix_lengths"] = {
+            "rule": "one length per batch, drawn uniformly from 1 to the window",
+            "n_batches": len(drawn),
+            "min": int(min(drawn)),
+            "max": int(max(drawn)),
+            "mean": round(float(np.mean(drawn)), 3),
+            "per_epoch": history.prefix_lengths,
+        }
     if history is not None and getattr(history, "history", None):
         metrics["history"] = {
             key: [float(v) for v in values] for key, values in history.history.items()
