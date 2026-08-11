@@ -1,5 +1,12 @@
 """What NB07b needs from a fixture, and what it should have written when it stops.
 
+NB07b is withdrawn under `DECISIONS.md` 2026-08-11 and will not be run. This profile is
+kept anyway, because it is the only thing that exercises the group-DRO machinery in
+`src/interventions.py` and `src/sequence.py`. Running it is how that code is known still
+to work: the compiled step traces, the weights stay a distribution over 45 groups, the
+trajectory is written once an epoch, and the five files land. Delete this and that code
+has nothing calling it at all.
+
 A profile is a description, not a script. It says which notebook to run, what the
 fixture has to contain for that notebook's own asserts to hold, which asserts
 cannot hold against a small fixture and are checked against the real metadata

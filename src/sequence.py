@@ -151,6 +151,12 @@ def fit_group_dro(
 ):
     """The baseline's ten epochs at batch 32, with the batches weighted by group.
 
+    Nothing in the current programme calls this. It was written for NB07b, which is
+    withdrawn under `DECISIONS.md` 2026-08-11, and it is kept because the intervention it
+    implements is specified rather than speculative: `PREREGISTRATION.md` Amendments 14,
+    16 and 17 fix the objective, the group variable, the counts and the chance rates, and
+    those amendments stand. `tools/dry_run/profiles/nb07b.py` is what still exercises it.
+
     A Keras loss sees the targets and the predictions and nothing else, so a run
     whose objective depends on which capture a window came from cannot be
     expressed by replacing the loss. Neither can it be expressed by

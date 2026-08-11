@@ -320,6 +320,13 @@ def mean_f1(metrics, parent, classes) -> dict:
 
 # --------------------------------------------------------------------------
 # the sixth, which changes what the run optimises rather than what it sees
+#
+# Nothing in the current programme calls anything below this line. It was written
+# for NB07b, which is withdrawn under DECISIONS.md 2026-08-11. It is kept because
+# PREREGISTRATION.md Amendments 14, 16 and 17 fix the intervention, the group
+# variable, the group counts and the chance rates, and those amendments stand, so
+# the direction is specified rather than speculative. tools/dry_run/profiles/nb07b.py
+# is what still exercises it.
 # --------------------------------------------------------------------------
 
 
