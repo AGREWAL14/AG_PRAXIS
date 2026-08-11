@@ -915,3 +915,61 @@ training input, and the one-change-per-run rule fixes NB08b as one run.
 The architecture, the split, the seed, the batch size and the ten epochs are the parent's.
 The tau grid, the halting rule and the earliness definition are Amendment 15's and nothing
 here touches them.
+
+---
+
+## 2026-08-11 — NB07b withdrawn
+
+**Decision:** NB07b is withdrawn. It will not be executed and nothing from it is
+reported.
+
+**The reason, which is a property of the design and not of any result.**
+`PREREGISTRATION.md` Amendment 16 records that 11 of the 45 training groups are
+single-capture classes, where the group and the class are the same set of windows, and
+that all five classes fixed in Amendment 6 are among them. Amendment 17 records that the
+weights start uniform, so that coincidence is operative from the first update rather
+than only in the limit. Taken together, on the class set the first dependent variable is
+evaluated over, the intervention is class weighting. NB07 already tested class weighting
+through five interventions.
+
+What survives is the capture-invariance question on the 8 classes recorded more than
+once. On that scope the notebook was judged not to carry a contribution proportionate to
+its cost, and it is withdrawn rather than run and reported.
+
+**What is not recorded.** No figure from the aborted run is recorded anywhere. The run
+was stopped during the DRO training, after the batch_share check had completed. Nothing
+is written to `RESULTS_LEDGER.md`, because no run completed and the ledger records runs.
+
+**The amendments stand as written.** Amendments 14, 16 and 17 are not withdrawn. They
+are the record of an extension that was designed, specified and costed, and Amendment 16
+in particular is where the counts that led to this decision were established. A
+pre-registration that only held the things that were carried out would not be a
+pre-registration.
+
+---
+
+## 2026-08-11 — the batch_share check interval was defective
+
+**Decision:** The interval recorded under the 2026-08-10 entry, [0.690480, 0.737104], is
+recorded as defective. No replacement is specified.
+
+**The arithmetic.** The interval was centred on 0.713792, the NB06 parent's own macro-F1,
+with a half-width of 0.023312 taken from the five NB08 cross-seed values at k = 50. Those
+five values are 0.713792, 0.755196, 0.765181, 0.737731 and 0.714422. The centre is the
+smallest of them. Running the five through the interval that their own spread set: two
+pass and three fail. 0.755196 is above the upper bound by 0.018092, 0.765181 by 0.028077
+and 0.737731 by 0.000627.
+
+The criterion therefore rejects three runs of the configuration it was built to accept.
+
+**How it was missed.** The interval was set jointly, before the run, from the right
+quantities: the parent as the thing the loop had to reproduce, and the measured
+cross-seed spread as the width. What was not done was to run the five values that set the
+width back through the interval they produced. Centring on the minimum of a sample and
+allowing one standard deviation either side covers the downside and truncates the upside
+at less than half the observed span, which the five values would have shown immediately.
+
+**Why no replacement is given.** The defect was found only after the check returned
+0.744304 and was rejected on it. Any interval chosen now would be chosen with that figure
+in view, which is the thing a criterion fixed before a run exists to prevent. A criterion
+for this check, if one is wanted again, is fixed before whatever run it is to judge.

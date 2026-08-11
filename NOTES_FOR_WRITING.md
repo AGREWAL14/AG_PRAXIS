@@ -176,3 +176,44 @@ Amendment 14.
 **Serves:** Chapter 5, and the Chapter 3 justification for capture-invariant training.
 
 **Added:** 2026-08-10
+
+### Capture-invariant training, as future work rather than as a gap
+
+**Claim:** Capture-invariant training is the indicated direction for the provenance
+finding, and it is specified rather than speculative. `PREREGISTRATION.md` Amendments 14,
+16 and 17 fix the intervention, the group variable, the counts of groups the objective
+forms over training windows against the corpus, the derived chance rates for measuring
+identifiability off a learned representation, and the fact that on 11 of the 45 groups
+the group and the class are the same set of windows. The write-up can therefore say what
+the next experiment is, in terms precise enough to run, rather than gesturing at one.
+
+This entry supersedes "NB07b's warrant follows from that" above, which was written while
+the notebook was still to be run and reads as though it will be.
+
+**Rests on:** `PREREGISTRATION.md` Amendments 14, 16 and 17, and `DECISIONS.md` under
+2026-08-11, which records why the notebook built on them was withdrawn.
+
+**Serves:** Chapter 5, future work.
+
+**Added:** 2026-08-11
+
+---
+
+## Chapter 4 — reporting
+
+### The provenance finding, stated at its strongest
+
+**Claim:** The shortcut cannot be removed by feature selection without removing the
+signal. NB03 identifies the recording at 0.8280 with the attack class held fixed, so the
+identification is not the model telling attacks apart. NB03b shows this does not depend
+on the TTL header field: removing Duration raises it to 0.8504, and the timing family
+without Duration still reaches 0.8935 against a chance rate of 0.0200. So the provenance
+signal sits in measured timing behaviour that also carries the attack signal, and there
+is no column whose removal separates the two.
+
+**Rests on:** `PROJECT_RECORD.md` Section 5, feature provenance, which carries all four
+figures and their sources.
+
+**Serves:** Chapter 4, where the finding is reported, and Chapter 5, where it is defended.
+
+**Added:** 2026-08-11
