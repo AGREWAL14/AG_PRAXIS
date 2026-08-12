@@ -1012,3 +1012,148 @@ balancing plus worst-group weighting, and not the parent plus capture invariance
 It changes no class set, no threshold, no comparator and no group variable. The
 intervention, the parent, the fixed quantities and both dependent variables stand as
 Amendments 14 and 16 state them.
+
+---
+
+# Amendment 18 — 2026-08-11
+
+Records what is fixed for H3 before NB09 is run. It changes no hypothesis, no
+threshold and no class set.
+
+## The model H3 is scored on
+
+H3 is scored on the sequence model at 40 features, the timing-excluded set fixed by
+`NB04_manifest.json` under `timing_excluded_slice`. The random forest at 40 features is
+an exactness check on that model's approximate attributions and is not what H3 stands
+or falls on. The two are scored on different units, 49,159 windows against 1,229,711
+records, and no figure crosses between them.
+
+## The mapping rule and the reference standard
+
+Both are files, committed at 8f51f1f before any model trained:
+`config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml` and
+`config/capec_stride.yaml`. The rule is not written in the notebook and is not chosen
+after attributions are visible.
+
+## The denominator
+
+Eighteen attack classes. Benign is excluded, being not an attack and so having no
+attack semantics to be consistent with. The pass mark is 13 of 18.
+
+## The majority-class baseline
+
+Twelve of the eighteen classes are Denial of Service, so a rule emitting that category
+for every class scores 0.667 against a threshold of 0.70. That figure is reported
+alongside H3 wherever H3 appears.
+
+## Attribution aggregation
+
+For the sequence model: mean absolute attribution across the 50 records of a window,
+then the mean over that class's windows, per feature per class. Signed attribution is
+discarded deliberately. The mapping asks which features the model used, not which
+direction they pushed.
+
+## k
+
+k = 10, for the mapping and for the top-k Kendall's tau is computed over. One number
+serves both.
+
+## Kendall's tau
+
+Computed on the sequence model over five seeds, 42 to 46, with the SHAP background
+sample drawn once and held fixed across all five. Holding it fixed is what makes the
+statistic isolate training stochasticity rather than conflating it with resampling of
+the explainer's background.
+
+Yuan et al., "An empirical study of the effect of background data size on the stability
+of SHapley Additive exPlanations (SHAP) for deep learning models", arXiv:2204.11351v3,
+9 April 2023, report that SHAP values and model-level variable rankings fluctuate when
+background datasets are drawn by random sampling, and that the fluctuation decreases as
+the background size increases. The same work reports a U-shape in ranking stability,
+SHAP being more reliable for the most and least important variables than for moderately
+important ones, which bears on a top-10 cut of 40 features.
+
+The reference is verified as to authorship, title, identifier, version and date. The
+primary PDF has not been read, so the findings above are recorded as reported in the
+abstract and are to be checked against the paper before they are relied on in Chapter 2.
+
+Tau carries no pass mark. Amendment 7 records that the 0.70 threshold did not survive
+into v1.0.
+
+## MAUDE
+
+The openFDA device event API, over a window opening 2019-01-01 and closing on the
+retrieval date, with the retrieval date recorded in the run config. The denominator is
+by `device.generic_name` and the keyword list is committed before searching, both in
+`config/maude_keywords.yaml`. Counts are reported as device-category adverse events and
+never as cyber-caused harm.
+
+## What this amendment does not do
+
+It changes no hypothesis, no threshold, no class set and no comparator. H3 stands as
+Amendment 9 states it, and the 70% criterion and the reference standard are unchanged.
+
+---
+
+# Amendment 19 — 2026-08-12
+
+Fixes the number of background draws each SHAP attribution averages over. Amendment 18
+fixed the background sample at 200 windows and the aggregation, and said nothing about
+this, so it was being taken from a library default. It is a parameter of the measurement
+and not only of the runtime: it changes the attribution values, and therefore the top-10,
+the mass summed per CAPEC pattern, and the STRIDE category a class is assigned.
+
+Made before NB09 was run. It changes no hypothesis, no threshold and no class set.
+
+## The value
+
+`nsamples` = 50 for `shap.GradientExplainer`, fixed here and not tuned.
+
+## The cost basis, which transfers
+
+Measured on the dry-run fixture on CPU, one explainer call over 100 windows at each of
+five values, the same windows throughout:
+
+| nsamples | seconds per explained window |
+|---|---|
+| 10 | 0.47 |
+| 25 | 0.58 |
+| 50 | 0.78 |
+| 100 | 2.19 |
+| 200 | 4.84 |
+
+Extrapolated to the real explained set, 862 windows across five models: about **1.2 hours
+at nsamples 50** against **5.8 hours at the library default of 200**. The cost curve is a
+property of the explainer and of this architecture, so it transfers from the fixture to
+the real data.
+
+## The stability evidence, which is fixture-only
+
+On the same fixture, the top-10 ranking settles from nsamples 25 upward: nine of ten
+members shared between every consecutive pair, the rank-1 feature unchanged from 25
+onward, and Kendall's tau flat at 0.60 to 0.64. At nsamples 50 all ten top-10 members are
+shared with the default of 200.
+
+**This is fixture-only evidence.** It was measured on Gaussian noise with a small
+per-capture offset, where there is no signal for attributions to find, so it says nothing
+about what the ranking does on CICIoMT2024. It is recorded because it establishes that 50
+is not obviously below the point where the machinery settles, and for no more than that.
+
+## The check that is committed to
+
+The stability check is re-reported on the real attributions in NB09b, where it costs
+nothing extra because the attributions are already computed. Consecutive-value comparison
+is not available there, since the run produces one value of nsamples; what is reported is
+the across-seed stability the notebook already computes, read against this fixture
+plateau.
+
+If the real-data check disagrees with the fixture plateau, that is a finding to report.
+It is not a reason to revise nsamples after the fact: a value chosen once the real
+attributions are visible would be chosen on them, which is what fixing it beforehand
+exists to prevent.
+
+## What this amendment does not do
+
+It changes no hypothesis, no threshold, no class set and no comparator. The background
+size stays at 200 and held fixed across seeds, the aggregation stays as Amendment 18
+fixes it, k stays at 10, and H3 stays as Amendment 9 states it.
