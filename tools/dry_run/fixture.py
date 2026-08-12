@@ -100,8 +100,12 @@ def build(profile, *, keep=False) -> Path:
     for name in ("src", "baselines", "notebooks"):
         (shadow / name).symlink_to(REPO_ROOT / name)
     (shadow / "config").mkdir()
-    (shadow / "config" / "feature_families.yaml").symlink_to(
-        REPO_ROOT / "config" / "feature_families.yaml")
+    # Every committed config except base.yaml, which is rewritten below to point at the
+    # fixture. The mapping files in particular are real: a dry run that used a stand-in
+    # for the rule would not be exercising the rule.
+    for yml in sorted((REPO_ROOT / "config").glob("*.yaml")):
+        if yml.name != "base.yaml":
+            (shadow / "config" / yml.name).symlink_to(yml)
 
     artifacts = shadow / "artifacts"
     base = yaml.safe_load((REPO_ROOT / "config" / "base.yaml").read_text())
@@ -196,6 +200,74 @@ def build(profile, *, keep=False) -> Path:
         directory.mkdir(parents=True)
         (directory / "metrics.json").write_text(json.dumps(
             {"macro_f1": macro, "n_test": 49159, "n_parameters": 214227}, indent=1))
+
+    if spec.get("needs_records"):
+        for partition, rows in plan.items():
+            n = len(rows) * counts[partition] * 3
+            rng = np.random.default_rng({"train": 44, "val": 55, "test": 66}[partition])
+            labels = np.asarray([LABELS.index(label) for _, label in rows], dtype="int16")
+            y = np.repeat(labels, counts[partition] * 3)
+            np.savez(artifacts / "NB04" / f"records_{partition}.npz",
+                     X=rng.normal(size=(n, features)).astype("float32"), y=y,
+                     recording=np.zeros(n, dtype="int16"), source_file=np.zeros(n, dtype="int16"),
+                     row=np.arange(n, dtype="int32"),
+                     classes=np.asarray(LABELS, dtype=str),
+                     recordings=np.asarray(sorted({r for r, _ in rows}), dtype=str),
+                     files=np.asarray(["x.pcap.csv"], dtype=str),
+                     features=np.asarray(feature_names, dtype=str))
+            manifest["arrays"][f"records_{partition}"] = {
+                "file": f"records_{partition}.npz", "shape": [n, features],
+                "n_features": features, "n_rows": n,
+                "by_class": {l: int((y == LABELS.index(l)).sum()) for l in LABELS}}
+        (processed / "NB04_manifest.json").write_text(json.dumps(manifest, indent=1))
+
+    if spec.get("needs_forest_parent"):
+        where = shadow / "results" / "NB05" / "forest_19class"
+        where.mkdir(parents=True, exist_ok=True)
+        (where / "config.json").write_text(json.dumps({
+            "run_id": "forest_19class", "parent": "none", "model": "random_forest",
+            "task": "19-class", "split": "two_tier", "n_features": features,
+            "n_estimators": 100, "min_samples_leaf": 20, "max_features": "sqrt",
+            "train_rows_cap": 1000000, "k_folds": 5, "seed": 42,
+            "input": "one record, 44 features",
+            "preprocessing": "StandardScaler fitted on the training side of the split",
+            "observed": {"mode": "full", "n_classes": 19, "classes": LABELS}}, indent=1))
+        (where / "metrics.json").write_text(json.dumps({
+            "n_test": 1229711, "n_train": 999998, "macro_f1": 0.8418, "accuracy": 0.9923,
+            "weighted_f1": 0.9906, "labels": LABELS, "n_classes": 19,
+            "per_class_f1": per_class, "support": {l: 100 for l in LABELS},
+            "train_seconds": 21.2, "inference_seconds": 12.3}, indent=1))
+
+    if spec.get("needs_nb09a_artifacts"):
+        where = artifacts / "NB09a"
+        where.mkdir(parents=True, exist_ok=True)
+        rng = np.random.default_rng(909)
+        keep = list(json.loads((processed / "NB04_manifest.json").read_text())
+                    ["timing_excluded_slice"]["keep"])
+        # One file per seed, as NB09a writes them, plus the forest's own file.
+        for seed in (42, 43, 44, 45, 46):
+            np.savez(where / f"attributions_seed_{seed}.npz",
+                     attributions=np.abs(rng.normal(size=(len(LABELS), len(keep)))),
+                     classes=np.asarray(LABELS, dtype=str),
+                     features=np.asarray(keep, dtype=str),
+                     nsamples=np.asarray(50), background_n=np.asarray(200),
+                     seed=np.asarray(seed))
+        np.savez(where / "attributions_forest.npz",
+                 attributions=np.abs(rng.normal(size=(len(LABELS), len(keep)))),
+                 classes=np.asarray(LABELS, dtype=str),
+                 features=np.asarray(keep, dtype=str),
+                 nsamples=np.asarray(50), background_n=np.asarray(200))
+        (where / "attributions.json").write_text(json.dumps({
+            "generated_by": "AG_PRAXIS_NB09a_shap_attributions.ipynb",
+            "generated_on": "2026-08-11", "git_sha": "fixture", "git_dirty": False,
+            "environment": {"tensorflow": "0", "keras": "0", "shap": "0", "scipy": "0",
+                            "backend": "tensorflow", "accelerator": "cpu"},
+            "aggregation": "mean absolute attribution across the 50 records of a window",
+            "explainers": {"sequence": "shap.GradientExplainer, approximate",
+                           "forest": "shap.TreeExplainer, exact"},
+            "nsamples": 50, "background": {"n": 200, "drawn_once": True},
+            "thin_classes": {"Recon-Ping_Sweep": 4, "Recon-VulScan": 18,
+                             "MQTT-Malformed_Data": 40}}, indent=1))
 
     return shadow
 

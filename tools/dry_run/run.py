@@ -228,6 +228,10 @@ def check_cell_order(report: Report, code: list[str]) -> None:
                     if isinstance(name, ast.Name):
                         defined.add(name.id)
             elif isinstance(node, (ast.For, ast.With, ast.ExceptHandler)):
+                # `except X as name` binds a plain string on the handler, not a Name node,
+                # so walking for Name/Store misses it and the name reads as undefined.
+                if isinstance(node, ast.ExceptHandler) and node.name:
+                    defined.add(node.name)
                 for name in ast.walk(node):
                     if isinstance(name, ast.Name) and isinstance(name.ctx, ast.Store):
                         defined.add(name.id)
@@ -281,6 +285,64 @@ def check_api(report: Report, code: list[str]) -> None:
 # --------------------------------------------------------------------------
 # the compiled-training-path check
 # --------------------------------------------------------------------------
+
+
+@contextmanager
+def openfda_stub(profile):
+    """Answer openFDA from canned counts instead of the live service.
+
+    A dry run that reached the real API would not be a dry run, and it would spend
+    requests against a limit of a thousand a day per IP. The canned set covers the three
+    paths that can silently produce a wrong number: an ordinary count, a 404, which is
+    what openFDA returns for a search matching nothing, and an overlap where the
+    de-duplicated union comes out below the sum of the per-term counts.
+    """
+    spec = profile.fixture
+    if not spec.get("stub_openfda"):
+        yield None
+        return
+
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+
+    counts = spec["canned_counts"]
+    original = urllib.request.urlopen
+    calls = []
+
+    class Answer:
+        def __init__(self, total):
+            self.body = json.dumps({"meta": {"results": {"total": int(total)}}}).encode()
+
+        def read(self):
+            return self.body
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+    def stub(url, *args, **kwargs):
+        text = url if isinstance(url, str) else url.full_url
+        calls.append(text)
+        hit = [name for name in counts
+               if f'device.generic_name:"{urllib.parse.quote(name.replace("+", " "))}"' in text]
+        if "mdr_text.text" in text:
+            return Answer(spec["canned_keyword"])
+        if len(hit) > 1:
+            return Answer(spec["canned_union"])
+        if len(hit) == 1 and counts[hit[0]] is None:
+            raise urllib.error.HTTPError(text, 404, "NOT FOUND", None, None)
+        if len(hit) == 1:
+            return Answer(counts[hit[0]])
+        return Answer(0)
+
+    urllib.request.urlopen = stub
+    try:
+        yield calls
+    finally:
+        urllib.request.urlopen = original
 
 
 @contextmanager
@@ -391,7 +453,7 @@ def execute(report: Report, code: list[str], profile, shadow: Path) -> dict:
     os.environ["FAST"] = profile.fast_env
 
     try:
-        with function_spy() as seen:
+        with function_spy() as seen, openfda_stub(profile) as api_calls:
             for i, text in enumerate(code):
                 filename = f"<{profile.name} cell {i}>"
                 linecache.cache[filename] = (len(text), None, text.splitlines(True), filename)
@@ -405,6 +467,9 @@ def execute(report: Report, code: list[str], profile, shadow: Path) -> dict:
                     return {"namespace": namespace, "spy": seen, "stripped": stripped,
                             "failed_at": i}
             report.line(f"all {len(code)} code cells ran to the end", ok=True)
+            if api_calls is not None:
+                report.line(f"openFDA was stubbed; the notebook made {len(api_calls)} calls "
+                            "against canned counts and never reached the live service", ok=True)
     finally:
         os.chdir(here)
 
