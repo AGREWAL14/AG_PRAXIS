@@ -781,3 +781,32 @@ as outstanding. That entry stands as written; this one records the completed run
 
 H3 is not evaluated by this run. The mapping, the agreement count, Kendall's tau and the
 MAUDE search are NB09b's, which has not been run.
+
+### NB09b — threat mapping and surveillance coverage (2026-08-13)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB09b_threat_mapping.ipynb |
+| run date | 2026-08-13 |
+| git sha | 3572283, working tree clean |
+| status | reported result. H3 evaluated under the restatement recorded in PREREGISTRATION.md Amendment 20, which followed this run |
+| reads | data/processed/NB09a, written by NB09a across 2026-08-12 and 2026-08-13 |
+| rule files | config/shap_capec_map.yaml, config/capec_stride.yaml, config/stride_ground_truth.yaml, committed at 8f51f1f before any model trained |
+| k | 10 |
+| denominator | 18 attack classes, Benign excluded |
+| **H3, CAPEC resolution** | **18 of 18 classes resolved to a CAPEC pattern, 1.000, against a pass mark of 15 of 18** |
+| H3, forest | 18 of 18 resolved. The forest is the exactness check and H3 is not scored on it |
+| semantic agreement, sequence | 9 of 18 agree with the documented attack semantics, 0.500, against a majority-class baseline of 0.667 |
+| semantic agreement, forest | 6 of 18, 0.333. Its TreeSHAP attributions are exact |
+| classes reaching no CAPEC pattern | none, for either model |
+| Kendall's tau | mean 0.4560 across 19 classes, over 10 seed pairs on the union of each pair's top 10. No pass mark, per Amendment 7 |
+| MAUDE window | 2019-01-01 to 2026-08-13 |
+| MAUDE denominator | 829 reports across the 8 committed generic names, de-duplicated |
+| MAUDE keyword matches | 1, a share of 0.001206. Reported as device-category adverse events mentioning the committed terms, never as cyber-caused harm |
+| MAUDE terms returning nothing | 4 of 8: galvanic skin response device, sleep monitor, infant monitor, personal emergency response system. A finding about the enumeration and about FDA's vocabulary, recorded under `vocabulary_misses` in config/maude_keywords.yaml and not a reason to revise the file after the fact |
+| environment | tensorflow 2.20.0, keras 3.13.2, shap 0.52.0, scipy 1.16.3, cpu |
+| artefacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB09b, holding threat_mapping.json |
+
+The 0.667 majority-class baseline is reported beside the semantic-agreement proportion
+wherever it appears. Twelve of the eighteen attack classes are Denial of Service, so a rule
+that read nothing would score it.

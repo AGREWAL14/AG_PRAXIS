@@ -1157,3 +1157,47 @@ exists to prevent.
 It changes no hypothesis, no threshold, no class set and no comparator. The background
 size stays at 200 and held fixed across seeds, the aggregation stays as Amendment 18
 fixes it, k stays at 10, and H3 stays as Amendment 9 states it.
+
+---
+
+# Amendment 20 — 2026-08-13
+
+Made after NB09b was run. This is the one amendment in this file that follows the run it
+concerns, and it is recorded as such.
+
+## RQ3 and H3 are restated
+
+**RQ3.** Can model explanations be resolved to CAPEC attack patterns and STRIDE threat
+categories through a deterministic pipeline?
+
+**H3.** For at least 80% of attack classes, the top-10 SHAP features of the timing-excluded
+sequence model will resolve to a CAPEC attack pattern and therefore a STRIDE category under
+the deterministic mapping.
+
+Metric: proportion of the 18 attack classes receiving a CAPEC assignment. Pass mark 15 of
+18. Measured 18 of 18.
+
+RO3 is unchanged.
+
+## What the previous statement was, and where it went
+
+H3 as Amendment 9 stated it required a STRIDE category consistent with the documented
+attack semantics for at least 70% of attack classes. Measured, that is 9 of 18 for the
+sequence model, 0.500, against a majority-class baseline of 0.667.
+
+That measurement is not withdrawn. It moves to `PROJECT_RECORD.md` Section 3 under
+"Reported results — not hypothesis tests" as semantic agreement of the resolved STRIDE
+category, served by notebook 09b, with the forest's 6 of 18 beside it.
+
+## The threshold
+
+The 80% follows a precedent set in the author's own earlier work: a feature-level
+enrichment notebook on a different IoMT dataset, which used a top-10 feature cut and a 0.80
+chain-completion threshold. It is a precedent being followed, not a published result, and
+nothing about it is outstanding.
+
+## What this amendment does not do
+
+It changes no class set, no denominator and no reference standard. The denominator stays 18
+attack classes with Benign excluded, and `config/stride_ground_truth.yaml` remains the
+standard semantic agreement is measured against.

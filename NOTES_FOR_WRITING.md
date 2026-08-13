@@ -389,3 +389,78 @@ timing-excluded models. The two figures are on different units, 1,229,711 record
 **Serves:** Chapter 4, reporting the timing-excluded models and H3.
 
 **Added:** 2026-08-13
+
+---
+
+## Chapter 4 — reporting
+
+### 18 of 18 is a result that could have failed
+
+**Claim:** the mapping refuses twenty of the forty features. A class whose top-10
+attributions landed entirely on refused features would have resolved to no CAPEC pattern
+and no STRIDE category, and would have counted against H3. That every one of the eighteen
+attack classes resolved is therefore a measurement and not an artifact of a table built to
+cover everything. The write-up should state the refusal count alongside the result, because
+without it the reader cannot tell the two apart.
+
+**Rests on:** `config/shap_capec_map.yaml`, which lists twenty features under `no_entry`
+with the reason for each, and `RESULTS_LEDGER.md` under NB09b.
+
+**Serves:** Chapter 4, reporting H3.
+
+**Added:** 2026-08-13
+
+### Semantic agreement is the finding beyond prior work
+
+**Claim:** resolving explanations to a CAPEC pattern is what the prior chain does.
+Measuring whether the category it resolves to matches the attack semantics documented for
+that class is not, and that is where the result is: 9 of 18, 0.500, against a
+majority-class baseline of 0.667. A pipeline can complete for every class and still be
+right about half of them.
+
+The forest rules out the obvious explanation. Its TreeSHAP attributions are exact rather
+than approximate, and it agrees less often, 6 of 18 against 9 of 18. So the disagreement is
+not approximation error in the sequence model's attributions.
+
+**Rests on:** `RESULTS_LEDGER.md` under NB09b, from
+`data/processed/NB09b/threat_mapping.json`.
+
+**Serves:** Chapter 4, reporting the semantic-agreement result, and Chapter 5, where the
+contribution is positioned.
+
+**Added:** 2026-08-13
+
+### Correction: the 70% threshold entry above is superseded
+
+**Claim:** the entry "The 70% threshold has no derivation" describes a hypothesis H3 no
+longer states. `PREREGISTRATION.md` Amendment 20 restated H3 after NB09b ran: it now tests
+CAPEC resolution at 80%, pass mark 15 of 18. The 0.667 majority-class baseline still
+applies, but to semantic agreement, which is now a reported result rather than the
+hypothesis test. What survives from that entry is the observation that a threshold should
+be reported with its baseline and its assignment count, which holds for the new statement
+as well.
+
+**Rests on:** `PREREGISTRATION.md` Amendment 20 and `DECISIONS.md` under 2026-08-13.
+
+**Serves:** Chapter 4, and reading the earlier entry in this file.
+
+**Added:** 2026-08-13
+
+---
+
+## Chapter 2 — citation gaps to close
+
+### The 80% threshold has no publication behind it
+
+**Claim:** H3's 80% follows a precedent from the author's own earlier work, a feature-level
+enrichment notebook on a different IoMT dataset that used a top-10 feature cut and a 0.80
+chain-completion threshold. Chapter 2 has two honest options: state the threshold plainly
+as a criterion chosen for this work, or describe it as following a chain-completion
+criterion used in prior work on the same pipeline. It must not be cited as though a
+published source exists, because none does, and no citation should be attached to it.
+
+**Rests on:** `PREREGISTRATION.md` Amendment 20 and `DECISIONS.md` under 2026-08-13.
+
+**Serves:** Chapter 2, and Chapter 3 where the criterion is stated.
+
+**Added:** 2026-08-13

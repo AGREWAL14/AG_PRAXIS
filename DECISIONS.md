@@ -1157,3 +1157,27 @@ directory now records the CPU session of 2026-08-13, and `model.joblib` is the o
 it still dated from the A100 session that produced it. The figures are unaffected: macro-F1
 is 0.5910269 on both fits, the forest being deterministic at seed 42. The guard now covers
 the fit as well, skipping it when the run directory already holds a complete run.
+
+---
+
+## 2026-08-13 — H3 restated after NB09b was run
+
+**Decision:** RQ3 and H3 are restated. H3 now tests whether the top-10 SHAP features
+resolve to a CAPEC pattern, at 80% of the 18 attack classes, pass mark 15. Measured 18 of
+18. Semantic agreement against the documented attack semantics, which the previous
+statement tested at 70%, moves to reported results at 9 of 18 for the sequence model and 6
+of 18 for the forest.
+
+**When:** after the run. `PREREGISTRATION.md` Amendment 20 records it, and records that it
+is the only amendment in that file which follows the run it concerns. Every other amendment
+is stamped as made before.
+
+**Where the threshold comes from.** The 80% follows a precedent set in the author's own
+earlier work: a feature-level enrichment notebook on a different IoMT dataset, which used a
+top-10 feature cut and a 0.80 chain-completion threshold. It is a precedent, not a
+published source, and nothing about it is outstanding. Chapter 2 must not cite it as though
+a publication exists.
+
+**What is unchanged:** the denominator of 18 attack classes, the reference standard in
+`config/stride_ground_truth.yaml`, the mapping files, k at 10, and every figure NB09b
+produced. No re-run was needed: both numbers were already in `threat_mapping.json`.
