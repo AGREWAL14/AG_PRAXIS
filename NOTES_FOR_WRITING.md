@@ -236,3 +236,106 @@ chapter rather than for one.
 **Serves:** All chapters.
 
 **Added:** 2026-08-11
+
+---
+
+## Chapter 4 — reporting
+
+### The 70% threshold has no derivation
+
+**Claim:** H3's 70% criterion is not derived from anything. `PREREGISTRATION.md` Amendment
+7 records that it appears in no earlier amendment and is not a narrowing of any Amendment
+3 clause; Amendment 2 carried a different STRIDE clause, a permutation test, which
+Amendment 3 withdrew. What can be said about the number is that it clears the
+majority-class baseline of 0.667 by one class out of eighteen. The write-up should report
+the proportion, the baseline and the count of classes assigned together, so a reader can
+see the margin rather than take the threshold as given.
+
+**Rests on:** `PREREGISTRATION.md` Amendments 2, 3 and 7, and
+`config/stride_ground_truth.yaml`, whose header carries the baseline and its arithmetic.
+
+**Serves:** Chapter 4, reporting H3.
+
+**Added:** 2026-08-12
+
+### Reaching nothing and reaching the wrong category are different failures
+
+**Claim:** `config/shap_capec_map.yaml` maps twenty of the forty features and refuses
+twenty, so a class whose top-ranked features fall entirely among the refused ones reaches
+no attack pattern and receives no category. That is a statement about how far the mapping
+reaches, not about the detector being wrong, and the two must be counted separately. It is
+also the outcome most likely to hold H3 below the pass mark, so a low proportion has to be
+read against the assignment count before it is read as a failure of the explanations.
+
+**Rests on:** `config/shap_capec_map.yaml`, which lists every refusal with its reason, and
+the reporting in the threat-mapping notebook, which counts assignment and agreement
+separately.
+
+**Serves:** Chapter 4, reporting H3.
+
+**Added:** 2026-08-12
+
+### The CAPEC-to-STRIDE correspondence is a community artifact
+
+**Claim:** the correspondence is Brett Crawley's, published on a personal blog in March
+2022 and revised since. It is not a MITRE output and not a standards-body document, and no
+official CAPEC-to-STRIDE mapping exists: CAPEC's own taxonomy mappings go to ATT&CK, WASC
+and OWASP, not STRIDE. The provenance is stated wherever the mapping is described, not
+only in the bibliography.
+
+**Rests on:** `config/capec_stride.yaml`, whose header carries the provenance, the source
+URL and the retrieval date.
+
+**Serves:** Chapter 3, where the method is described, and Chapter 4, where its output is
+reported.
+
+**Added:** 2026-08-12
+
+### Spoofing reaches its category through one weak link
+
+**Claim:** Spoofing is the only class assigned to the Spoofing category, and the only
+route to it runs through the ARP feature mapping to CAPEC-151 Identity Spoofing.
+`config/shap_capec_map.yaml` records that entry as the weakest in the file, resting on a
+functional link — ARP is the protocol by which a host asserts its link-layer identity —
+rather than on a pattern named for the protocol. If that class is assigned correctly, the
+result rests on that one link and the write-up should say so.
+
+**Rests on:** `config/shap_capec_map.yaml` and `config/stride_ground_truth.yaml`.
+
+**Serves:** Chapter 4, reporting H3.
+
+**Added:** 2026-08-12
+
+### MQTT-Malformed_Data is thin and is the only route to Tampering
+
+**Claim:** MQTT-Malformed_Data rests on 40 test windows, which carries the caveat
+`PREREGISTRATION.md` Amendment 4 fixes, and it is the only class the ground truth assigns
+to Tampering. So the Tampering category stands or falls on a single thin class, and a
+reader should not take a correct or incorrect assignment there as evidence about the
+category.
+
+**Rests on:** `config/stride_ground_truth.yaml` and `PREREGISTRATION.md` Amendment 4.
+
+**Serves:** Chapter 4, reporting H3.
+
+**Added:** 2026-08-12
+
+---
+
+## Chapter 5 — interpretation and positioning
+
+### The MAUDE measurement cannot separate two explanations
+
+**Claim:** a low count of adverse-event reports mentioning attack-related terms is equally
+consistent with such events being rare and with MAUDE having no category in which to
+record them. The second is the reading Section 2 of `PROJECT_RECORD.md` already advances,
+citing Section 524B and the absence of a cybersecurity category in postmarket
+surveillance. The measurement cannot distinguish them, and the write-up must not present a
+low count as evidence for either.
+
+**Rests on:** `config/maude_keywords.yaml`, which records this under
+`absence_is_not_evidence_of_safety`, and `PROJECT_RECORD.md` Section 2.
+
+**Serves:** Chapter 5, and Chapter 4 where the count is reported.
+
+**Added:** 2026-08-12

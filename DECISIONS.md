@@ -973,3 +973,61 @@ at less than half the observed span, which the five values would have shown imme
 0.744304 and was rejected on it. Any interval chosen now would be chosen with that figure
 in view, which is the thing a criterion fixed before a run exists to prevent. A criterion
 for this check, if one is wanted again, is fixed before whatever run it is to judge.
+
+---
+
+## 2026-08-12 — NB09 split into 09a and 09b
+
+**Decision:** NB09 is two notebooks. 09a trains the timing-excluded models and computes
+the attributions. 09b applies the mapping, counts agreement, computes Kendall's tau and
+queries openFDA.
+
+**Reason:** the combined notebook was a four-to-five hour session dominated by five
+sequence training runs, and an error in the mapping would have cost the whole run. 09b
+reads 09a's artefacts, runs on a CPU and is re-runnable without retraining anything, so a
+mapping mistake costs minutes.
+
+**The forest arm stays in 09a.** Moving it to 09b was considered and rejected: 09b would
+then need the record arrays, 1.1 GB for training and 228 MB for test, and would stop being
+analysis-only. It is kept in its own cell in 09a, marked as needing no GPU, and the resume
+checks let a CPU session run that arm alone by skipping the sequence fits already written.
+
+---
+
+## 2026-08-12 — shap nsamples, measured; the first reading was wrong
+
+**What was measured:** wall time per explained window and top-10 stability at nsamples 10,
+25, 50, 100 and 200, on the dry-run fixture on CPU, one explainer call over the same fixed
+windows at every value.
+
+**The first reading, at 20 explained windows, was wrong.** The timings came out
+non-monotonic — 10 at 1.17s per window, 25 at 1.32, 50 at 1.53, 100 at 1.11, 200 at 3.19 —
+and were read as showing that nsamples was not the cost driver. Twenty windows is too few
+to see through the fixed per-call overhead.
+
+**The second reading, at 100 windows, supersedes it.** The timings are monotonic and
+nsamples is the cost driver: 0.47s per window at 10, 0.58 at 25, 0.78 at 50, 2.19 at 100
+and 4.84 at 200, which is 10.3 times the cost at 10.
+
+**Extrapolated to the real explained set**, 862 windows across five models: about 1.2
+hours at nsamples 50 against 5.8 hours at the library default of 200.
+
+**Consequence:** `PREREGISTRATION.md` Amendment 19 fixes nsamples at 50 on this cost
+curve. The stability figures from the same measurement are recorded there as fixture-only
+evidence, having been measured on Gaussian noise where there is no signal for attributions
+to find.
+
+---
+
+## 2026-08-12 — the SHAP cell called the explainer nineteen times per model
+
+**What was wrong:** `sequence_attributions` called `shap_values` once per class, nineteen
+times per model. Each call met a new batch shape and retraced. On the dry-run fixture, 228
+explained windows across five models did not finish in half an hour.
+
+**The fix:** one `shap_values` call over every explained window, sliced per class
+afterwards. The aggregation is unchanged.
+
+**Where it was found:** the dry run, `tools/dry_run`, on CPU on the fixture. It was not
+found in Colab, and it would have cost a session there. The same run also established that
+`nsamples` was being taken from a library default and had never been fixed.

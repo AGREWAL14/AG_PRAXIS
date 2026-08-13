@@ -67,7 +67,7 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 |---|---|---|---|---|---|
 | **1** | Establish how reliably IoMT attack classes can be detected from network traffic, and where detection is hardest. | Does modelling traffic as sequences improve detection of attack classes that single-record models detect poorly? | Sequence-based modelling improves detection of specific hard-to-detect classes relative to single-record models. | Per-class F1 change, sequence against single-record; classes recovered against lost across the detection floor. Macro-F1 reported as context (near-flat, +0.0028 against the published CNN — the aggregate that conceals the per-class trade) | 05, 06, 07, 08 |
 | **2** | Determine how much observation reliable detection requires across different attack types. | How much traffic must be observed before each attack class reaches its detection ceiling, and does this differ across classes? | Low-rate classes require more observation to reach detection saturation than volumetric classes. | Observation budget to reach each class's saturation point, within epsilon = 0.02 of its achievable ceiling; group medians compared | 04, 06, 08 |
-| **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
+| **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09a, 09b |
 
 The runs H1 compares are scored on different units and different splits, 49,159 windows
 against 1,614,182 and 1,229,711 records, so they are four runs' own scores rather than a
@@ -107,8 +107,8 @@ applies to the H1 class set under Amendment 6.
 | Baseline reproduction, macro vs weighted | 05 | Comparison point |
 | Class-imbalance interventions, per-class costs | 07 | Per-class benefit, which classes gain most from intervention |
 | Leave-one-family-out generalisation | 08 | Robustness |
-| Attribution stability, Kendall's tau | 09 | Reported with the mapping |
-| MAUDE cyber-attributable share | 09 | Surveillance coverage |
+| Attribution stability, Kendall's tau | 09b | Reported with the mapping |
+| MAUDE cyber-attributable share | 09b | Surveillance coverage |
 | Dadkhah et al. published baselines (RF 0.551, DNN 0.522, etc.) | 05 | Shared published-baseline anchor; also the comparator Mohammadi et al. cite. Context, not an H1 test. |
 | RF ablation: Dadkhah Table 8 config on capture-disjoint split (macro-F1 0.8680) | 05 | Isolates split protocol from Dadkhah's published 0.551; context, not an H1 test. |
 
@@ -316,10 +316,12 @@ the same effect.
 
 **Consequence:** four timing features identify the source recording better than all 44
 together, and three of them get most of the way there. SHAP therefore runs on a
-timing-excluded model in NB09, so the threat mapping describes attack behaviour rather than
-recording conditions. The identifiable session is not being used to score points on these
-eight classes, where the two attack protocols agree to within 0.0003 macro-F1, but it
-remains available to any model trained on these columns and to any explanation read off one.
+timing-excluded model, which NB09a trains, so the threat mapping describes attack
+behaviour rather than recording conditions. That model did not exist before NB09a: every
+run executed up to it uses the 44 features, or 43 for the NB03b ablation. The identifiable
+session is not being used to score points on these eight classes, where the two attack
+protocols agree to within 0.0003 macro-F1, but it remains available to any model trained
+on these columns and to any explanation read off one.
 
 **No column is constant within a capture while varying across captures**, so provenance
 is carried by distributional shift, not by any column acting as a label.
@@ -708,7 +710,7 @@ which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 |---|---|---|---|
 | 01 | Dataset Inventory | Reads every file, counts what is in them, works out how the recordings are organised | Setup |
 | 02 | Exploratory Analysis | Looks at what the measurements contain and which attacks are hard to tell apart | Setup |
-| 03 | Feature Provenance Check | Tests whether the measurements identify the recording session rather than the attack | Justifies 09 |
+| 03 | Feature Provenance Check | Tests whether the measurements identify the recording session rather than the attack | Justifies 09a |
 | 03b | Timing Feature Ablation | Measures how much of the recording-identification result comes from the TTL column | Premise for 07b |
 | 04 | Preprocessing and Splits | Cleans the data, builds train and test splits, groups records into sequences | All |
 | 05 | Baseline Models | Rebuilds the published model and a simple comparison model | H1 |
@@ -717,7 +719,8 @@ which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 | 07b | Capture-Invariant Training | Trains the model so it cannot tell the recordings apart, and checks which attacks come back. **Designed and not executed**, withdrawn under `DECISIONS.md` 2026-08-11 | H1 |
 | 08 | Evaluation and Significance | Repeats runs across seeds, tests whether differences are real, measures how few records are needed | **H1, H2** |
 | 08b | Adaptive Earliness | Lets the model decide when it has seen enough, instead of fixing the budget in advance | RO2 |
-| 09 | Explainability and Threat Mapping | Explains what the model used, maps it to CAPEC and STRIDE, checks against MAUDE | **H3** |
+| 09a | Attribution on Timing-Excluded Models | Trains the models that cannot see the timing measurements, and works out which of the remaining measurements each one used | **H3** |
+| 09b | Threat Mapping and Surveillance | Turns those measurements into attack patterns and threat categories, checks them against the benchmark paper's own descriptions, measures how much the explanations move between seeds, and counts adverse event reports. Needs no GPU | **H3** |
 | 10 | Results Consolidation | Builds every table and figure for the results chapter | Chapter 4 |
 
 Notebooks 01 to 03 have been run in an earlier numbering scheme. Their results are in
@@ -809,7 +812,9 @@ AG_PRAXIS/
 ├── RESULTS_LEDGER.md      <- append-only
 ├── DECISIONS.md           <- append-only
 ├── CLAUDE.md              <- rules read by Claude Code
-├── config/                <- base.yaml, feature_families.yaml, runs/
+├── config/                <- base.yaml, feature_families.yaml, runs/, and the four
+│                             files the threat mapping reads: stride_ground_truth.yaml,
+│                             shap_capec_map.yaml, capec_stride.yaml, maude_keywords.yaml
 ├── notebooks/             <- authored on Mac, outputs stripped
 ├── runs/                  <- executed copies from Colab, never re-edited
 ├── src/                   <- importable modules
@@ -871,6 +876,7 @@ position; the pre-registration states how it was reached.
 | NB07b withdrawn | Designed, specified and costed, and not executed. `PREREGISTRATION.md` Amendment 16 established that 11 of the 45 training groups are single-capture classes where the group and the class are the same set of windows, and that all five classes fixed in Amendment 6 are among them; Amendment 17 established that the weights start uniform, so that coincidence is operative from the first update. On the class set the first dependent variable is evaluated over, the intervention is therefore class weighting, which NB07 already tested through five interventions, and what survives is the capture-invariance question on the 8 classes recorded more than once. `DECISIONS.md` under 2026-08-11 records the withdrawal and that no figure from the aborted run is recorded. Amendments 14, 16 and 17 stand as written and are not withdrawn |
 | H2's twofold comparison not evaluable on the NB08 grid, superseded | NB08 measured records to threshold at k in {5, 10, 25, 50}. Three of five low-rate classes do not reach F1 0.80 within 50 records, so the low-rate median is not determinate and the twofold comparison the hypothesis then stated is not evaluated. The direction is reported instead, under `PREREGISTRATION.md` Amendment 11, which fixed this handling before the run. Extending the grid past 50 would require rebuilding the sequences at a longer window and is ruled out by the same amendment. The hypothesis is now H2 and Amendment 12 measures it on saturation, where both group medians are determinate, and states no numeric multiple. Records to threshold is retained as a reported result. Section 5 carries the figures |
 | Conformal prediction scope, resolved | Run as a feasibility probe in `NB06b_cp_scores` and `NB06c_cp_feasibility`. The probe returned a negative and conformal prediction was dropped. Recorded in `DECISIONS.md` under 2026-08-09 and in Section 3 under scope exclusions |
+| NB09a and NB09b written and not executed | Both are committed and both pass their dry runs, and neither has been run, so H3 is not yet evaluated. The rules they run under are fixed in `PREREGISTRATION.md` Amendments 18 and 19: the sequence model at 40 features is what H3 is scored on, the forest at 40 features is an exactness check on its approximate attributions, the aggregation is mean absolute, k is 10, the SHAP background is 200 windows held fixed across seeds, and nsamples is 50. The mapping rule and the reference standard are `config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml`, `config/capec_stride.yaml` and `config/maude_keywords.yaml`, all committed before either notebook trains anything. 09a trains five sequence models and the forest and writes attributions per seed as each pass completes; 09b maps, counts assignment and agreement separately, computes Kendall's tau and queries openFDA, and runs on a CPU |
 | Title and thesis statement | Update pending. Handled outside this pass |
 | Abstract | Section 1a to be added. Handled outside this pass |
 | Hypothesis approval marking | Sign-off obtained from the advisory committee. Section 3 records no approval status; the approval marking and its date are added in a later pass |

@@ -127,7 +127,8 @@ rationale:
     The assignment does not affect the timing family, which is unambiguous —
     Duration, Rate, Srate, IAT, of which Duration is the TTL header field, kept
     in this family by deliberate decision under duration_family_placement below —
-    and is the only family excluded downstream in NB09. NB03 measured protocol
+    and is the only family excluded downstream, in NB09a, which trains the
+    timing-excluded models the explanation stage reads. NB03 measured protocol
     at 0.1802 and statistical at 0.1198 for capture identification against
     timing at 0.9301, so neither of the two families in question carries the
     provenance signal wherever these columns sit.
