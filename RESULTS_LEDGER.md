@@ -746,3 +746,38 @@ feature set.
 
 H3 is not evaluated by this run. The mapping, the agreement count, Kendall's tau and the
 MAUDE search are NB09b's, and NB09b cannot run until attributions.json exists.
+
+### NB09a — SHAP attributions on timing-excluded models (2026-08-13), complete
+
+Supersedes the partial entry of 2026-08-12, which recorded the forest's attribution pass
+as outstanding. That entry stands as written; this one records the completed run.
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB09a_shap_attributions.ipynb |
+| status | complete. Five sequence seeds, the forest fit and both attribution passes |
+| registered under | PREREGISTRATION.md Amendments 18 and 19 |
+| environment, sequence arm | 2026-08-12, NVIDIA A100-SXM4-40GB, tensorflow 2.20.0, keras 3.13.2, shap 0.52.0, scipy 1.16.3 |
+| environment, forest arm | 2026-08-13, cpu, tensorflow 2.20.0, keras 3.13.2, shap 0.52.0, scipy 1.16.3 |
+| where the environment is read from | each run's own `config.json`, which is the authority. `attributions.json` carries one top-level environment field describing the session that wrote it, 2026-08-13 on cpu, not the work it summarises |
+| features | 40, after dropping Duration, Rate, Srate, IAT |
+| sequence models | 5, seeds 42 to 46, parent sequence_cnn_lstm_19class, one change: n_features |
+| sequence parameters | 206,035 against the parent's 214,227 at 44 features |
+| macro F1 by seed | 42 0.6747, 43 0.6714, 44 0.6947, 45 0.6805, 46 0.7292 |
+| macro F1, five seeds | 0.6901 plus or minus 0.0236, on 49,159 windows |
+| sequence training | 2,294, 2,254, 2,253, 2,248 and 2,263 seconds on the A100 |
+| sequence explainer | GradientExplainer, 444 to 447 seconds per seed on the A100, each writing its own file as it finished |
+| sequence explained | 862 windows, 50 per class or all of them where a class has fewer |
+| forest | forest_timing_excluded, parent forest_19class, one change: n_features. 100 trees, min leaf 20, sqrt, cap 1,000,000 rows |
+| forest macro F1 | 0.5910269 on 1,229,711 records, fitted in 107.5s, cross-validated over 5 folds in 420.2s |
+| forest explainer | TreeExplainer on cpu, exact |
+| forest explained | 3,739 records, 200 per class. Reduced from 2,000 per class after two runs at 33,653 records each exceeded an hour without completing, once on the A100 session and once on Colab CPU. Recorded in `DECISIONS.md` under 2026-08-13 |
+| the two explained sets are not comparable | 862 windows at 50 per class against 3,739 records at 200 per class. Different units and never a like-for-like sample |
+| nsamples | 50, background 200 windows drawn once and held fixed across the five seeds |
+| the same four columns, two models | the forest falls from 0.8418 at 44 features to 0.5910 at 40, a fall of 0.2508. The sequence model falls from 0.7138 to a five-seed mean of 0.6901, a fall of 0.0237 |
+| units | 49,159 windows for the sequence models and 1,229,711 records for the forest; the same split, not the same partition |
+| artefacts | attributions_seed_42.npz through _46.npz, attributions_forest.npz and attributions.json, each attribution table (19, 40); six run directories each holding its five files. There is no attributions.npz: the per-seed design replaced it |
+| forest refitted on resume | the resume guard covered the attribution pass and not the fit, so the CPU run refitted the forest and re-ran its five folds. The figures are unaffected. `DECISIONS.md` under 2026-08-13 records it |
+
+H3 is not evaluated by this run. The mapping, the agreement count, Kendall's tau and the
+MAUDE search are NB09b's, which has not been run.

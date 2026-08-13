@@ -1126,3 +1126,34 @@ collected. And the environment is recorded in run configs that are on Drive and 
 been moved into the repository, so the runner, which scans committed configs, still finds
 nothing and still takes the failure branch. The condition path does not become live until
 an executed run's config is committed.
+
+---
+
+## 2026-08-13 — the forest's explained sample cut to 200 records per class
+
+**Decision:** `EXPLAIN_PER_CLASS_FOREST` is 200, down from 2,000. The forest's
+attributions are computed over 3,739 test records rather than 33,653.
+
+**Why, as measured.** Two runs at 33,653 records each exceeded an hour without completing,
+once inside the A100 session of 2026-08-12 and once on a Colab CPU runtime on 2026-08-13.
+The forest is 100 trees at `min_samples_leaf` 20 fitted over 999,998 records, so its trees
+are deep, and TreeSHAP's cost scales with depth and leaf count rather than with the number
+of trees. At 200 per class the pass completes.
+
+**This is a parameter change and not an amendment.** The figure was never registered.
+Amendment 18 fixes the model H3 is scored on, the aggregation, k and the background;
+Amendment 19 fixes nsamples. Neither names the size of the explained sample for either
+arm, so this is recorded here.
+
+**The two explained sets were never a like-for-like sample.** The sequence models explain
+50 windows per class, 862 windows in total. The forest explains 200 records per class,
+3,739 records in total. Different units, and the two counts were never chosen to match.
+
+**The resume guard covered one of two expensive steps.** It skipped the TreeExplainer pass
+when the attribution file existed and did not skip `kfold_fit_and_save`, so the CPU run
+refitted the forest and re-ran its five folds: 107.5 seconds of fitting and 420.2 seconds
+of cross-validation. What matters more than the time is what it overwrote. The run
+directory now records the CPU session of 2026-08-13, and `model.joblib` is the only file in
+it still dated from the A100 session that produced it. The figures are unaffected: macro-F1
+is 0.5910269 on both fits, the forest being deterministic at seed 42. The guard now covers
+the fit as well, skipping it when the run directory already holds a complete run.

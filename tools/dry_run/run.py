@@ -95,14 +95,21 @@ def local_environment() -> dict:
     return found
 
 
-def recorded_environment() -> tuple[dict | None, str]:
-    """The environment the most recent executed run recorded, and where it came from.
+def recorded_environment() -> tuple[dict | None, str, dict]:
+    """What executed runs recorded: the package versions, and every accelerator seen.
 
     Read out of committed run configs rather than remembered. A run that did not
     record its environment is not evidence about anything, so the absence is
     reported rather than filled in.
+
+    Package versions come from the most recent run. The accelerator does not: a run
+    can span sessions on different hardware, and naming one of them would claim
+    something about the environment that is not true of the work. Every distinct
+    accelerator is collected instead, with how many runs recorded it. Preferring the
+    most recent GPU run would make the same error in the other direction, whenever a
+    CPU-only run is the one that matters.
     """
-    best, source = None, "nothing found"
+    best, source, accelerators = None, "nothing found", {}
     for path in sorted(REPO_ROOT.glob("**/config.json")):
         if ".git" in path.parts:
             continue
@@ -110,20 +117,25 @@ def recorded_environment() -> tuple[dict | None, str]:
             config = json.loads(path.read_text())
         except Exception:
             continue
-        environment = (config.get("observed") or {}).get("environment")
+        observed = config.get("observed") or {}
+        environment = observed.get("environment")
         if not environment:
             continue
-        date = str((config.get("observed") or {}).get("run_date", ""))
+        date = str(observed.get("run_date", ""))
+        name = str(environment.get("accelerator", "not recorded"))
+        seen = accelerators.setdefault(name, {"runs": 0, "dates": set()})
+        seen["runs"] += 1
+        seen["dates"].add(date or "no run date")
         if best is None or date >= best[0]:
             best = (date, environment)
             source = f"{path.relative_to(REPO_ROOT)} ({date or 'no run date'})"
-    return (best[1] if best else None), source
+    return (best[1] if best else None), source, accelerators
 
 
 def check_versions(report: Report) -> None:
     report.section("ENVIRONMENT — local against what Colab last recorded")
     here = local_environment()
-    there, source = recorded_environment()
+    there, source, accelerators = recorded_environment()
 
     if there is None:
         for name, version in here.items():
@@ -156,6 +168,14 @@ def check_versions(report: Report) -> None:
         + ". Every API check below is made against the local versions, so behaviour that "
         "exists only in the recorded versions is invisible to this dry run. The dry run "
         "catches logic and structure, not version-specific behaviour."
+    )
+    # Every accelerator any run recorded, not the most recent one. A run can span
+    # sessions on different hardware and one name would misdescribe the work.
+    report.condition(
+        "accelerators recorded: "
+        + "; ".join(f"{name} ({found['runs']} run{'s' if found['runs'] != 1 else ''}, "
+                    f"{', '.join(sorted(found['dates']))})"
+                    for name, found in sorted(accelerators.items()))
     )
     for name in unnamed:
         report.line(f"{name}: the recorded run does not name it", ok=False)
