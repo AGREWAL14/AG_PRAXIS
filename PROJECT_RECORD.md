@@ -738,7 +738,7 @@ which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 | 07 | Class Balancing | Tests five ways of making the rare attacks visible, one at a time | H1 |
 | 07b | Capture-Invariant Training | Trains the model so it cannot tell the recordings apart, and checks which attacks come back. **Designed and not executed**, withdrawn under `DECISIONS.md` 2026-08-11 | H1 |
 | 08 | Evaluation and Significance | Repeats runs across seeds, tests whether differences are real, measures how few records are needed | **H1, H2** |
-| 08b | Adaptive Earliness | Lets the model decide when it has seen enough, instead of fixing the budget in advance | RO2 |
+| 08b | Adaptive Earliness | Lets the model decide when it has seen enough, instead of fixing the budget in advance. **Written and not executed**, parked under `DECISIONS.md` 2026-08-13 | RO2 |
 | 09a | Attribution on Timing-Excluded Models | Trains the models that cannot see the timing measurements, and works out which of the remaining measurements each one used | **H3** |
 | 09b | Threat Mapping and Surveillance | Turns those measurements into attack patterns and threat categories, checks them against the benchmark paper's own descriptions, measures how much the explanations move between seeds, and counts adverse event reports. Needs no GPU | **H3** |
 | 10 | Results Consolidation | Builds every table and figure for the results chapter | Chapter 4 |
@@ -861,14 +861,17 @@ repo. Files reach the repo from the Mac.
 
 ## 10. Superseded documents
 
-These remain in the repository for history and **must not be used as reference**:
+These are superseded and **must not be used as reference**. Three of the four are no
+longer in the repository; only `PROPOSAL_RECORD.md` remains, at `archive/docs/`. All four
+rows are kept, because what this section records is what existed and what replaced it, and
+that does not depend on the file still being here.
 
-| File | Superseded because |
-|---|---|
-| `docs/RESEARCH_DESIGN_CONSOLIDATED.md` | Framed around benchmark leakage; objectives have since been restated as timeliness, sequence benefit, and threat mapping |
-| `docs/TEN_DAY_PLAN.md` | Built for a 31-notebook programme, replaced by the 10 in Section 7 |
-| `docs/PROPOSAL_RECORD.md` | Baseline critique retained as background; RQ and hypothesis content superseded |
-| `docs/MID_PROJECT_REVIEW.md` | Its recommendations are incorporated here |
+| File | In the repository | Superseded because |
+|---|---|---|
+| `RESEARCH_DESIGN_CONSOLIDATED.md` | no | Framed around benchmark leakage; objectives have since been restated as timeliness, sequence benefit, and threat mapping |
+| `TEN_DAY_PLAN.md` | no | Built for a 31-notebook programme, replaced by the 10 in Section 7 |
+| `PROPOSAL_RECORD.md` | `archive/docs/` | Baseline critique retained as background; RQ and hypothesis content superseded |
+| `MID_PROJECT_REVIEW.md` | no | Its recommendations are incorporated here |
 
 `PREREGISTRATION.md` is **not** superseded. It holds the dated amendment history and its
 value is that it was written before results. Section 3 of this file states the current
@@ -897,6 +900,7 @@ position; the pre-registration states how it was reached.
 | H2's twofold comparison not evaluable on the NB08 grid, superseded | NB08 measured records to threshold at k in {5, 10, 25, 50}. Three of five low-rate classes do not reach F1 0.80 within 50 records, so the low-rate median is not determinate and the twofold comparison the hypothesis then stated is not evaluated. The direction is reported instead, under `PREREGISTRATION.md` Amendment 11, which fixed this handling before the run. Extending the grid past 50 would require rebuilding the sequences at a longer window and is ruled out by the same amendment. The hypothesis is now H2 and Amendment 12 measures it on saturation, where both group medians are determinate, and states no numeric multiple. Records to threshold is retained as a reported result. Section 5 carries the figures |
 | Conformal prediction scope, resolved | Run as a feasibility probe in `NB06b_cp_scores` and `NB06c_cp_feasibility`. The probe returned a negative and conformal prediction was dropped. Recorded in `DECISIONS.md` under 2026-08-09 and in Section 3 under scope exclusions |
 | NB09a and NB09b executed, resolved | Both are run. NB09a completed across two sessions, the five sequence models and their explainer passes on an A100 on 2026-08-12 and the forest's TreeExplainer pass on a CPU runtime on 2026-08-13, which also wrote `attributions.json`; its artefacts are in `data/processed/NB09a/` and `results/NB09a/`. NB09b ran on 2026-08-13: H3 measured 18 of 18 classes resolving to a CAPEC pattern against a pass mark of 15, semantic agreement 9 of 18 for the sequence model and 6 of 18 for the forest against a majority-class baseline of 0.667, Kendall's tau 0.4560 across 19 classes, and MAUDE 1 keyword match in 829 reports; its artefact is `data/processed/NB09b/threat_mapping.json`. `RESULTS_LEDGER.md` carries both, the NB09a completion entry of 2026-08-13 superseding its partial entry of 2026-08-12. H3 is restated as chain resolution by `PREREGISTRATION.md` Amendment 20, which followed the run. The rules they run under are fixed in `PREREGISTRATION.md` Amendments 18 and 19: the sequence model at 40 features is what H3 is scored on, the forest at 40 features is an exactness check on its approximate attributions, the aggregation is mean absolute, k is 10, the SHAP background is 200 windows held fixed across seeds, and nsamples is 50. The mapping rule and the reference standard are `config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml`, `config/capec_stride.yaml` and `config/maude_keywords.yaml`, all committed before either notebook trains anything. 09a trains five sequence models and the forest and writes attributions per seed as each pass completes; 09b maps, counts assignment and agreement separately, computes Kendall's tau and queries openFDA, and runs on a CPU |
+| NB08b parked | Written, committed and dry-run clean, and not run. RO2 is answered by the saturation result in Section 5, the per-class budgets and the group medians of 25 against 15, on which H2 is measured under `PREREGISTRATION.md` Amendment 12. The earliness curve NB08b would produce is not load-bearing for any hypothesis. `DECISIONS.md` under 2026-08-13 records the parking. Amendment 15 stands as written and is not withdrawn |
 | Title and thesis statement | Update pending. Handled outside this pass |
 | Abstract | Section 1a to be added. Handled outside this pass |
 | Hypothesis approval marking | Sign-off obtained from the advisory committee. Section 3 records no approval status; the approval marking and its date are added in a later pass |

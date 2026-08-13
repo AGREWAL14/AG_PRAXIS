@@ -464,3 +464,24 @@ published source exists, because none does, and no citation should be attached t
 **Serves:** Chapter 2, and Chapter 3 where the criterion is stated.
 
 **Added:** 2026-08-13
+
+---
+
+## Chapter 5 — interpretation and positioning
+
+### Adaptive earliness, as specified future work
+
+**Claim:** measuring earliness under a per-class confidence trigger is the indicated next
+step for the observation work, and it is specified rather than speculative.
+`PREREGISTRATION.md` Amendment 15 fixes the halting rule, the twelve-value tau grid with
+its resolution concentrated in the upper tail, the metric of earliness against macro-F1,
+and the averaging over correctly classified windows only. The notebook is written,
+committed and passes its dry run. The write-up can say what the next experiment is in terms
+precise enough to run.
+
+**Rests on:** `PREREGISTRATION.md` Amendment 15, and `DECISIONS.md` under 2026-08-13, which
+records why it was parked.
+
+**Serves:** Chapter 5, future work.
+
+**Added:** 2026-08-13

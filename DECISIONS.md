@@ -1181,3 +1181,22 @@ a publication exists.
 **What is unchanged:** the denominator of 18 attack classes, the reference standard in
 `config/stride_ground_truth.yaml`, the mapping files, k at 10, and every figure NB09b
 produced. No re-run was needed: both numbers were already in `threat_mapping.json`.
+
+---
+
+## 2026-08-13 — NB08b parked as future work
+
+**Decision:** NB08b will not be run. It is written, committed and passes its dry run, and
+it stays in the repository.
+
+**What answers RO2 without it:** the saturation result already reported. `PROJECT_RECORD.md`
+Section 5 carries the per-class saturation budgets and the group medians, low-rate 25
+against volumetric 15, and H2 is measured on them under Amendment 12.
+
+**What NB08b would add:** an earliness curve under a per-class confidence trigger, which
+connects the observation work to the early-detection literature. It is not load-bearing for
+H1, H2 or H3.
+
+**What stands:** `PREREGISTRATION.md` Amendment 15 is not withdrawn. It fixes the halting
+rule, the twelve-value tau grid, the earliness metric and the averaging over correctly
+classified windows, and it is the record of a design that was specified and costed.

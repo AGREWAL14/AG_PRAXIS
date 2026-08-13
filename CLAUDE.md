@@ -12,8 +12,8 @@ Read this before writing any notebook or module in this repository.
 | GitHub repository | `AG_PRAXIS` |
 | Drive artefacts | `MyDrive/AG_PRAXIS_artifacts/` |
 | Conda environment | `ag_praxis` |
-| Notebook files | `AG_PRAXIS_NB01_load_inventory.ipynb` |
-| Run records | `runs/AG_PRAXIS_NB01_load_inventory_executed.ipynb` |
+| Notebook files | `AG_PRAXIS_NB01_dataset_inventory.ipynb` |
+| Run records | `runs/AG_PRAXIS_NB01_dataset_inventory_executed.ipynb` |
 | Artefact folders | `AG_PRAXIS_artifacts/NB04_seed42/` |
 
 Every notebook is numbered and titled. Numbers are never reused, and never
@@ -204,8 +204,8 @@ Executed copies are saved from Colab to `runs/`, taking the source filename with
 `_executed` appended. No dates. Re-running a notebook overwrites its executed copy,
 so `runs/` always holds the current result rather than a history.
 
-    notebooks/AG_PRAXIS_NB01_load_inventory.ipynb
-    runs/AG_PRAXIS_NB01_load_inventory_executed.ipynb
+    notebooks/AG_PRAXIS_NB01_dataset_inventory.ipynb
+    runs/AG_PRAXIS_NB01_dataset_inventory_executed.ipynb
 
 In Colab's Save a copy in GitHub dialog, the File path field pre-fills with the
 source path. Change it to the `runs/` path before clicking OK, or the clean source

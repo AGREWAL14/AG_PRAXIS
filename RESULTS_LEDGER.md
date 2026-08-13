@@ -810,3 +810,82 @@ MAUDE search are NB09b's, which has not been run.
 The 0.667 majority-class baseline is reported beside the semantic-agreement proportion
 wherever it appears. Twelve of the eighteen attack classes are Denial of Service, so a rule
 that read nothing would score it.
+
+### NB01 — dataset inventory (2026-08-08), entered 2026-08-13
+
+Entered late. The run is from 2026-08-08 and its figures have been cited in
+`PROJECT_RECORD.md` Section 5 since, without a ledger entry. Every figure below is read
+from the artifacts named at the foot of the entry, not from Section 5.
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB01_dataset_inventory.ipynb |
+| run date | 2026-08-08 |
+| git sha | a4c8ff2 |
+| pass reported | full, `is_fast_pass` false |
+| rows scanned | 8,775,013, every row of every file |
+| files | 72 |
+| columns | 45 released, 44 modelled after the drop |
+| classes | 19 |
+| constant across the whole scan | Drate, and nothing else |
+| constant within a recording and different between recordings | none |
+| tiers | A 8 classes, B 11 classes |
+| near-constant columns | 21 |
+| columns zero in more than 90% of rows | 15 |
+| artefacts | `data/processed/dataset_inventory.json` and `data/processed/near_constancy.json`. These use descriptive filenames rather than the `NB0X` prefix the later notebooks use, so a search by notebook number will not find them |
+
+### NB02 — exploratory analysis (2026-08-03), entered 2026-08-13
+
+Entered late, on the same basis as the NB01 entry above.
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB02_exploratory_analysis.ipynb |
+| run date | 2026-08-03 |
+| git sha | e5de0b6, working tree clean |
+| seed | 42 |
+| pass reported | full, `is_fast_pass` false |
+| rows read | 8,775,013 |
+| features | 44, after dropping Drate |
+| class pairs tested | 171 |
+| median best single-feature AUC | 0.9984744 |
+| pairs separable at AUC 0.90 by one feature | 160 of 171; 11 below |
+| least separable pair | Recon-OS_Scan against Recon-Port_Scan, 0.6850471 on Rate |
+| top feature by mutual information, 19-class | IAT, 2.1499912 nats of 2.1939978 available |
+| top feature, four weakest classes | IAT, 0.9702820 of 1.1776717 |
+| largest rank change between the two rankings | Number, rank 26 to rank 5 |
+| feature pairs above r 0.95 | 14 |
+| features zero in more than 90% of rows | 15 of 44 |
+| largest between-recording shift | Protocol Type, ratio 0.2302 on DoS-UDP, median 0.1226 across the 8 classes |
+| figures | 7, in `results/` |
+| artefacts | `data/processed/eda_summary.json` and `data/processed/pairwise_auc.csv`, plus the figures. Descriptive filenames, as with NB01 |
+
+### NB03 — feature provenance check (2026-08-04), entered 2026-08-13
+
+Entered late, on the same basis as the two entries above.
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB03_feature_provenance.ipynb |
+| run date | 2026-08-04 |
+| git sha | 1229f85, working tree clean |
+| seed | 42 |
+| pass reported | full, `is_fast_pass` false |
+| model | RandomForest, 50 trees, min leaf 100, 30% held out |
+| recordings | 50, from the 8 classes recorded more than once |
+| rows used | 400,000, 8,000 from every recording |
+| runs written | 14 |
+| capture identification, all 44 features (chance 0.0200) | 0.8010 |
+| capture identification, attack class held fixed (mean chance 0.1750) | 0.8280 |
+| gap closed, chance to 1.0, with the class held fixed | 0.7915 |
+| timing family only, 4 features | 0.9301 |
+| protocol family, 28 features | 0.1802 |
+| statistical family, 12 features | 0.1198 |
+| the five features named by published work | 0.9285 |
+| IAT, Rate, Srate | 0.8935 |
+| strongest family | timing |
+| attack macro-F1, whole recording held out | 0.9985 |
+| attack macro-F1, rows pooled | 0.9982 |
+| difference, pooled minus held out | -0.0003 |
+| recording identifiable | true |
+| artefacts | `data/processed/NB03_verdict.json` and `data/processed/variance_ranking.json`, plus 2 figures in `results/`. `variance_ranking.json` uses a descriptive filename, as with NB01 and NB02 |
