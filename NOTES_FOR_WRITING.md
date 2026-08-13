@@ -339,3 +339,27 @@ low count as evidence for either.
 **Serves:** Chapter 5, and Chapter 4 where the count is reported.
 
 **Added:** 2026-08-12
+
+---
+
+## Prose conventions — all chapters
+
+### The governance apparatus is scaffolding and does not appear in the chapters
+
+**Claim:** Chapter 3 describes the method as executed, as a coherent design, not the
+amendment history that produced it. Chapter 4 reports results. Chapter 5 interprets. None
+of these appears in any chapter: amendment numbers, notebook numbers, commit hashes,
+config filenames, dry-run findings, run configs, artifact paths, hyperparameter names, or
+the reasoning behind superseded decisions.
+
+One exception. Chapter 3 may state in a sentence or two that design decisions were
+recorded before execution, with a pointer to the repository. Not an enumeration.
+
+Limitations reach the prose only where they change how a result should be read. The
+entries already in this file are that set.
+
+**Rests on:** Nothing measured. It is a scope rule, fixed here.
+
+**Serves:** All chapters.
+
+**Added:** 2026-08-13
