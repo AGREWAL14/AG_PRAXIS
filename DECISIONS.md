@@ -1031,3 +1031,38 @@ afterwards. The aggregation is unchanged.
 **Where it was found:** the dry run, `tools/dry_run`, on CPU on the fixture. It was not
 found in Colab, and it would have cost a session there. The same run also established that
 `nsamples` was being taken from a library default and had never been fixed.
+
+---
+
+## 2026-08-12 — the 50 percent and the 70 percent measure different quantities
+
+**Decision:** nothing changes. H3's threshold stays at 70 percent, and this entry records
+why the two figures were never in competition.
+
+**The 50 percent is a capture-identification accuracy.** `PREREGISTRATION.md` Amendment 3
+stated it as the first clause of H3: timing features will identify the source capture at
+above 50 percent accuracy with the attack class held fixed. Its fails-if reads
+"capture-identification accuracy with class fixed falls below 0.50". Amendment 7 dropped
+it as a hypothesis clause and retained it as a reported result. It appears in
+`PROJECT_RECORD.md` Section 3 under "Reported results — not hypothesis tests" as capture
+identifiability, served by notebook 03, and in Section 5 at 0.8280 with the attack class
+held fixed against a mean chance rate of 0.1750.
+
+**The 70 percent is a proportion of classes whose mapped category matches the reference
+standard.** It is the only threshold H3 has ever carried for STRIDE consistency: it
+appears in Amendment 7, in Amendment 9 and in Section 3, and no 50 percent figure is
+attached to STRIDE consistency anywhere in the record.
+
+**What Amendment 7 records about it.** The 70 percent criterion appears in no earlier
+amendment and is not a narrowing of any Amendment 3 clause, measuring agreement between
+the mapping and the attack semantics documented in the benchmark paper, which no earlier
+clause measured. Amendment 2 carried a different STRIDE clause, a permutation test on SHAP
+profile separation, and Amendment 3 withdrew it.
+
+**The margin.** `config/stride_ground_truth.yaml` assigns 12 of the 18 attack classes to
+Denial of Service, a majority-class baseline of 0.667. Seventy percent of 18 is 12.6, so
+the pass mark is 13 and clears that baseline by one class. A 50 percent bar on the same
+denominator would be 10 of 18, two classes below the baseline count.
+
+**What this does not do:** no amendment is made and no file changes. H3 stands as
+Amendment 9 states it.
