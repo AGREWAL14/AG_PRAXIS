@@ -363,3 +363,29 @@ entries already in this file are that set.
 **Serves:** All chapters.
 
 **Added:** 2026-08-13
+
+---
+
+## Chapter 4 — reporting
+
+### The two models lose very differently when the timing columns are removed
+
+**Claim:** removing the same four columns costs the two models very differently. The
+random forest falls from macro-F1 0.8418 at 44 features to 0.5910 at 40, a fall of 0.2508.
+The sequence model falls from 0.7138 to a five-seed mean of 0.6901, a fall of 0.0237. The
+comparison is worth reporting in its own right.
+
+It also bears on how the forest's role should be described. The forest is the exactness
+check on the sequence model's approximate attributions, and at 40 features it is a
+materially weaker model than at 44 — weaker, on its own numbers, than the model it is
+checking. That does not disqualify it: TreeSHAP is exact whatever the model scores, and
+the check is about the attribution method rather than about accuracy. But a reader told
+only that the forest is the exact comparator should also be told what it scores.
+
+**Rests on:** `RESULTS_LEDGER.md` under NB09a, and `PROJECT_RECORD.md` Section 5 under
+timing-excluded models. The two figures are on different units, 1,229,711 records against
+49,159 windows.
+
+**Serves:** Chapter 4, reporting the timing-excluded models and H3.
+
+**Added:** 2026-08-13

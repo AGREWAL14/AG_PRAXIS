@@ -1066,3 +1066,31 @@ denominator would be 10 of 18, two classes below the baseline count.
 
 **What this does not do:** no amendment is made and no file changes. H3 stands as
 Amendment 9 states it.
+
+---
+
+## 2026-08-13 — the TreeExplainer cost estimate was wrong by an order of magnitude
+
+**What was estimated:** minutes. The NB09 design report put TreeSHAP on the forest at
+"minutes" and treated the forest arm as negligible beside the sequence training.
+
+**What happened:** on 2026-08-12 the pass ran for over an hour against 33,653 explained
+records and was interrupted without completing. The forest it explains is 100 trees at
+`min_samples_leaf` 20, fitted over 999,998 records, so the trees are deep and TreeSHAP's
+cost scales with depth and leaf count rather than with the number of trees alone. The
+estimate did not account for that.
+
+**What did complete:** the forest fit itself. `forest_timing_excluded` wrote all five
+files, cross-validated over five folds, and scored macro-F1 0.5910 on 1,229,711 records in
+107.8 seconds. Only the attribution pass is outstanding.
+
+**Where the arm sits:** in a notebook holding an A100, while needing no GPU. TreeSHAP is
+CPU work and the sequence training is not, so the hour was spent on an accelerator that
+the outstanding work cannot use.
+
+**What the resume run has to complete, on a free CPU runtime:** the TreeExplainer pass,
+and `attributions.json`. The second is not optional. It is written once in the cell after
+the forest, so the interruption cost it, and NB09b reads it separately from its glob over
+the per-seed files. NB09b cannot run until it exists. The resume skips already in NB09a
+will pass over the five sequence fits, the five attribution files and the forest fit, so a
+CPU run reaches the outstanding work directly.

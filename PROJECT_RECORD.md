@@ -642,6 +642,25 @@ No McNemar test is computed against `published_cnn_19class`. The two are scored 
 different units, 49,159 windows against 1,614,182 rows, and on different splits, so no
 item-level pairing exists. No substitute test was computed.
 
+### Timing-excluded models
+
+From the NB09a run of 2026-08-12, partial: the five sequence seeds and the forest fit
+completed and the forest's attribution pass did not. Seeds 42 to 46, window 50 and stride
+25, the two-tier split, and the 40 features that remain when Duration, Rate, Srate and IAT
+are dropped from the 44.
+
+| model | 44 features | 40 features | fall |
+|---|---|---|---|
+| forest_19class | 0.8418 | 0.5910 | 0.2508 |
+| sequence_cnn_lstm_19class | 0.7138 | 0.6901 plus or minus 0.0236 over five seeds | 0.0237 |
+
+The same four columns removed cost the two models very differently.
+
+The sequence model at 40 features has 206,035 parameters against the parent's 214,227, the
+encoder flattening over a narrower feature axis. Per seed the macro-F1 is 0.6747, 0.6714,
+0.6947, 0.6805 and 0.7292. The forest figure is on 1,229,711 records and the sequence
+figures on 49,159 windows, so the two rows are not scored on the same items.
+
 ---
 
 ## 6. Relation to prior work
@@ -876,7 +895,7 @@ position; the pre-registration states how it was reached.
 | NB07b withdrawn | Designed, specified and costed, and not executed. `PREREGISTRATION.md` Amendment 16 established that 11 of the 45 training groups are single-capture classes where the group and the class are the same set of windows, and that all five classes fixed in Amendment 6 are among them; Amendment 17 established that the weights start uniform, so that coincidence is operative from the first update. On the class set the first dependent variable is evaluated over, the intervention is therefore class weighting, which NB07 already tested through five interventions, and what survives is the capture-invariance question on the 8 classes recorded more than once. `DECISIONS.md` under 2026-08-11 records the withdrawal and that no figure from the aborted run is recorded. Amendments 14, 16 and 17 stand as written and are not withdrawn |
 | H2's twofold comparison not evaluable on the NB08 grid, superseded | NB08 measured records to threshold at k in {5, 10, 25, 50}. Three of five low-rate classes do not reach F1 0.80 within 50 records, so the low-rate median is not determinate and the twofold comparison the hypothesis then stated is not evaluated. The direction is reported instead, under `PREREGISTRATION.md` Amendment 11, which fixed this handling before the run. Extending the grid past 50 would require rebuilding the sequences at a longer window and is ruled out by the same amendment. The hypothesis is now H2 and Amendment 12 measures it on saturation, where both group medians are determinate, and states no numeric multiple. Records to threshold is retained as a reported result. Section 5 carries the figures |
 | Conformal prediction scope, resolved | Run as a feasibility probe in `NB06b_cp_scores` and `NB06c_cp_feasibility`. The probe returned a negative and conformal prediction was dropped. Recorded in `DECISIONS.md` under 2026-08-09 and in Section 3 under scope exclusions |
-| NB09a and NB09b written and not executed | Both are committed and both pass their dry runs, and neither has been run, so H3 is not yet evaluated. The rules they run under are fixed in `PREREGISTRATION.md` Amendments 18 and 19: the sequence model at 40 features is what H3 is scored on, the forest at 40 features is an exactness check on its approximate attributions, the aggregation is mean absolute, k is 10, the SHAP background is 200 windows held fixed across seeds, and nsamples is 50. The mapping rule and the reference standard are `config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml`, `config/capec_stride.yaml` and `config/maude_keywords.yaml`, all committed before either notebook trains anything. 09a trains five sequence models and the forest and writes attributions per seed as each pass completes; 09b maps, counts assignment and agreement separately, computes Kendall's tau and queries openFDA, and runs on a CPU |
+| NB09a partially executed, NB09b not executed | H3 is not yet evaluated. NB09a ran on 2026-08-12: the five sequence seeds completed, each writing its attributions as its explainer pass finished, and the forest fit completed with its five files and five-fold cross-validation at macro-F1 0.5910. The forest's TreeExplainer pass was interrupted and produced no attribution file, and `attributions.json`, written once after that cell, was not reached. Both are to be completed by a resume run on a CPU runtime, and NB09b cannot run until `attributions.json` exists. `RESULTS_LEDGER.md` carries the measured figures. The rules they run under are fixed in `PREREGISTRATION.md` Amendments 18 and 19: the sequence model at 40 features is what H3 is scored on, the forest at 40 features is an exactness check on its approximate attributions, the aggregation is mean absolute, k is 10, the SHAP background is 200 windows held fixed across seeds, and nsamples is 50. The mapping rule and the reference standard are `config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml`, `config/capec_stride.yaml` and `config/maude_keywords.yaml`, all committed before either notebook trains anything. 09a trains five sequence models and the forest and writes attributions per seed as each pass completes; 09b maps, counts assignment and agreement separately, computes Kendall's tau and queries openFDA, and runs on a CPU |
 | Title and thesis statement | Update pending. Handled outside this pass |
 | Abstract | Section 1a to be added. Handled outside this pass |
 | Hypothesis approval marking | Sign-off obtained from the advisory committee. Section 3 records no approval status; the approval marking and its date are added in a later pass |

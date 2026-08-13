@@ -717,3 +717,32 @@ DDoS-SYN 0.8783 (0.8784) · DDoS-TCP 0.8856 (0.8232) · DDoS-UDP 0.7158 (0.6869)
 Duration stays in the timing family and in the 44 features for every run already executed.
 This notebook measures the column's contribution to the NB03 figures and does not change the
 feature set.
+
+### NB09a — SHAP attributions on timing-excluded models (2026-08-12), partial
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB09a_shap_attributions.ipynb |
+| run date | 2026-08-12 |
+| status | **partial**: the five sequence seeds and the forest fit completed; the forest's TreeExplainer pass was interrupted and did not finish |
+| registered under | PREREGISTRATION.md Amendments 18 and 19 |
+| environment | tensorflow 2.20.0, keras 3.13.2, shap 0.52.0, scipy 1.16.3, backend tensorflow, accelerator NVIDIA A100-SXM4-40GB |
+| features | 40, after dropping Duration, Rate, Srate, IAT |
+| sequence models | 5, seeds 42 to 46, parent sequence_cnn_lstm_19class, one change: n_features |
+| sequence parameters | 206,035 at 40 features against the parent's 214,227 at 44 |
+| macro F1 by seed | 42 0.6747, 43 0.6714, 44 0.6947, 45 0.6805, 46 0.7292 |
+| macro F1, five seeds | 0.6901 plus or minus 0.0236, on 49,159 windows |
+| sequence training | 2,294, 2,254, 2,253, 2,248 and 2,263 seconds |
+| explainer pass, per seed | 444 to 447 seconds each on the A100; each wrote its attributions file as it finished |
+| forest fit | complete. forest_timing_excluded, parent forest_19class, one change: n_features. 100 trees, min leaf 20, sqrt, cap 1,000,000 rows, fitted in 107.8s on 999,998 records, cross-validated over 5 folds |
+| forest macro F1 | 0.5910 on 1,229,711 records |
+| forest attributions | **not produced**. TreeExplainer ran for over an hour against 33,653 records and was interrupted |
+| the same four columns, two models | the forest falls from 0.8418 at 44 features to 0.5910 at 40, a fall of 0.2508. The sequence model falls from 0.7138 to a five-seed mean of 0.6901, a fall of 0.0237 |
+| units | 49,159 windows for the sequence models and 1,229,711 records for the forest; the same split, not the same partition |
+| artefacts present | attributions_seed_42.npz through _46.npz, each (19, 40) at nsamples 50 and background 200; six run directories each holding its five files |
+| artefacts absent | attributions_forest.npz, and attributions.json, which is written once after the forest cell and so was not reached |
+| outstanding | the TreeExplainer pass and attributions.json, both to be completed by a resume run on a CPU runtime |
+| artefacts | /content/drive/MyDrive/AG_PRAXIS_artifacts/NB09a |
+
+H3 is not evaluated by this run. The mapping, the agreement count, Kendall's tau and the
+MAUDE search are NB09b's, and NB09b cannot run until attributions.json exists.
