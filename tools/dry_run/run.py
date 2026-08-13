@@ -56,6 +56,14 @@ class Report:
             self.failures += 1
         self.sections[-1][1].append(f"{mark}{text}")
 
+    def condition(self, text):
+        """Something true of this run that a reader has to know, and is not a defect.
+
+        A gap that is measured and bounded is a condition. A gap that is unknown is a
+        failure. Counting the first as the second teaches a reader to skip the line.
+        """
+        self.sections[-1][1].append(f"COND {text}")
+
     def render(self):
         out = []
         for title, lines in self.sections:
@@ -79,7 +87,7 @@ class Report:
 def local_environment() -> dict:
     """What this machine has, for the packages a run depends on."""
     found = {}
-    for name in ("tensorflow", "keras", "numpy", "pandas", "sklearn"):
+    for name in ("tensorflow", "keras", "shap", "scipy", "numpy", "pandas", "sklearn"):
         try:
             found[name] = getattr(importlib.import_module(name), "__version__", "unknown")
         except Exception as error:
@@ -117,32 +125,40 @@ def check_versions(report: Report) -> None:
     here = local_environment()
     there, source = recorded_environment()
 
-    for name, version in here.items():
-        report.line(f"local {name:<12} {version}")
-    report.line(f"recorded from: {source}")
-
     if there is None:
+        for name, version in here.items():
+            report.line(f"local {name:<12} {version}")
+        report.line(f"recorded from: {source}")
         report.line(
-            "no executed run records the versions it ran under, so there is nothing to "
-            "compare against. This clears the first time a notebook is run with the "
-            "environment cell in its setup.",
+            "no executed run records the versions it ran under, so the gap between this "
+            "machine and the one that produced the results is unknown rather than bounded. "
+            "This clears the first time a notebook is run with the environment cell in its "
+            "setup.",
             ok=False,
         )
         return
 
-    for name in ("tensorflow", "keras"):
-        mine, theirs = here.get(name), there.get(name)
-        if theirs is None:
-            report.line(f"{name}: the recorded run does not name it", ok=False)
-        elif mine != theirs:
-            report.line(
-                f"{name}: local {mine} against {theirs} in Colab. Every API check below "
-                f"is against {mine}, so a behaviour that only exists in {theirs} is "
-                "invisible to this dry run.",
-                ok=False,
-            )
-        else:
-            report.line(f"{name}: {mine}, the same as the recorded run", ok=True)
+    watched = ("tensorflow", "keras", "shap", "scipy")
+    pairs = [(n, here.get(n), there.get(n)) for n in watched if there.get(n) is not None]
+    unnamed = [n for n in watched if there.get(n) is None]
+
+    report.line(f"recorded from: {source}")
+    report.condition(
+        "local " + ", ".join(f"{n} {mine}" for n, mine, _ in pairs)
+    )
+    report.condition(
+        "recorded " + ", ".join(f"{n} {theirs}" for n, _, theirs in pairs)
+    )
+    differing = [n for n, mine, theirs in pairs if mine != theirs]
+    report.condition(
+        ("differing: " + ", ".join(differing) if differing else "no difference on the "
+         "packages watched")
+        + ". Every API check below is made against the local versions, so behaviour that "
+        "exists only in the recorded versions is invisible to this dry run. The dry run "
+        "catches logic and structure, not version-specific behaviour."
+    )
+    for name in unnamed:
+        report.line(f"{name}: the recorded run does not name it", ok=False)
 
 
 # --------------------------------------------------------------------------

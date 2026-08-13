@@ -1094,3 +1094,35 @@ the forest, so the interruption cost it, and NB09b reads it separately from its 
 the per-seed files. NB09b cannot run until it exists. The resume skips already in NB09a
 will pass over the five sequence fits, the five attribution files and the forest fit, so a
 CPU run reaches the outstanding work directly.
+
+---
+
+## 2026-08-13 — version skew is a stated condition, not a dry-run failure
+
+**Decision:** the dry run reports the gap between local package versions and those the
+most recent executed run recorded as a condition line carrying both sides. It does not
+increment the failure count. The absence of any recorded environment remains a failure.
+
+**Why the gap is not a defect.** The dry run's job is catching logic and structure defects:
+a name read before it is defined, a cell whose source lost its newlines, an explainer
+called nineteen times where once will do, an artifact that is never written. None of those
+depend on the version. Matching Colab's versions locally is fragile and drifts again the
+next time Colab updates, so treating the gap as a failure would make the report show a
+failure permanently, which teaches a reader to skip the line. What matters is that the gap
+is visible and bounded, not that it is zero.
+
+**Why an unknown gap is still a failure.** With no executed run recording an environment,
+the difference between this machine and the one that produced the results is not small, it
+is unmeasured. That is a different state from a measured difference and it fails.
+
+**What the condition line carries:** the local versions, the recorded versions, which
+packages differ, and that API checks are made against the local versions, so behaviour
+existing only in the recorded versions is invisible to the dry run.
+
+**Two defects found while making the change.** The local environment was collecting
+tensorflow, keras, numpy, pandas and sklearn, and not shap or scipy, so the two packages
+Amendments 18 and 19 depend on would have reported as absent locally. Both are now
+collected. And the environment is recorded in run configs that are on Drive and have not
+been moved into the repository, so the runner, which scans committed configs, still finds
+nothing and still takes the failure branch. The condition path does not become live until
+an executed run's config is committed.
