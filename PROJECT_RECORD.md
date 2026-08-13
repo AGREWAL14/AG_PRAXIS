@@ -22,8 +22,8 @@ Prior praxis in program: Bogan (2025)
 ## 1. Thesis statement
 
 Threat models for connected medical devices are built at design time against assumed
-adversaries. This research grounds them in observed traffic, establishing how early
-each threat class becomes identifiable, whether sequence context improves detection of
+adversaries. This research grounds them in observed traffic, establishing where each
+threat class's detection ceiling lies, whether sequence context improves detection of
 similar attacks, and whether model explanations can be translated into structured
 threat intelligence. *(48 words)*
 
@@ -65,9 +65,23 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 
 | | Research Objective | Research Question | Hypothesis | Metric | Notebooks |
 |---|---|---|---|---|---|
-| **1** | Determine whether modelling traffic as sequences of records rather than single records improves detection of the attack classes the published CNN model fails to detect. | Does modelling traffic as sequences rather than single records improve threat detection in remote patient hub (RPH) networks? | Sequence-based detection improves macro-averaged F1 on the attack classes the published CNN model fails to detect. | Macro-F1, and per-class F1 change on the classes the published CNN fails to detect | 05, 06, 07, 08 |
-| **2** | Determine, using a sequence-based detector, how much observation each threat class requires before its detection stops improving. | How much traffic must be observed before each attack class stops improving, and does this differ across classes? | Low-rate classes require more observation to reach detection saturation than volumetric classes. | Observation budget to reach each class's saturation point, within epsilon = 0.02 of its achievable ceiling; group medians compared | 04, 06, 08 |
+| **1** | Establish how reliably IoMT attack classes can be detected from network traffic, and where detection is hardest. | Does modelling traffic as sequences improve detection of attack classes that single-record models detect poorly? | Sequence-based modelling improves detection of specific hard-to-detect classes relative to single-record models. | Per-class F1 change, sequence against single-record; classes recovered against lost across the detection floor. Macro-F1 reported as context (near-flat, +0.0028 against the published CNN — the aggregate that conceals the per-class trade) | 05, 06, 07, 08 |
+| **2** | Determine how much observation reliable detection requires across different attack types. | How much traffic must be observed before each attack class reaches its detection ceiling, and does this differ across classes? | Low-rate classes require more observation to reach detection saturation than volumetric classes. | Observation budget to reach each class's saturation point, within epsilon = 0.02 of its achievable ceiling; group medians compared | 04, 06, 08 |
 | **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be mapped to STRIDE threat categories consistent with documented attack semantics? | For at least 70% of attack classes, SHAP explanations of the detection model will map to a STRIDE category consistent with that class's documented attack semantics in the CICIoMT2024 benchmark paper. | Proportion of classes with a consistent STRIDE assignment | 09 |
+
+The runs H1 compares are scored on different units and different splits, 49,159 windows
+against 1,614,182 and 1,229,711 records, so they are four runs' own scores rather than a
+paired comparison. Two of the classes recovered across the detection floor carry the
+thin-class caveat fixed in `PREREGISTRATION.md` Amendment 4: Recon-VulScan rests on 18
+test sequences and MQTT-Malformed_Data on 40.
+
+Saturation marks where a class stops improving, not where it becomes reliably detectable.
+Eight of nineteen classes saturate at an F1 below 0.80. The budget grid is {5, 10, 25,
+50}, so a group median can take only one of those values or a midpoint between two, and
+the resolution of any comparison between medians is limited by the grid. Epsilon is 0.02,
+recorded here and in `RESULTS_LEDGER.md`, and recoverable from
+`data/processed/NB08/tables/saturation.csv` as the difference between `best_f1` and
+`f1_there`.
 
 ### Group definitions — fixed by the benchmark taxonomy, not by measurement
 
