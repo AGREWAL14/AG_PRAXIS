@@ -1200,3 +1200,42 @@ H1, H2 or H3.
 **What stands:** `PREREGISTRATION.md` Amendment 15 is not withdrawn. It fixes the halting
 rule, the twelve-value tau grid, the earliness metric and the averaging over correctly
 classified windows, and it is the record of a design that was specified and costed.
+
+---
+
+## 2026-08-13 — six-class reporting dropped from the results chapter
+
+**Decision:** the results chapter reports the nineteen-class task only. The results
+consolidation emits no six-class and no two-class table. This supersedes the 2026-08-01
+entry "Six-class task added to NB09 and NB10" as it applies to NB10.
+
+**Reasoning:** no hypothesis is stated or tested at six classes. All three are
+nineteen-class. The comparison the earlier entry was made for — like-for-like against prior
+work in this programme, which reports macro-averaged results for the six-class task only —
+is not being pursued in the chapter, and carrying one table at a different granularity
+costs a paragraph of prose explaining why the granularity changes and then changes back.
+
+**Consequence:** the four runs stay in `results/NB05/` and in `RESULTS_LEDGER.md` exactly as
+recorded. Nothing is deleted, no figure moves and no hypothesis is affected. The 2026-08-01
+entry stands as written for NB09. If the six-class comparison is wanted later the runs are
+already there and the table is a small addition rather than a re-run.
+
+---
+
+## 2026-08-13 — the results consolidation checks its own output against the record
+
+**Decision:** the consolidation notebook halts if any value it emits disagrees with
+`PROJECT_RECORD.md` Section 5 or `RESULTS_LEDGER.md`. The expected figures are written into
+the notebook and compared against what it reads from the artefacts.
+
+**Reasoning:** the notebook's whole job is to move already-recorded numbers into tables a
+chapter is written from. Its failure mode is not a wrong computation but a silent drift
+between the artefacts, the record and the prose. Comparing the two at the point of
+handover is the last place that drift can be caught cheaply. On the run of 2026-08-13 the
+check passed at 43 of 43.
+
+**Consequence:** a deliberate change to a recorded figure now requires changing it in two
+places, the record and the notebook's expected set, which is the intended friction. The one
+case where the artefact and the record genuinely differ — the pass mark that was restated
+after the mapping run — is reported as a known divergence in `manifest.json` rather than
+reconciled, because reconciling it would hide that the criterion changed.

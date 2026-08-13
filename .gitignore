@@ -19,3 +19,13 @@ archive/data/*.csv
 # in NB08 pairs them directly. ~49KB each, 10 files.
 !results/NB07/*/y_true.npy
 !results/NB07/*/y_pred.npy
+
+# Local scratch written by JupyterLab and Anaconda when a notebook is opened.
+# Neither is project content.
+.virtual_documents/
+anaconda_projects/
+
+# Attribution tables the results consolidation reads. Six files, each a (19, 40)
+# table, small enough to keep, and without them the consolidation cannot run from
+# a fresh clone.
+!data/processed/NB09a/*.npz
