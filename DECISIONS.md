@@ -1359,3 +1359,160 @@ transfer between CICIoT2023 and CICIoMT2024 — are recorded as unverified in
 **What this does not change:** no hypothesis, no comparator, no threshold, no class set,
 no feature set and no figure. H1, H2 and H3 are unchanged. Every result these papers agree
 with was measured and recorded before they were read.
+
+---
+
+## 2026-08-15 — the seven pending citations read; the row closes
+
+**Decision:** all seven references on the "Citations awaiting PDF review" row of
+`PROJECT_RECORD.md` Section 11 were read against their primary sources. The row closes.
+Nothing on the list survives as unread, and nothing in it changes a hypothesis, a
+comparator, a threshold, a class set, a feature set or a figure. What it changes is what
+may be written and how three of the claims must be worded. This entry records each
+resolution; `NOTES_FOR_WRITING.md` carries the positioning.
+
+**The seven, as now cited.** Doménech, J., León, O., Siddiqui, M. S., and Pegueroles, J.
+(2025), *Internet of Things* 32:101631, DOI 10.1016/j.iot.2025.101631. Chikezie, C. I.,
+Usman, A. U., David, M., Zubair, S., Ohize, H. O., and Ojeniyi, J. (2026), *Future
+Internet* 18(6):287, DOI 10.3390/fi18060287. Abo-Haat, M., and Zuhair, H. (2026),
+*International Journal of Intelligent Engineering and Systems* 19(3):338-359, DOI
+10.22266/ijies2026.0331.21. Ahmad, T., Truscan, D., Vain, J., and Porres, I. (2022), 2022
+IEEE ICSTW 30-39, DOI 10.1109/icstw55395.2022.00020. Djaidja, T. E. T., Brik, B., Senouci,
+S. M., Boualouache, A., and Ghamri-Doudane, Y. (2024), IEEE TIFS 19:7783-7793, DOI
+10.1109/TIFS.2024.3441862. Panopoulos, I., Bartsioka, M. L. A., Nikolaidis, S., Venieris,
+S. I., Kaklamani, D. I., and Venieris, I. S. (2026), arXiv:2604.21623, accepted to *ACM
+Transactions on AI Security and Privacy*, DOI 10.1145/3811033. Goldschmidt, P., and Chudá,
+D. (2025), *Computers & Security* 156:104510, DOI 10.1016/j.cose.2025.104510.
+
+**Two citations change form.** Ahmad et al. is published and the ICSTW version is cited in
+place of arXiv 2201.11628. Goldschmidt and Chudá is published in *Computers & Security*,
+which discharges the instruction recorded on 2026-08-10 to cite it as a preprint unless
+later publication was confirmed.
+
+**Doménech et al., the two attributed claims, both verified and both needing correction.**
+The shuffling claim is in their Section 5.1.3: they recommend explicitly documenting and
+performing shuffling for all models to reduce bias from temporal correlation, and note it
+is unclear whether CICIoMT2024's authors did so, though the published scripts suggest it
+was applied to neural network training. That is a direct methodological conflict with this
+project rather than support for it. Shuffling dissolves capture structure, and preserving
+capture structure is what the two-tier protocol fixed on 2026-08-02 exists to do. It is
+recorded as a contrasting published position and the disagreement is stated plainly
+wherever it is cited. The 66.87% figure is verified and was loosely stated: it is a
+relative reduction in macro F1 for their random forest in the five-class generalisation
+setting of their Experiments 2 and 3, from 0.9429 to 0.2742, training on CICIoT2023 and
+testing on CICIoMT2024. It is not a percentage-point drop and not an F1 value. Their
+comparable reductions are 58.03% for the decision tree, 65.14% for XGBoost and 44.73% for
+the feedforward network. It does not bear on the cross-dataset scope exclusion in Section
+3, which rests on this project's own transfer measurement.
+
+**Three findings in Doménech et al. that matter more than either.** Their Appendix Table
+A.9 maps the attributes of CICIoT2023 and CICIoMT2024 and gives the description of the
+Duration feature as TTL outright. The Duration identification recorded under 2026-08-07,
+reached here from Neto et al.'s Table 4 and from a full scan of 8,775,013 rows, now also
+rests on a published source stating the equivalence directly, so it can be written up as a
+documented property of the feature rather than only as an inference from the distribution.
+`config/feature_families.yaml` records this under `table5_reconciliation` in a new
+`external_corroboration` key. Their Section 5.1.1 records that the dataset's authors
+extracted features over 100-packet windows for DDoS and DoS traffic and 10-packet windows
+for everything else, argues that this alters the feature distribution across classes, and
+recommends a uniform window. The record carried "windows of 10 and 100" in the 2026-08-07
+Duration entry without the per-class assignment and stated it nowhere else, so it is added
+to `PROJECT_RECORD.md` Section 4 as a dataset fact. And their Table 8 attributes accuracy
+0.7350, precision 0.7130, recall 0.7350 and F1 0.6760 to Dadkhah et al., which is a third
+published figure for that baseline.
+
+**What the extraction windows do to the H2 group comparison.** The boundary between the
+two window sizes falls exactly on the boundary between the groups fixed in Section 3. The
+volumetric group is the eight DDoS and DoS classes, which are the 100-packet classes, and
+the low-rate group is drawn from the 10-packet remainder. A record in one group therefore
+summarises ten times the packets a record in the other does, so an observation budget
+counted in records or windows is counted in units of different size on either side of the
+comparison. This is recorded and not acted on. H2 stands as `PREREGISTRATION.md` Amendment
+12 states it, the saturation figures in Section 5 are unchanged, and no group definition
+moves, since the groups were fixed by the benchmark taxonomy before any measurement and
+changing them now on a fact learned afterwards would be worse than carrying the confound
+openly. It is a limitation of what the comparison can mean, and it belongs in the write-up
+wherever the two medians are read against each other.
+
+**The Dadkhah baseline now has at least two mutually inconsistent published figures.**
+0.551 F1, recorded from the source under 2026-08-07 and reproduced by Chethan et al. under
+2026-08-14, against Doménech et al.'s Table 8 attribution of 0.6760 F1 with accuracy
+0.7350. Both are attributed to the same published baseline. That strengthens rather than
+weakens the position already recorded, which is that the published figure is an artifact
+of how the evaluation was carried out rather than a measurement of what the model can do:
+a figure that is not stable across the papers reporting it is not a fixed quantity to
+compare against. Doménech et al.'s own system reaches 0.9985 accuracy and 0.9700 F1 under
+random splits with shuffling and balancing, and that figure is compared to nothing from
+this project, because it is measured on shuffled random splits.
+
+**Independent support for macro-averaging.** Doménech et al.'s Section 2.2 criticises the
+foundation model this project reproduces, which they cite as Mohamadi et al. with one m,
+for using weighted averaging on an imbalanced dataset, and argues for an unweighted mean.
+The macro-averaging decision was taken on 2026-08-01 on this project's own reasoning and
+is not changed by this; what it gains is a published source arguing the same thing about
+the same paper.
+
+**Chikezie et al. holds as recorded.** Preprocessing is the research object rather than a
+methodological precaution, and the authors explicitly disclaim any downstream classifier
+superiority. Their corpus is CICIoT-DIAD 2024, 35,672,407 flows across 180 files, and not
+CICIoMT2024.
+
+**Abo-Haat and Zuhair: the design position is citable, the numbers are not.** Their device
+labels are predicted rather than observed. Their Section 3.3.2 states the dataset carries
+device identity only for Wi-Fi benign profiling traffic, seven devices; they train an
+XGBoost device classifier on that traffic and predict device labels for all attack
+traffic, and the two MQTT "devices" are confidence buckets of that classifier, High at 35
+to 70% and Low below 35%, constructed so that one could go to train and one to test. Zero
+device overlap is therefore disjointness of a predicted label and not of observed devices,
+and the paper is cited as prior work raising the device-leakage question on this dataset
+rather than as an established device-disjoint result. Their figures do not reconcile
+internally: sample totals of 2,767,675 in Section 3.1, 2,767,650 in Section 4.8 and
+2,899,704 in the conclusion, against Table 1's 1,189,828 for the dataset; combined accuracy
+98.61% in Table 5 against 99.51% in Appendix C; and a feature count moving between 45,
+45+1, 45+17 and 46. No number from it is quoted anywhere. What is usable is their Section
+3.3.2's independent list of what the released CSVs lack — timestamps, source and
+destination IP addresses, ports, MAC addresses or device identifiers, and flow identifiers
+— which supports the capture-disjoint rationale from a second source, with Doménech et
+al.'s Table A.9 supporting it from a third.
+
+**Ahmad et al., narrowed twice.** Their Table VI reports earliness and a minimum number of
+packets per class on CICIDS2017, so per-class earliness as established prior work stands
+and the contribution wording "first per-class observation-budget analysis on this dataset"
+survives unchanged. But it covers four classes from one day's web-attack subset — Normal,
+Brute Force, XSS and SQL Injection — and not all of CICIDS2017, and their minimum number
+of packets counts packets within a flow and is computed only over correctly classified
+flows. Records to threshold over windows is an adaptation of the idea and not the same
+measurement.
+
+**Djaidja et al., two things to carry.** They claim to be the first to address early
+attack detection in network intrusion detection. Ahmad et al. (2022) predates them and
+defines the earliness metric, so the field carries at least two independent priority
+claims and neither is repeated here. And their per-packet feature vector includes TTL,
+min-max normalised, which sits against the shortcut-learning warrant taken from Goldschmidt
+and Chudá below. Where both are cited in one passage the tension is made visible rather
+than smoothed over.
+
+**A-THENA, narrowed once.** The datasets are CICIoT23-WEB, MQTT-IoT-IDS2020 and IoTID20
+and not CICIoMT2024, as recorded. Their Table 8 shows nearly all feature-based baselines
+requiring the full 30-packet flow, because session-level statistics cannot be computed
+from a prefix. The target of that argument is CICFlowMeter-style statistical aggregates,
+and CICIoMT2024's released columns are that kind of feature, so this is a live limitation
+for the sequence work here and not only a related-work citation. "Cannot detect early" is
+too absolute as recorded: their own table has Naive Bayes at an earliness of 1.
+
+**Goldschmidt and Chudá: the outstanding sentence is located.** It is in their Section 6.3,
+under the shortcut-learning heading. TTL is named alongside IP addresses, port numbers,
+timestamps and flow identifiers as features that can contaminate data-driven learning; if
+used for training, a learner may spuriously correlate the artifact with an activity,
+producing shortcut learning and overestimated performance. Their supporting evidence is
+D'Hooge et al., who reach 70 to 100% accuracy on popular network intrusion datasets using
+destination port alone. The caveat recorded on 2026-08-10 stands unchanged: their coverage
+is datasets published to 2023 inclusive, so it does not cover CICIoMT2024 and says nothing
+about this dataset in particular.
+
+**What this does not change:** no hypothesis, no comparator, no threshold, no class set,
+no feature set and no figure. H1, H2 and H3 are unchanged. Three entries elsewhere are
+extended rather than rewritten, because this file and `NOTES_FOR_WRITING.md` are
+append-only: the Duration identification of 2026-08-07, the Dadkhah baseline entries of
+2026-08-07 and 2026-08-08, and the macro-averaging decision of 2026-08-01 all stand as
+written and are added to here.

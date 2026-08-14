@@ -685,3 +685,254 @@ measurement and does not depend on it.
 **Serves:** Chapter 2, related work, and reading the earlier entry in this file.
 
 **Added:** 2026-08-14
+
+---
+
+## Chapter 2 — citation gaps to close
+
+### All seven pending citations are read; the gaps close
+
+**Claim:** every reference this section recorded as unlocated or unread was read against
+its primary source on 2026-08-15, so nothing in this section now blocks a chapter. The
+entries above stand as the claim each reference supports, narrowed or corrected by the
+entries below where the reading changed something. Two references change form and the
+earlier citations are superseded: the early-detection work is Ahmad, T., Truscan, D.,
+Vain, J., and Porres, I. (2022), "Early detection of network attacks using deep learning",
+2022 IEEE ICSTW, 30-39, DOI 10.1109/icstw55395.2022.00020, cited in place of arXiv
+2201.11628; and Goldschmidt and Chudá is published as *Computers & Security* 156:104510,
+DOI 10.1016/j.cose.2025.104510, so the instruction to cite it as a preprint is discharged.
+The IJIES device-disjoint paper, unlocated until now, is Abo-Haat, M., and Zuhair, H.
+(2026), "Advanced multi-protocols framework for cyber attacks detection in IoMT",
+*International Journal of Intelligent Engineering and Systems* 19(3), 338-359, DOI
+10.22266/ijies2026.0331.21. The split-governance paper is Chikezie, C. I., Usman, A. U.,
+David, M., Zubair, S., Ohize, H. O., and Ojeniyi, J. (2026), *Future Internet* 18(6), 287,
+DOI 10.3390/fi18060287, and its recorded claim holds as written: preprocessing is the
+research object rather than a precaution, the authors disclaim any downstream classifier
+superiority, and the corpus is CICIoT-DIAD 2024 at 35,672,407 flows across 180 files,
+not CICIoMT2024.
+
+**Rests on:** the seven PDFs, and `DECISIONS.md` under 2026-08-15.
+
+**Serves:** Chapter 2, and every chapter citing any of the seven.
+
+**Added:** 2026-08-15
+
+### Shuffling is a published position against this project's split protocol
+
+**Claim:** Doménech et al. (2025) recommend, in their Section 5.1.3, that shuffling be
+explicitly documented and performed for all models to reduce bias from temporal
+correlation, and note it is unclear whether CICIoMT2024's authors did so, though the
+published scripts suggest it was applied to neural network training. That is a conflict
+with this project and not support for it. Shuffling dissolves capture structure, and
+holding capture structure intact is exactly what the split protocol here is built to do.
+Both positions treat temporal correlation as the problem and draw opposite conclusions
+about what to do with it: shuffle so that no partition is defined by when it was recorded,
+or partition by recording so that nothing learned about a session can be scored on that
+same session. The disagreement is stated plainly and the paper is cited as a contrasting
+published position, not paraphrased into agreement.
+
+**Rests on:** the Doménech et al. PDF, Section 5.1.3, read and verified.
+
+**Serves:** Chapter 2, related work, and Chapter 5 where the split protocol is
+positioned.
+
+**Added:** 2026-08-15
+
+### The 66.87% figure has to be stated exactly
+
+**Claim:** the transfer figure attributed to Doménech et al. is a relative reduction in
+macro F1, not a percentage-point drop and not an F1 value. Their random forest falls from
+0.9429 to 0.2742 in the five-class generalisation setting of their Experiments 2 and 3,
+training on CICIoT2023 and testing on CICIoMT2024, which is the 66.87%. Their comparable
+reductions are 58.03% for the decision tree, 65.14% for XGBoost and 44.73% for the
+feedforward network. Written as "an F1 drop of 66.87%" it will be read as points and is
+wrong. It also does not bear on this project's cross-dataset scope exclusion, which rests
+on this project's own transfer measurement.
+
+**Rests on:** the Doménech et al. PDF, Experiments 2 and 3, read and verified, and
+`PROJECT_RECORD.md` Section 3 for the exclusion.
+
+**Serves:** Chapter 2, related work.
+
+**Added:** 2026-08-15
+
+### The published baseline is not one number
+
+**Claim:** at least two mutually inconsistent figures for Dadkhah et al.'s nineteen-class
+baseline now circulate in the literature. F1 0.551, read from their own Table 7 and
+reproduced by Chethan et al., against Doménech et al.'s Table 8, which attributes to them
+accuracy 0.7350, precision 0.7130, recall 0.7350 and F1 0.6760. Both are presented as the
+same baseline. This strengthens the position already taken, that the published figure
+reflects how the evaluation was carried out rather than what the model can do: a quantity
+that is not stable across the papers reporting it is not a fixed anchor to be beaten.
+Doménech et al.'s own system reaches 0.9985 accuracy and 0.9700 F1 under random splits
+with shuffling and balancing, and that number must not be set against anything from this
+project, which holds recording sessions apart.
+
+**Rests on:** the Doménech et al. PDF Table 8, `DECISIONS.md` under 2026-08-07 and
+2026-08-14, and `PROJECT_RECORD.md` Section 6.
+
+**Serves:** Chapter 2, related work, and Chapter 4 where the baseline is reported.
+
+**Added:** 2026-08-15
+
+### Independent published support for macro-averaging
+
+**Claim:** Doménech et al.'s Section 2.2 criticises the foundation model this project
+reproduces, which they cite as Mohamadi et al. with one m, for using weighted averaging on
+an imbalanced dataset, and argues for an unweighted mean. The macro-averaging choice here
+was made on this project's own reasoning about the class distribution, so this is not what
+the decision rests on; it is a published source arguing the same thing about the same
+paper, which is worth citing where the choice is justified rather than leaving the
+justification entirely internal.
+
+**Rests on:** the Doménech et al. PDF, Section 2.2, and `DECISIONS.md` under 2026-08-01.
+
+**Serves:** Chapter 2, and Chapter 3 where macro-averaging is justified.
+
+**Added:** 2026-08-15
+
+### The device-disjoint paper is citable for its design position only
+
+**Claim:** Abo-Haat and Zuhair (2026) raise device-level leakage on this dataset, which is
+worth citing, but their device labels are predicted rather than observed. Their Section
+3.3.2 records that the dataset carries device identity only for Wi-Fi benign profiling
+traffic, seven devices; they train an XGBoost device classifier on that and predict device
+labels for all attack traffic, and their two MQTT "devices" are confidence buckets of that
+classifier, High at 35 to 70% and Low below 35%, arranged so that one could go to train
+and one to test. Zero device overlap is therefore disjointness of a predicted label. Cite
+them as prior work raising the question, never as an established device-disjoint result.
+No figure from the paper may be quoted: its sample totals read 2,767,675, 2,767,650 and
+2,899,704 in different places against Table 1's 1,189,828, its combined accuracy reads
+98.61% in Table 5 and 99.51% in Appendix C, and its feature count moves between 45, 45+1,
+45+17 and 46.
+
+What is usable is their independent list, in the same section, of what the released CSVs
+lack: timestamps, source and destination IP addresses, ports, MAC addresses or device
+identifiers, and flow identifiers. That supports the split rationale from a second source,
+with Doménech et al.'s Table A.9 as a third.
+
+**Rests on:** the Abo-Haat and Zuhair PDF, read and verified.
+
+**Serves:** Chapter 2, related work, and Chapter 3 where the split is justified.
+
+**Added:** 2026-08-15
+
+### The earliness prior work, narrowed
+
+**Claim:** Ahmad et al. (2022) report earliness and a minimum number of packets per class
+in their Table VI, so per-class earliness as established prior work stands and the
+contribution wording "first per-class observation-budget analysis on this dataset"
+survives. Two narrowings must travel with the citation. Their study covers four classes
+from one day's web-attack subset of CICIDS2017 — Normal, Brute Force, XSS and SQL
+Injection — and not the whole corpus. And their minimum number of packets counts packets
+within a flow and is computed only over correctly classified flows, so measuring records
+to a threshold over fixed windows is an adaptation of the idea rather than the same
+measurement. Describe it as adapted, not as applied.
+
+Djaidja et al. (2024) report initial packets required for correct classification per
+attack class on CIC-IDS2017 and 5G-NIDD, built from raw pcap through their own flow
+segmentation. They claim to be first to address early detection in this setting; Ahmad et
+al. predates them and defines the metric. The field carries at least two independent
+priority claims, so repeat neither.
+
+**Rests on:** both PDFs, read and verified.
+
+**Serves:** Chapter 2, related work, and Chapter 4 where the observation budgets are
+reported.
+
+**Added:** 2026-08-15
+
+### TTL as shortcut feature, and the paper that uses it
+
+**Claim:** the outstanding sentence in Goldschmidt and Chudá is located, in Section 6.3
+under the shortcut-learning heading. TTL is named alongside IP addresses, port numbers,
+timestamps and flow identifiers as features that can contaminate data-driven learning: if
+used for training, a learner may spuriously correlate the artifact with an activity,
+producing shortcut learning and overestimated performance. Their supporting evidence is
+D'Hooge et al., reaching 70 to 100% accuracy on popular network intrusion datasets from
+destination port alone. The caveat already recorded stands: their coverage is datasets
+published to 2023 inclusive, so it does not cover CICIoMT2024 and says nothing about this
+dataset in particular.
+
+Djaidja et al.'s per-packet feature vector includes TTL, min-max normalised. A published
+warrant naming TTL as a contaminating feature and a published early-detection model
+feeding TTL to a network are two positions in the same literature. Where both appear in
+one passage the tension is shown rather than smoothed over, and it is the reason this
+project measures what its own TTL column contributes instead of arguing the point from
+either citation.
+
+**Rests on:** the Goldschmidt and Chudá PDF, Section 6.3, and the Djaidja et al. PDF, both
+read and verified. `PROJECT_RECORD.md` Section 5 carries the measurement.
+
+**Serves:** Chapter 2, related work, and Chapter 3 where the timing ablation is
+justified.
+
+**Added:** 2026-08-15
+
+---
+
+## Chapter 5 — interpretation and positioning
+
+### Statistical-aggregate features are a live limitation, not only a citation
+
+**Claim:** A-THENA's Table 8 shows nearly all feature-based baselines requiring the full
+30-packet flow, because session-level statistics cannot be computed from a prefix. The
+target of that argument is CICFlowMeter-style statistical aggregates, and CICIoMT2024's
+released columns are exactly that kind of feature. So the limitation applies to the
+sequence work here rather than sitting safely in related work: every record this project
+reads is already a summary over a window of packets, and an observation budget is a budget
+of summaries, not of packets. The earlier recording of their claim as "feature-based
+pipelines cannot detect early" is too absolute in two ways. It concerns statistical
+aggregates rather than feature-based pipelines generally, and their own table has Naive
+Bayes at an earliness of 1. Their corpora are CICIoT23-WEB, MQTT-IoT-IDS2020 and IoTID20,
+not CICIoMT2024.
+
+**Rests on:** the A-THENA PDF, Table 8, read and verified.
+
+**Serves:** Chapter 5, where the observation-budget result is interpreted, and Chapter 2,
+related work.
+
+**Added:** 2026-08-15
+
+### The extraction window differs between the two groups being compared
+
+**Claim:** the dataset's features were extracted over 100-packet windows for DDoS and DoS
+traffic and 10-packet windows for everything else, recorded by Doménech et al. in their
+Section 5.1.1, who argue it alters the feature distribution across classes and recommend a
+uniform window. That boundary falls exactly on the boundary between the volumetric and
+low-rate groups this project compares: the volumetric group is the eight DDoS and DoS
+classes and the low-rate group is drawn from the remainder. A record on one side of the
+comparison therefore summarises ten times the packets a record on the other side does, so
+an observation budget counted in records or windows is counted in units of different size
+between the groups. The direction the observation result reports is unaffected in
+statement, but what a record means is not constant across it, and the write-up must say so
+wherever the two medians are read against each other. This is a property of the dataset,
+not of the measurement, and neither the groups nor any figure was changed on learning it —
+the groups were fixed by the benchmark taxonomy before anything was measured.
+
+**Rests on:** the Doménech et al. PDF, Section 5.1.1, and `PROJECT_RECORD.md` Section 4,
+which now records the windows, and Section 3 for the group definitions.
+
+**Serves:** Chapter 5, interpreting the observation result, Chapter 4 where the medians
+are reported, and Chapter 3 where the dataset is described.
+
+**Added:** 2026-08-15
+
+### The TTL reading is documented, not only inferred
+
+**Claim:** Doménech et al.'s Appendix Table A.9 maps the attributes of CICIoT2023 and
+CICIoMT2024 and gives the description of the CICIoMT2024 Duration feature as TTL outright.
+This project reached the same reading from the CICIoT2023 feature table and from the
+values themselves, a full scan putting the global maximum at exactly 255 with 93.57% of
+values at the default 64. The write-up can therefore state the identification as a
+documented property of the feature and offer the distribution as confirmation, rather than
+carrying the whole claim on inference.
+
+**Rests on:** the Doménech et al. PDF, Appendix Table A.9, `PROJECT_RECORD.md` Section 5,
+and `config/feature_families.yaml` under `table5_reconciliation`.
+
+**Serves:** Chapter 3 and Chapter 4, where the timing ablation and the provenance finding
+are reported.
+
+**Added:** 2026-08-15

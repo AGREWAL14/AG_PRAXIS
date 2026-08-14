@@ -164,6 +164,20 @@ table5_reconciliation:
     give their Duration a median of 64, the common default TTL, and a maximum of
     exactly 255. CICIoT2023 carries flow duration as a separate column reaching
     394,357, so there is no question of Duration being that instead.
+  external_corroboration: >-
+    Confirmed by a published primary source on 2026-08-15. Doménech, J., León,
+    O., Siddiqui, M. S. and Pegueroles, J. (2025), "Evaluating and enhancing
+    intrusion detection systems in IoMT: The importance of domain-specific
+    datasets", Internet of Things 32:101631, DOI 10.1016/j.iot.2025.101631, map
+    the attributes of CICIoT2023 and CICIoMT2024 in their Appendix Table A.9 and
+    give the description of the CICIoMT2024 Duration feature as TTL outright.
+    The reading recorded above was reached here from Neto et al.'s Table 4 and
+    from the values themselves, a full scan of 8,775,013 rows putting the global
+    maximum at exactly 255 with 93.57% of values at 64. It now also rests on a
+    published source stating the equivalence directly, so the TTL reading can be
+    written up as a documented property of the feature rather than only as an
+    inference from the observed distribution. Nothing about the family placement
+    or the modelling set changes; see duration_family_placement below.
   extra_in_data: >-
     Six released columns are not in Table 5: Srate, Drate, Magnitue, Radius,
     Covariance, Weight. Duration was counted as a seventh until 2026-08-07 and
