@@ -1239,3 +1239,47 @@ places, the record and the notebook's expected set, which is the intended fricti
 case where the artefact and the record genuinely differ — the pass mark that was restated
 after the mapping run — is reported as a known divergence in `manifest.json` rather than
 reconciled, because reconciling it would hide that the criterion changed.
+
+---
+
+## 2026-08-14 — the graph-modelling exclusion restated, not withdrawn
+
+**Decision:** the scope exclusion on graph modelling stands. Its basis changes. It stood
+on recoverability — that no topology could be built from the released columns — and it now
+stands on how the graph is constructed: edges over these columns come from a similarity
+rule chosen by the modeller rather than from observed communication. `PROJECT_RECORD.md`
+Section 3 is reworded on that basis and Section 11 records the item as resolved.
+
+**What prompted it:** a literature check against published peer-reviewed work identified a
+Graph Attention Network application to CICIoMT2024. Chethan, G. S., Patil, N. S., Prakash,
+G. L., and Muneshwara, M. S. (2026). Adaptive graph-based intrusion detection for Internet
+of Medical Things (IoMT) networks. *Engineering, Technology & Applied Science Research*,
+16(3), 36934-36941. DOI 10.48084/etasr.17590. The exclusion as previously worded would have
+been refuted by a citable paper.
+
+**Evidence, read off the PDF.** Their Section II.C and equation (1) establish an edge where
+two nodes share a communication protocol, a broker, a topic or a MAC address, or where
+feature similarity exceeds a threshold of 0.6. The released CSVs carry no MAC address, no
+broker and no topic column, so of the stated criteria only protocol sharing and feature
+similarity can be applied to this data. What such a graph holds is similarity between
+feature vectors, not observed network topology. That is why the exclusion is restated
+rather than dropped: a graph can be built on these columns, and this work models temporal
+structure instead.
+
+**Two independent confirmations obtained from the same reading.** Their Table III class
+counts agree with the figures in `PROJECT_RECORD.md` Section 4 exactly — 8,775,013 rows in
+total, Recon-Ping_Sweep at 926, DDoS-UDP at 1,998,026 — so this project's inventory is
+confirmed against a second published count of the same release. And their Table V
+reproduces Dadkhah et al.'s 19-class Random Forest F1 of 0.551, so the benchmark anchor
+recorded under 2026-08-07 and 2026-08-08 is confirmed by a second reading of that source.
+Both are recorded in `PROJECT_RECORD.md` Section 6 under benchmark context.
+
+**Recorded for the write-up rather than acted on.** Their Section III states that devices
+appeared in both the training and the test sets, which introduces dependency between
+samples. No averaging method is stated for any F1 they report, and no per-class results
+appear. These are noted so the paper is cited accurately, and nothing in this project
+turns on them.
+
+**What this does not change:** no hypothesis, no comparator, no threshold, no class set and
+no feature set. H1, H2 and H3 are unchanged. `NOTES_FOR_WRITING.md` carries the Chapter 2
+positioning under an entry added the same day.

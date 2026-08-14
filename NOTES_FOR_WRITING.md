@@ -485,3 +485,64 @@ records why it was parked.
 **Serves:** Chapter 5, future work.
 
 **Added:** 2026-08-13
+
+---
+
+## Chapter 2 — citation gaps to close
+
+### Graph-based work on this dataset builds similarity graphs, not topology
+
+**Claim:** a published application of Graph Attention Networks and a hybrid GCN to
+CICIoMT2024 exists, and it constructs edges from a 0.6 feature-similarity threshold, the
+other stated criteria being unavailable in the released columns. The exclusion of graph
+modelling is therefore a choice not to impose a similarity structure, not a claim that
+graph methods cannot be applied to this dataset. Any sentence saying no graph can be
+built on this dataset overstates the position and is refuted by a citable paper.
+
+**Rests on:** the Chethan et al. PDF, Section II.C and equation (1), read and verified.
+Chethan, G. S., Patil, N. S., Prakash, G. L., and Muneshwara, M. S. (2026). Adaptive
+graph-based intrusion detection for Internet of Medical Things (IoMT) networks.
+*Engineering, Technology & Applied Science Research*, 16(3), 36934-36941. DOI
+10.48084/etasr.17590.
+
+**Serves:** Chapter 2, related work, and the Chapter 3 scope exclusion.
+
+**Added:** 2026-08-14
+
+### arXiv 2201.11628 as the named prior work for earliness
+
+**Claim:** per-class earliness and minimum-number-of-packets is an established
+measurement on CICIDS-2017, reported in arXiv 2201.11628, "Early Detection of Network
+Attacks Using Deep Learning". This project adapts it to CICIoMT2024, where no per-class
+earliness study exists. The contribution wording is "first per-class observation-budget
+analysis on this dataset", not "first observation budgets".
+
+**Rests on:** arXiv 2201.11628, not yet verified against the primary source.
+
+**Serves:** Chapter 2, related work, and the Chapter 4 positioning of the
+observation-budget result.
+
+**Added:** 2026-08-14
+
+---
+
+## Chapter 5 — interpretation and positioning
+
+### Saturation is not a detection ceiling
+
+**Claim:** saturation marks where a class stops improving with more observation, not
+where it becomes reliably detectable. Eight of nineteen classes saturate at an F1 below
+0.80. The phrase "detection ceiling" appears in the thesis statement in
+`PROJECT_RECORD.md` Section 1 and in the RO2 row of Section 3, and it does not describe
+the quantity that was measured. The wording is to be resolved when the title and thesis
+statement are settled, and is recorded here rather than changed, since both are deferred
+to that pass. The low-rate median of 25 against a volumetric 15 is also a property of the
+{5, 10, 25, 50} grid as much as of the classes, since a median can take only one of those
+four values or a midpoint between two, so report the direction and not the ratio.
+
+**Rests on:** `PROJECT_RECORD.md` Section 3 and Section 5.
+
+**Serves:** Chapter 4, reporting the observation budgets, and Chapter 5, where the result
+is interpreted.
+
+**Added:** 2026-08-14

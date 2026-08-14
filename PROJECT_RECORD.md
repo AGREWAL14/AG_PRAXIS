@@ -7,7 +7,7 @@ Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
 Prior praxis in program: Bogan (2025)
 
-**Version 1.7 · 10 August 2026**
+**Version 1.8 · 14 August 2026**
 
 ---
 
@@ -121,8 +121,12 @@ work; they do not test it. Section 6 carries the detail.
 
 ### Scope exclusions and their basis
 
-- **Graph modelling** — the 45 released columns contain no source or destination
-  identifiers. No topology is recoverable.
+- **Graph modelling** — graph approaches have been applied to this benchmark by
+  constructing edges from feature similarity above a fixed threshold rather than from
+  observed communication (Chethan et al., 2026). The 45 released columns contain no
+  source or destination identifiers, so any graph built over them is imposed by the
+  similarity rule chosen rather than observed. This work models temporal structure
+  rather than topological structure.
 - **Lookahead prediction** — each capture holds a single class throughout, so the label
   at *t+L* equals the label at *t* almost everywhere.
 - **Zero-day detection** — 19 labelled classes; nothing is unseen at training time.
@@ -708,12 +712,25 @@ against their 0.551 carries that ambiguity, the split difference, and a feature-
 difference the paper does not settle, since it lists 39 features and ships 45 without saying
 which its own models used. `DECISIONS.md` under 2026-08-07 records the checks.
 
+### Benchmark context — Chethan et al. (2026)
+
+Chethan, G. S., Patil, N. S., Prakash, G. L., and Muneshwara, M. S. (2026). Adaptive
+graph-based intrusion detection for Internet of Medical Things (IoMT) networks.
+*Engineering, Technology & Applied Science Research*, 16(3), 36934-36941. DOI
+10.48084/etasr.17590. Read against the PDF on 2026-08-14.
+
+Two figures in it are independent confirmations this project can use. Their Table III
+class counts agree with the dataset figures recorded in Section 4: 8,775,013 rows in
+total, Recon-Ping_Sweep at 926 and DDoS-UDP at 1,998,026. Their Table V reproduces
+Dadkhah et al.'s 19-class Random Forest F1 of 0.551, so that anchor is now confirmed by
+a second reading of the source rather than by this project's alone.
+
 ### Positioning against the literature
 
 | RQ | What exists | The gap filled |
 |---|---|---|
 | 1 | CNN-LSTM for IoMT exists (SafetyMed; UNet++/LSTM) | Applied to the specific attack variants the foundation paper names as unresolved, with per-pair results |
-| 2 | Early detection on CICIDS-2017, CICIoT23-WEB, MQTT-IoT-IDS2020, IoTID20. "Earliness" is the established metric | No earliness study on CICIoMT2024; none per class. The partial-flow study names single-dataset reliance as future work |
+| 2 | Early detection on CICIDS-2017, CICIoT23-WEB, MQTT-IoT-IDS2020, IoTID20. "Earliness" is the established metric. Per-class earliness and minimum-number-of-packets on CICIDS-2017 is reported in arXiv 2201.11628, which is the named prior work this project's earliness measurement is adapted from | No earliness study on CICIoMT2024; none per class. The gap is stated against arXiv 2201.11628 specifically: that measurement exists on CICIDS-2017 and is adapted here to CICIoMT2024. The partial-flow study names single-dataset reliance as future work |
 | 3 | SHAP on CICIoMT2024 is well populated. CAPEC mapping exists for IoT logs via LLM. STRIDE exists for device risk assessment | No pipeline connects SHAP attributions from IoMT network traffic to CAPEC and STRIDE. An April 2026 IoMT XAI review names inconsistent explainability metrics as a key gap |
 
 ### Not claimed as novel
@@ -901,6 +918,9 @@ position; the pre-registration states how it was reached.
 | Conformal prediction scope, resolved | Run as a feasibility probe in `NB06b_cp_scores` and `NB06c_cp_feasibility`. The probe returned a negative and conformal prediction was dropped. Recorded in `DECISIONS.md` under 2026-08-09 and in Section 3 under scope exclusions |
 | NB09a and NB09b executed, resolved | Both are run. NB09a completed across two sessions, the five sequence models and their explainer passes on an A100 on 2026-08-12 and the forest's TreeExplainer pass on a CPU runtime on 2026-08-13, which also wrote `attributions.json`; its artefacts are in `data/processed/NB09a/` and `results/NB09a/`. NB09b ran on 2026-08-13: H3 measured 18 of 18 classes resolving to a CAPEC pattern against a pass mark of 15, semantic agreement 9 of 18 for the sequence model and 6 of 18 for the forest against a majority-class baseline of 0.667, Kendall's tau 0.4560 across 19 classes, and MAUDE 1 keyword match in 829 reports; its artefact is `data/processed/NB09b/threat_mapping.json`. `RESULTS_LEDGER.md` carries both, the NB09a completion entry of 2026-08-13 superseding its partial entry of 2026-08-12. H3 is restated as chain resolution by `PREREGISTRATION.md` Amendment 20, which followed the run. The rules they run under are fixed in `PREREGISTRATION.md` Amendments 18 and 19: the sequence model at 40 features is what H3 is scored on, the forest at 40 features is an exactness check on its approximate attributions, the aggregation is mean absolute, k is 10, the SHAP background is 200 windows held fixed across seeds, and nsamples is 50. The mapping rule and the reference standard are `config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml`, `config/capec_stride.yaml` and `config/maude_keywords.yaml`, all committed before either notebook trains anything. 09a trains five sequence models and the forest and writes attributions per seed as each pass completes; 09b maps, counts assignment and agreement separately, computes Kendall's tau and queries openFDA, and runs on a CPU |
 | NB08b parked | Written, committed and dry-run clean, and not run. RO2 is answered by the saturation result in Section 5, the per-class budgets and the group medians of 25 against 15, on which H2 is measured under `PREREGISTRATION.md` Amendment 12. The earliness curve NB08b would produce is not load-bearing for any hypothesis. `DECISIONS.md` under 2026-08-13 records the parking. Amendment 15 stands as written and is not withdrawn |
+| Graph modelling exclusion, resolved | The exclusion stood on recoverability: no topology could be built from the released columns. A published application of Graph Attention Networks and a hybrid GCN to CICIoMT2024 exists — Chethan et al. (2026), DOI 10.48084/etasr.17590 — and its PDF was read on 2026-08-14. Their Section II.C and equation (1) establish an edge where two nodes share a communication protocol, broker, topic or MAC address, or where feature similarity exceeds 0.6. The released CSVs carry no MAC address, broker or topic column, so only protocol sharing and feature similarity are implementable and what is built is a similarity graph over feature vectors rather than observed network topology. The Section 3 exclusion is restated on that basis rather than withdrawn: a graph can be built, and the edges in it come from the similarity rule chosen rather than from observed communication. `DECISIONS.md` under 2026-08-14 records the check |
+| Citations awaiting PDF review | Seven references are cited in `NOTES_FOR_WRITING.md` or `PREREGISTRATION.md` without having been read against the primary source, and none may enter a chapter until it has been. The 2025 *Internet of Things* design critique of CICIoMT2024, DOI not yet located. The 2026 IJIES device-disjoint splitting paper, full reference not yet located. The 2026 *Future Internet* split governance and leakage auditing paper, full reference not yet located. Djaidja et al., IEEE TIFS 19:7783 (2024). A-THENA, arXiv:2604.21623 (2026). The TTL sentence in Goldschmidt and Chudá, arXiv:2502.06688, where the reference itself is verified and that one sentence is not yet located to a section or page. And arXiv 2201.11628, the early-detection work the earliness measurement is adapted from, added 2026-08-14. Chethan et al. (2026), DOI 10.48084/etasr.17590, is verified against its PDF and is not among them. `NOTES_FOR_WRITING.md` carries the claim each citation supports; this row tracks only which have been read |
+| "Detection ceiling" in the thesis statement and the RO2 row | The phrase appears in the Section 1 thesis statement and in the RO2 row of Section 3. It does not describe the quantity that was measured: saturation marks where a class stops improving with more observation, not where it becomes reliably detectable, and eight of nineteen classes saturate at an F1 below 0.80. Resolved in the same pass as the "Title and thesis statement" row in this section, since the thesis statement is one of the two places the phrase sits and rewording one without the other would leave them disagreeing. `NOTES_FOR_WRITING.md` carries the entry under Chapter 5 |
 | Title and thesis statement | Update pending. Handled outside this pass |
 | Abstract | Section 1a to be added. Handled outside this pass |
 | Hypothesis approval marking | Sign-off obtained from the advisory committee. Section 3 records no approval status; the approval marking and its date are added in a later pass |
