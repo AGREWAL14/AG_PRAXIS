@@ -546,3 +546,142 @@ four values or a midpoint between two, so report the direction and not the ratio
 is interpreted.
 
 **Added:** 2026-08-14
+
+---
+
+## Chapter 5 — interpretation and positioning
+
+### The provenance finding has an external counterpart
+
+**Claim:** two 2026 papers publish random forest feature importance on this dataset and
+rank the same timing features highest. Gencturk et al. place IAT first by a wide margin
+with Rate and Srate next; Alkhodaidi et al. give IAT 0.21 and Rate 0.05 and advise
+security teams to monitor IAT and packet rate. Both interpret the ranking as attack
+signal. This project measures those same columns identifying the source recording.
+
+The correspondence is exact on three features. IAT, Rate and Srate identify the source
+recording at 0.8935 on the fifty-way task against a chance rate of 0.0200, and those same
+three are the top three of Gencturk et al.'s random forest importance ranking. The same
+three features, read as attack signal there and measured as recording provenance here. On
+first rank the two also agree, by a different measurement: IAT is Gencturk et al.'s
+highest-ranked feature by a wide margin, and it is this project's top feature by mutual
+information on the 19-class task at 2.1500 nats of 2.1940 available. The 0.8935 figure
+itself treats the three as a set and does not rank them, so what corresponds there is
+membership rather than order.
+
+Two further figures place that. The timing family, those three plus Duration, reaches
+0.9301 on the same fifty-way task, and capture identification with the attack class held
+fixed reaches 0.8280 across all 44 features against a mean chance rate of 0.1750.
+
+The gap is not that the literature is wrong about their predictive value. It is that no
+published work distinguishes the two contributions, so a feature can be top-ranked for
+detection and carrying recording provenance at the same time and nothing in the published
+record separates them. This is the strongest available positioning for the provenance
+finding, and it replaces any framing that argues the point in the abstract: the argument
+is now against two named rankings rather than against a hypothetical practitioner.
+
+**Rests on:** the Gencturk et al. and Alkhodaidi et al. PDFs, read and verified, and
+`PROJECT_RECORD.md` Section 5, under feature provenance for the three identification
+figures and under feature separability for the mutual information figure.
+
+**Serves:** Chapter 5, where the provenance finding is positioned, and Chapter 2, related
+work.
+
+**Added:** 2026-08-14
+
+### The balancing negative result is consistent with independent work
+
+**Claim:** Gencturk et al. conclude across ECU-IoHT, WUSTL and CICIoMT2024 that
+balancing's benefit is not universal and in several multi-class settings is limited or
+inferior to the unbalanced baseline. Alkhodaidi et al. report a deep model falling from
+98.61% to 73.25% accuracy on the 19-class task under ADASYN. This project's finding is
+therefore consistent with published work rather than an artifact of the intervention set
+chosen here: two of five interventions lowered macro-F1 against the parent, and no
+intervention raised the count of classes detected at F1 0.50.
+
+**Rests on:** both PDFs, read and verified, and `PROJECT_RECORD.md` Section 5 under class
+balancing.
+
+**Serves:** Chapter 5, interpreting the balancing result, and Chapter 4 where it is
+reported.
+
+**Added:** 2026-08-14
+
+### Aggregate and class-sensitive metrics diverge, published on this dataset
+
+**Claim:** Gencturk et al.'s Table 19 reports a model with aggregate F1 0.4676 and zero
+recall on the smallest class, and two deep models recovering that class better than a
+random forest while scoring far worse overall. They state that aggregate and
+class-sensitive metrics can tell different stories for the same model. That is this
+project's weighted-minus-macro argument reached independently on the same dataset, so it
+can be cited rather than argued from first principles.
+
+**Rests on:** the Gencturk et al. PDF, read and verified.
+
+**Serves:** Chapter 4, reporting the macro against weighted gap, and Chapter 3 where
+macro-averaging is justified.
+
+**Added:** 2026-08-14
+
+### The hard-class diagnostic is measured on a different unit
+
+**Claim:** Gencturk et al. use Recon-Ping_Sweep as their headline minority-class
+diagnostic and interpret its recall. This project reports the class without interpreting
+it, because at window 50 and stride 25 its 926 records yield 4 test sequences. Their unit
+is records and this project's is windows, so the exclusion does not transfer and they are
+not in error on their own terms. Any citation of their figures must state the difference
+in unit, or a reader will ask why the same class is interpreted there and not here.
+
+**Rests on:** the Gencturk et al. PDF, and `PREREGISTRATION.md` Amendment 4.
+
+**Serves:** Chapter 2, related work, and Chapter 4 where the class is reported without
+being interpreted.
+
+**Added:** 2026-08-14
+
+---
+
+## Chapter 2 — citation gaps to close
+
+### No published work on this benchmark states its averaging method
+
+**Claim:** four papers now checked against their PDFs report F1 on the 19-class task
+without stating whether it is macro, micro or weighted — the benchmark paper itself,
+Dadkhah et al. (2024), and three applications of it, Chethan et al. (2026), Gencturk et
+al. (2026) and Alkhodaidi et al. (2026). This is a property of how the benchmark is
+reported in the literature rather than four separate omissions, and it makes stating the
+averaging method a methodological position rather than housekeeping. Alkhodaidi et al.
+report a random forest at 99.53% accuracy and 0.9951 F1 on the task where this project's
+macro figure is 0.8418. A difference of that size is consistent with weighted averaging on
+a corpus imbalanced at 2,157.7 : 1, but it cannot be established without their code and
+must not be asserted.
+
+**Rests on:** the four PDFs, and `DECISIONS.md` under 2026-08-07, which records that
+"macro", "micro" and "weighted" appear nowhere in Dadkhah et al.'s 22 pages.
+
+**Serves:** Chapter 2, related work, and Chapter 3 where the metric is fixed.
+
+**Added:** 2026-08-14
+
+### Correction: the 2025 Internet of Things design critique is Doménech et al.
+
+**Claim:** the entry "CICIoMT2024 design critique, *Internet of Things* (2025)" above
+records that the DOI and full reference are not yet located. The reference is Doménech,
+J., León, O., Siddiqui, M. S., and Pegueroles, J. (2025). Evaluating and enhancing
+intrusion detection systems in IoMT: The importance of domain-specific datasets.
+*Internet of Things*, 32, Article 101631. DOI 10.1016/j.iot.2025.101631. The rest of that
+entry stands as written. The PDF has not been read, so the work remains on the pending
+list in `PROJECT_RECORD.md` Section 11 and none of its claims may enter a chapter.
+
+Two claims are attributed to it by secondary sources and are recorded here as unverified
+rather than as findings: that it recommends shuffling to address temporal correlation, and
+that it reports F1 drops of up to 66.87% on transfer between CICIoT2023 and CICIoMT2024.
+Both need the primary source before use. The second bears on the cross-dataset scope
+exclusion in `PROJECT_RECORD.md` Section 3, which rests on this project's own transfer
+measurement and does not depend on it.
+
+**Rests on:** the located reference above. Nothing read.
+
+**Serves:** Chapter 2, related work, and reading the earlier entry in this file.
+
+**Added:** 2026-08-14

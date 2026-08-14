@@ -1283,3 +1283,79 @@ turns on them.
 **What this does not change:** no hypothesis, no comparator, no threshold, no class set and
 no feature set. H1, H2 and H3 are unchanged. `NOTES_FOR_WRITING.md` carries the Chapter 2
 positioning under an entry added the same day.
+
+---
+
+## 2026-08-14 — two further applications of the benchmark read against their PDFs
+
+**Decision:** nothing changes in the design. A second literature check, run after the
+graph paper above, returned two open-access applications of CICIoMT2024. Both were read
+against their PDFs rather than through anyone's summary of them, and what they supply is
+external corroboration for three things this project already measures, recorded in
+`PROJECT_RECORD.md` Section 6 under benchmark context and positioned for the write-up in
+`NOTES_FOR_WRITING.md`.
+
+**The two papers.** Gencturk, E., Ustubioglu, B., Ulutas, G., and Symeonidis, I. (2026).
+Class imbalance in IoMT datasets: evaluating balancing strategies for learning-based
+attack detection. *Applied Sciences*, 16(10), 4921. DOI 10.3390/app16104921. It evaluates
+four balancing methods across ECU-IoHT, WUSTL and CICIoMT2024, over five classical models
+and two deep models, at seeds 42, 52 and 62. And Alkhodaidi, T., Alhalabi, W., and Almasre,
+M. (2026). Enhancing IoMT network threat detection with data balancing for multi-class
+attack classification on CICIoMT2024 dataset. *Computers, Materials & Continua*, 88(2),
+87. DOI 10.32604/cmc.2026.081665.
+
+**What the first contributes.** Its random forest feature importance on the 19-class task
+ranks IAT first by a wide margin with Rate and Srate next, read as network-behaviour
+signature. Its Table 5 gives Recon-Ping_Sweep an imbalance ratio of 2157.70 with class
+counts matching this project's. Its conclusion across the three corpora is that
+balancing's benefit is not universal and in several multi-class settings is limited or
+inferior to the unbalanced baseline. Its Table 19 reports a model at aggregate F1 0.4676
+with zero recall on the smallest class, and two deep models recovering that class better
+than a random forest while scoring far worse overall, from which it states that aggregate
+and class-sensitive metrics can tell different stories for the same model. It also uses
+Recon-Ping_Sweep as its minority-class diagnostic and interprets its recall, which this
+project does not do, because its unit is records and this project's is windows, where the
+class yields four test sequences and is excluded from interpretation under
+`PREREGISTRATION.md` Amendment 4. That is a difference in unit and not a disagreement.
+
+**What the second contributes.** Its random forest feature importance on CICIoMT2024 gives
+IAT 0.21, Rate 0.05 and AVG 0.04, and it advises security teams to monitor IAT and packet
+rate. Its class counts match this project's. ADASYN balancing drops its deep model from
+98.61% to 73.25% accuracy on the 19-class task. It reports a random forest at 99.53%
+accuracy and 0.9951 F1 at nineteen classes. Its synthetic-dataset component is out of
+scope here and nothing is recorded from it.
+
+**The convergence that matters.** Two independent published rankings put the timing
+features at the top of a detector on this dataset and both read them as attack signal. The
+provenance results in `PROJECT_RECORD.md` Section 5 are measured on the same columns: the
+timing family identifies the source recording at 0.9301 on the fifty-way task against a
+chance rate of 0.0200, and IAT, Rate and Srate alone, which is Gencturk et al.'s top
+three, reach 0.8935 there. Neither paper measures provenance and neither contradicts
+anything recorded here. What the agreement establishes is that the columns this project
+measures carrying recording identity are the columns the literature relies on for
+detection, which is the positioning the provenance finding is argued from rather than a
+new result.
+
+**The averaging-method pattern, now across four papers.** Neither of these two states an
+averaging method for any F1 it reports. With Dadkhah et al. (2024), recorded under
+2026-08-07, and Chethan et al. (2026), recorded above, that is four papers checked against
+their PDFs reporting F1 at nineteen classes without saying whether it is macro, micro or
+weighted. It is recorded as a property of how this benchmark is reported rather than as an
+adverse finding about any one paper. Alkhodaidi et al.'s 0.9951 against this project's
+0.8418 macro is consistent with weighted averaging on a corpus imbalanced at 2,157.7 : 1,
+and that cannot be established without their code, so it is not asserted anywhere.
+
+**One reference located and not read.** The 2025 *Internet of Things* design critique of
+CICIoMT2024, carried in `NOTES_FOR_WRITING.md` since 2026-08-10 without a reference, is
+Doménech, J., León, O., Siddiqui, M. S., and Pegueroles, J. (2025). Evaluating and
+enhancing intrusion detection systems in IoMT: The importance of domain-specific datasets.
+*Internet of Things*, 32, Article 101631. DOI 10.1016/j.iot.2025.101631. The PDF has not
+been read and it stays on the pending list in Section 11, so the count of unread references
+there is still seven. Two claims attributed to it by secondary sources — that it recommends
+shuffling to address temporal correlation, and that it reports F1 drops up to 66.87% on
+transfer between CICIoT2023 and CICIoMT2024 — are recorded as unverified in
+`NOTES_FOR_WRITING.md` and are used nowhere.
+
+**What this does not change:** no hypothesis, no comparator, no threshold, no class set,
+no feature set and no figure. H1, H2 and H3 are unchanged. Every result these papers agree
+with was measured and recorded before they were read.

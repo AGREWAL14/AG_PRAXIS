@@ -725,6 +725,41 @@ total, Recon-Ping_Sweep at 926 and DDoS-UDP at 1,998,026. Their Table V reproduc
 Dadkhah et al.'s 19-class Random Forest F1 of 0.551, so that anchor is now confirmed by
 a second reading of the source rather than by this project's alone.
 
+### Benchmark context — published feature-importance rankings
+
+Two further applications of this benchmark were read against their PDFs on 2026-08-14.
+
+Gencturk, E., Ustubioglu, B., Ulutas, G., and Symeonidis, I. (2026). Class imbalance in
+IoMT datasets: evaluating balancing strategies for learning-based attack detection.
+*Applied Sciences*, 16(10), 4921. DOI 10.3390/app16104921. Four balancing methods across
+ECU-IoHT, WUSTL and CICIoMT2024, five classical models and two deep models, seeds 42, 52
+and 62.
+
+Alkhodaidi, T., Alhalabi, W., and Almasre, M. (2026). Enhancing IoMT network threat
+detection with data balancing for multi-class attack classification on CICIoMT2024
+dataset. *Computers, Materials & Continua*, 88(2), 87. DOI 10.32604/cmc.2026.081665.
+
+Both publish random forest feature importance on the 19-class task and both rank the same
+timing features at the top. Gencturk et al. place IAT first by a wide margin with Rate and
+Srate next. Alkhodaidi et al. give IAT 0.21, Rate 0.05 and AVG 0.04, and advise security
+teams to monitor IAT and packet rate. Each reads the ranking as network-behaviour
+signature, which is attack signal.
+
+Those are the features the provenance results in Section 5 are measured on. The timing
+family — Duration, Rate, Srate, IAT — identifies the source recording at 0.9301 on the
+fifty-way task against a chance rate of 0.0200, and IAT, Rate and Srate alone, which is
+Gencturk et al.'s top three, reach 0.8935 on the same task. Two independent rankings
+therefore place at the top of a detector exactly the columns this project measures
+carrying recording provenance. Neither paper measures provenance and neither is in
+disagreement with anything recorded here; what the agreement supplies is external evidence
+that these columns are the ones the literature relies on, which is what makes the
+provenance measurement worth reporting.
+
+Both also confirm the dataset figures in Section 4. Their class counts match, and
+Gencturk et al.'s Table 5 gives Recon-Ping_Sweep an imbalance ratio of 2157.70 against the
+2,157.7 : 1 recorded here. With Chethan et al. that is three published sources agreeing
+with this project's counts.
+
 ### Positioning against the literature
 
 | RQ | What exists | The gap filled |
@@ -919,7 +954,7 @@ position; the pre-registration states how it was reached.
 | NB09a and NB09b executed, resolved | Both are run. NB09a completed across two sessions, the five sequence models and their explainer passes on an A100 on 2026-08-12 and the forest's TreeExplainer pass on a CPU runtime on 2026-08-13, which also wrote `attributions.json`; its artefacts are in `data/processed/NB09a/` and `results/NB09a/`. NB09b ran on 2026-08-13: H3 measured 18 of 18 classes resolving to a CAPEC pattern against a pass mark of 15, semantic agreement 9 of 18 for the sequence model and 6 of 18 for the forest against a majority-class baseline of 0.667, Kendall's tau 0.4560 across 19 classes, and MAUDE 1 keyword match in 829 reports; its artefact is `data/processed/NB09b/threat_mapping.json`. `RESULTS_LEDGER.md` carries both, the NB09a completion entry of 2026-08-13 superseding its partial entry of 2026-08-12. H3 is restated as chain resolution by `PREREGISTRATION.md` Amendment 20, which followed the run. The rules they run under are fixed in `PREREGISTRATION.md` Amendments 18 and 19: the sequence model at 40 features is what H3 is scored on, the forest at 40 features is an exactness check on its approximate attributions, the aggregation is mean absolute, k is 10, the SHAP background is 200 windows held fixed across seeds, and nsamples is 50. The mapping rule and the reference standard are `config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml`, `config/capec_stride.yaml` and `config/maude_keywords.yaml`, all committed before either notebook trains anything. 09a trains five sequence models and the forest and writes attributions per seed as each pass completes; 09b maps, counts assignment and agreement separately, computes Kendall's tau and queries openFDA, and runs on a CPU |
 | NB08b parked | Written, committed and dry-run clean, and not run. RO2 is answered by the saturation result in Section 5, the per-class budgets and the group medians of 25 against 15, on which H2 is measured under `PREREGISTRATION.md` Amendment 12. The earliness curve NB08b would produce is not load-bearing for any hypothesis. `DECISIONS.md` under 2026-08-13 records the parking. Amendment 15 stands as written and is not withdrawn |
 | Graph modelling exclusion, resolved | The exclusion stood on recoverability: no topology could be built from the released columns. A published application of Graph Attention Networks and a hybrid GCN to CICIoMT2024 exists — Chethan et al. (2026), DOI 10.48084/etasr.17590 — and its PDF was read on 2026-08-14. Their Section II.C and equation (1) establish an edge where two nodes share a communication protocol, broker, topic or MAC address, or where feature similarity exceeds 0.6. The released CSVs carry no MAC address, broker or topic column, so only protocol sharing and feature similarity are implementable and what is built is a similarity graph over feature vectors rather than observed network topology. The Section 3 exclusion is restated on that basis rather than withdrawn: a graph can be built, and the edges in it come from the similarity rule chosen rather than from observed communication. `DECISIONS.md` under 2026-08-14 records the check |
-| Citations awaiting PDF review | Seven references are cited in `NOTES_FOR_WRITING.md` or `PREREGISTRATION.md` without having been read against the primary source, and none may enter a chapter until it has been. The 2025 *Internet of Things* design critique of CICIoMT2024, DOI not yet located. The 2026 IJIES device-disjoint splitting paper, full reference not yet located. The 2026 *Future Internet* split governance and leakage auditing paper, full reference not yet located. Djaidja et al., IEEE TIFS 19:7783 (2024). A-THENA, arXiv:2604.21623 (2026). The TTL sentence in Goldschmidt and Chudá, arXiv:2502.06688, where the reference itself is verified and that one sentence is not yet located to a section or page. And arXiv 2201.11628, the early-detection work the earliness measurement is adapted from, added 2026-08-14. Chethan et al. (2026), DOI 10.48084/etasr.17590, is verified against its PDF and is not among them. `NOTES_FOR_WRITING.md` carries the claim each citation supports; this row tracks only which have been read |
+| Citations awaiting PDF review | Seven references are cited in `NOTES_FOR_WRITING.md` or `PREREGISTRATION.md` without having been read against the primary source, and none may enter a chapter until it has been. Doménech et al. (2025), DOI 10.1016/j.iot.2025.101631, located 2026-08-14. The 2026 IJIES device-disjoint splitting paper, reference not yet located. The 2026 *Future Internet* split governance paper, reference not yet located. Djaidja et al., IEEE TIFS 19:7783 (2024). A-THENA, arXiv:2604.21623 (2026). The TTL sentence in Goldschmidt and Chudá, arXiv:2502.06688, where the reference itself is verified and that one sentence is not yet located to a section or page. arXiv 2201.11628, added 2026-08-14. The count is unchanged by the 2026-08-14 reading, which located one reference on the list without reading it and verified two that were never on it: Chethan et al. (2026), DOI 10.48084/etasr.17590; Gencturk et al. (2026), DOI 10.3390/app16104921; and Alkhodaidi et al. (2026), DOI 10.32604/cmc.2026.081665 are verified against their PDFs and are not among the seven. `NOTES_FOR_WRITING.md` carries the full reference and the claim each citation supports; this row tracks only which have been read |
 | "Detection ceiling", resolved | The phrase sat in two places, the Section 1 thesis statement and the RO2 row of Section 3, and described neither: saturation marks where a class stops improving with more observation, not where it becomes reliably detectable, and eight of nineteen classes saturate at an F1 below 0.80. Both were restated on 2026-08-14. The thesis statement now reads as how much observation each threat class needs before further observation stops improving detection. The RO2 research question now asks how much traffic must be observed before each attack class stops improving with further observation, and whether that differs across classes, which matches the saturation point its own metric column already named. The objective, hypothesis, metric and notebook columns of that row are unchanged, as is H2, whose statement and comparator sit in `PREREGISTRATION.md` Amendment 12. The phrase appears nowhere else in this file. `NOTES_FOR_WRITING.md` carries the entry under Chapter 5, which records the wording as unresolved and is superseded on that point by this row |
 | Title and thesis statement | Update pending. Handled outside this pass |
 | Abstract | Section 1a to be added. Handled outside this pass |
