@@ -936,3 +936,53 @@ and `config/feature_families.yaml` under `table5_reconciliation`.
 are reported.
 
 **Added:** 2026-08-15
+
+---
+
+## Chapter 5 — interpretation and positioning
+
+### The volumetric cost is a confusion within a family, not a failure to detect
+
+**Claim:** the aggregate figure for the sequence model conceals what its losses on the
+flooding classes actually are. They are not traffic the model failed to find. Of the
+windows of one ICMP flooding class, three quarters are given the label of the other ICMP
+flooding class and almost nothing goes anywhere else, and the confusion runs in both
+directions, so both classes fall together. The same holds for the TCP and SYN pairs and
+not for the UDP pair, whose two members are undamaged. A reader told only that a class
+fell from F1 0.9960 to 0.3178 will take it as a detection failure, and it is not one:
+every one of these classes is separated from the rest of the corpus and confused with its
+own partner.
+
+Two readings are ruled out by measurement rather than by argument. It is not a seed
+artifact, since the fall reproduces across five seeds. And it is not aggregation
+destroying the distinction: scoring every feature on how well it separates the two members
+of a pair, first on single records and then on the average of the fifty records in a
+window, the average separates these pairs better than a single record does, in all four
+pairs. Whatever costs the model the distinction, it is not that averaging threw the
+distinction away.
+
+What is left is the part that connects to the rest of this work. In every one of the four
+pairs the separation on the averaged window is carried by one feature, at a near-identical
+figure across pairs, and it separates the two members by their level rather than by how
+much the feature moves within a window. That is the same feature this project measures as
+identifying which recording session a row came from. So the distinction that survives
+aggregation is one that the provenance measurement says should not be trusted, and once
+the provenance-carrying timing features are set aside there is very little left in these
+columns that tells the two members of a pair apart. This is one line of the central
+argument rather than a separate observation: the same measurement that makes the split
+protocol necessary also explains why a within-family distinction is hard to make honestly
+on this data.
+
+The reading of that one feature as a session marker is consistent with what was measured
+and is not a test of it. What was measured is that a single feature separates all four
+pairs at nearly the same figure and does so on level rather than on variation, which is
+what a per-session offset would look like. No experiment here distinguishes that from an
+attack property that happens to behave the same way, and the write-up should say so.
+
+**Rests on:** `PROJECT_RECORD.md` Section 5 under the sequence model and under feature
+provenance, and Section 11 under the DoS-ICMP row, and `RESULTS_LEDGER.md` under NB06d.
+
+**Serves:** Chapter 5, where the sequence result is interpreted and the provenance finding
+is positioned, and Chapter 4, where the per-class figures are reported.
+
+**Added:** 2026-08-15

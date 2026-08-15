@@ -1516,3 +1516,80 @@ extended rather than rewritten, because this file and `NOTES_FOR_WRITING.md` are
 append-only: the Duration identification of 2026-08-07, the Dadkhah baseline entries of
 2026-08-07 and 2026-08-08, and the macro-averaging decision of 2026-08-01 all stand as
 written and are added to here.
+
+---
+
+## 2026-08-15 — the DoS-ICMP regression diagnosed as a within-pair confusion
+
+**Decision:** nothing in the design changes. `PREREGISTRATION.md` is untouched and no
+amendment is written, stated here rather than left implied: this is a diagnostic of a
+result already reported, it tests no hypothesis, it moves no comparator, threshold, class
+set or feature set, and an amendment records a design decision rather than a finding. H1,
+H2 and H3 stand exactly as written. What changes is that an open item in
+`PROJECT_RECORD.md` Section 11 closes.
+
+**What was open.** The window-based sequence model scores DoS-ICMP at F1 0.3178 against
+0.9960 for the published single-record model, the largest fall of any class. Five
+balancing interventions failed to recover it and five seeds showed the fall to be stable
+rather than a seed artifact, and the record said what caused it remained undiagnosed.
+
+**What the errors are.** Of 3,936 true DoS-ICMP windows, 2,996 are predicted DDoS-ICMP,
+936 are correct, and four go anywhere else: three to DDoS-UDP and one to Benign. So 2,996
+of 3,000 errors land on one class, and that class is the other ICMP class. The confusion
+runs both ways: 1,017 of 7,826 true DDoS-ICMP windows are predicted DoS-ICMP, which is
+what holds DoS-ICMP's precision to 0.4790 against a recall of 0.2378. DDoS-ICMP falls with
+it, to F1 0.7721 from 0.9984 for the same architecture reading one record at a time. This
+is not a failure to detect the traffic. Both classes are found; the model cannot say which
+of the two it is looking at.
+
+**It holds in three of four pairs and not in UDP.** Over the items whose true class is one
+of a pair, the share predicted as the other member, for the record model and the window
+model on the same split: DoS-ICMP 0.001924 against 0.341183, DoS-TCP 0.000650 against
+0.268424, DoS-SYN 0.000790 against 0.136305, and DoS-UDP 0.000837 against 0.011398. Under
+the record model all four sit under 0.2 percent and are indistinguishable. Under the
+window model three rise to between 13.6 and 34.1 percent and UDP rises to 1.1 percent, and
+the two UDP classes are the only pair members whose scores are undamaged, F1 0.9880 and
+0.9881. Errors almost never leave a pair in any of the four: the share predicted as
+something outside the pair is 0.034 percent for ICMP, 0.094 for TCP, 0.351 for SYN and
+zero for UDP.
+
+**Averaging is not the cause, and that is a measurement rather than an argument.** For
+each pair every feature was scored three ways over the same windows, by how well it
+separates the two members on pooled individual records, on the window mean, and on the
+window standard deviation. If aggregation destroyed the distinction, separability on the
+mean would fall below separability per record. It rises. The mean AUC lost is negative for
+all four pairs, -0.067768 for ICMP, -0.042848 for TCP, -0.008505 for SYN and -0.053102 for
+UDP, and the count of features losing 0.10 or more is zero for three pairs and one for
+SYN. Averaging fifty records makes these pairs more separable on average, not less, so the
+loss-of-information reading is ruled out. The two orderings do not agree either: by
+separability lost the pairs rank SYN, TCP, UDP, ICMP, and by confusion rate they rank
+ICMP, TCP, SYN, UDP.
+
+**What separates the pairs, and why it is not a signal to rely on.** One feature carries
+the separation in every pair. IAT scores 0.9601 on the window mean for ICMP, 0.9650 for
+TCP, 0.9649 for UDP and 0.9711 for SYN, and 0.9985 per record in all four. It is the only
+feature above 0.90 on the window mean for three of the pairs, one of three for SYN. Its
+figure on the window spread is below its figure on the mean in every pair, 0.5496, 0.8035,
+0.6799 and 0.5650, so what it separates is the level of the feature and not how much it
+moves within a window.
+
+This project's own measurement of that same feature is that it carries recording
+provenance: IAT sits in the timing family, which identifies which of fifty recordings a
+row came from at 0.9301 against a chance rate of 0.0200, and IAT with Rate and Srate
+reaches 0.8935 on the same task. A feature that identifies the recording session and
+separates four different attack pairs at a near-identical AUC, on level rather than
+variation, is consistent with a per-session offset rather than with attack behaviour. That
+reading is recorded as consistent with, and not as established. The pattern was observed
+here; no test of it was run, and none is proposed by this entry.
+
+**The packets-per-row reading returned a negative and nothing is claimed from it.** The
+notebook attempted to read how many packets went into one row, from the Number column on
+its own scale and from the quantisation of per-packet indicator columns. The artefact
+records `separates_the_pair_classes` as false: 17 of the 19 classes read a rounded Number
+median of 10, Benign reads 5 and Recon-OS_Scan 8, so the eight pair classes are not on one
+side of any division this reading found. The notebook states nothing on that basis and
+neither does this entry.
+
+**What this does not change:** no hypothesis, no comparator, no threshold, no class set,
+no feature set and no figure. Every per-class score stands as recorded. The diagnosis
+explains a number already in the record rather than replacing it.
