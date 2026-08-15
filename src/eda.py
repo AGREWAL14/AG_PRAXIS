@@ -321,3 +321,66 @@ def cluster_order(corr: pd.DataFrame) -> list:
         return names
     order = leaves_list(linkage(squareform(distance, checks=False), method="average"))
     return [names[i] for i in order]
+
+
+# --------------------------------------------------------------------------
+# separability between two groups of rows held in memory
+# --------------------------------------------------------------------------
+
+
+def auc_by_column(rows_a, rows_b) -> np.ndarray:
+    """Best-direction AUC of every column, for two groups of rows.
+
+    `pair_auc` above answers the same question from binned counts, because the
+    exploratory pass never holds the data. This one is for the case where both
+    groups do fit in memory and the exact value is wanted: ranks are taken over
+    the two groups together, ties share the average rank, and the area follows
+    from the rank sum of the first group.
+
+    The larger of the two directions is returned, matching `pair_auc`, so 0.5
+    means the column does not separate the two groups at all and 1.0 means it
+    separates them completely.
+    """
+    a = np.asarray(rows_a, dtype=np.float64)
+    b = np.asarray(rows_b, dtype=np.float64)
+    if a.ndim != 2 or b.ndim != 2 or a.shape[1] != b.shape[1]:
+        raise ValueError(f"expected two 2-D arrays of equal width, got {a.shape} and {b.shape}")
+    n_a, n_b = len(a), len(b)
+    out = np.full(a.shape[1], np.nan, dtype=np.float64)
+    if n_a == 0 or n_b == 0:
+        return out
+    for j in range(a.shape[1]):
+        both = np.concatenate([a[:, j], b[:, j]])
+        if not np.isfinite(both).all():
+            continue
+        _, inverse, counts = np.unique(both, return_inverse=True, return_counts=True)
+        # Average rank of each distinct value: how many values sit strictly below
+        # it, plus the middle of the block of ties it belongs to.
+        below = np.cumsum(counts) - counts
+        average_rank = below + (counts + 1) / 2.0
+        ranks = average_rank[inverse]
+        auc = (ranks[:n_a].sum() - n_a * (n_a + 1) / 2.0) / (n_a * n_b)
+        out[j] = max(auc, 1.0 - auc)
+    return out
+
+
+def smallest_consistent_denominator(values, candidates=(10, 100), tolerance=1e-3):
+    """The smallest N for which every value is a multiple of one over N.
+
+    A column that records whether each packet carried some property, averaged over
+    a fixed number of packets, can only take values that are multiples of one over
+    that number. Reading the values back therefore says how many packets went into
+    a row, without anything having to be assumed about how the file was built.
+
+    Returns None when no candidate fits, which is the honest answer for a column
+    that is not an average of a per-packet indicator.
+    """
+    finite = np.asarray(values, dtype=np.float64).ravel()
+    finite = finite[np.isfinite(finite)]
+    if finite.size == 0:
+        return None
+    for n in sorted(candidates):
+        scaled = finite * n
+        if np.abs(scaled - np.round(scaled)).max() <= tolerance:
+            return int(n)
+    return None

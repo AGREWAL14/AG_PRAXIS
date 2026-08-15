@@ -427,6 +427,14 @@ def check_training_path(report: Report, seen: dict, profile) -> None:
         ok=not tf.config.functions_run_eagerly(),
     )
 
+    if profile.training_path == "none":
+        report.condition(
+            "this notebook fits no model, so there is no training path to check. What that "
+            "leaves unchecked is nothing: a notebook that trains nothing cannot run a "
+            "training loop eagerly."
+        )
+        return
+
     if profile.training_path == "keras_fit":
         report.line("the run trains through keras Model.fit, which compiles its own step",
                     ok=True)

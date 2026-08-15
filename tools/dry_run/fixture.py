@@ -115,6 +115,7 @@ def build(profile, *, keep=False) -> Path:
     (shadow / "config" / "base.yaml").write_text(yaml.safe_dump(base, sort_keys=False))
 
     plan = _plan()
+    test_labels = None
     counts = {"train": int(spec["train_windows_per_capture"]),
               "val": int(spec["val_windows_per_capture"]),
               "test": int(spec["test_windows_per_capture"])}
@@ -130,6 +131,8 @@ def build(profile, *, keep=False) -> Path:
     for partition, rows in plan.items():
         built = _arrays(rows, counts[partition], window, features,
                         seed={"train": 11, "val": 22, "test": 33}[partition])
+        if partition == "test":
+            test_labels = built["y"]
         np.savez(artifacts / "NB04" / f"sequences_{partition}.npz",
                  X=built["X"], y=built["y"], recording=built["recording"],
                  source_file=built["recording"],
@@ -167,6 +170,29 @@ def build(profile, *, keep=False) -> Path:
         where.mkdir(parents=True, exist_ok=True)
         (where / "config.json").write_text(json.dumps(parent_config, indent=1))
         (where / "metrics.json").write_text(json.dumps(parent_metrics, indent=1))
+
+    if spec.get("needs_parent_predictions"):
+        # The parent's saved predictions, for a notebook that reads them back rather than
+        # re-scoring anything. y_true is the fixture's own test labels, so a notebook
+        # checking the per-class counts against the manifest finds them agreeing. y_pred
+        # swaps a share of each DoS/DDoS pair into its partner, at a different share per
+        # pair, so an ordering over the four pairs exists to be computed.
+        swap_share = {"ICMP": 0.50, "TCP": 0.30, "SYN": 0.15, "UDP": 0.02}
+        y_true = np.asarray(test_labels, dtype="int8")
+        y_pred = y_true.copy()
+        picker = np.random.default_rng(606)
+        for protocol, share in swap_share.items():
+            a, b = LABELS.index(f"DoS-{protocol}"), LABELS.index(f"DDoS-{protocol}")
+            for source, target in ((a, b), (b, a)):
+                where = np.flatnonzero(y_true == source)
+                take = int(round(len(where) * share))
+                if take:
+                    y_pred[picker.choice(where, size=take, replace=False)] = target
+        for where in (processed / "NB06" / "sequence_cnn_lstm_19class",
+                      artifacts / "NB06" / "sequence_cnn_lstm_19class"):
+            where.mkdir(parents=True, exist_ok=True)
+            np.save(where / "y_true.npy", y_true)
+            np.save(where / "y_pred.npy", y_pred)
 
     if spec.get("needs_parent_model", True):
         import sys
