@@ -434,3 +434,118 @@ def fit_adversarial(
     history["batch_size"] = int(batch_size)
     history["seed"] = int(seed)
     return history
+
+
+# --------------------------------------------------------------------------
+# reading the session back off the representation
+# --------------------------------------------------------------------------
+
+
+def representation(model, X, index, *, layer: str = "across_the_window", chunk: int = 8192,
+                   batch: int = 512):
+    """The trunk's output for each of the given windows, before either head.
+
+    Read a chunk of the index at a time rather than by slicing the whole index out of X
+    first. That slice would be a second copy of a gigabyte of windows, and whether it fits
+    would depend on which runtime the session got rather than on anything about the
+    experiment.
+
+    The sub-model is built from the windows input alone, so nothing has to be invented for
+    the two inputs only the adversary reads.
+    """
+    import keras
+
+    index = np.asarray(index)
+    reader = keras.Model(model.get_layer("windows").output, model.get_layer(layer).output)
+    pieces = []
+    for start in range(0, len(index), int(chunk)):
+        taken = index[start : start + int(chunk)]
+        pieces.append(np.asarray(reader.predict(X[taken], batch_size=int(batch), verbose=0)))
+    return np.concatenate(pieces) if pieces else np.empty((0, 0))
+
+
+def equal_draw(index, group_codes, *, seed: int, per_group: int | None = None):
+    """The same number of windows from every capture present in `index`.
+
+    Drawing equally is what stops a capture being identifiable by being larger than the
+    others, which is the rule the capture-identification measurement in this project has
+    used from the start. The count is the smallest capture's unless one is given.
+    """
+    index = np.asarray(index)
+    codes = np.asarray(group_codes)[index]
+    present = np.unique(codes)
+    sizes = {int(code): int((codes == code).sum()) for code in present}
+    take = int(per_group) if per_group is not None else min(sizes.values())
+    rng = np.random.default_rng(int(seed))
+    keep = []
+    for code in present:
+        where = index[codes == code]
+        keep.append(rng.choice(where, size=take, replace=False) if take < len(where) else where)
+    return np.sort(np.concatenate(keep)), take
+
+
+def capture_probe(H, capture_labels, class_labels, *, n_estimators: int, min_samples_leaf: int,
+                  test_fraction: float, seed: int):
+    """Can the capture be named from the representation? Pooled, and with the class fixed.
+
+    The forest and the split are the ones the feature-level measurement used, so the two
+    numbers are read the same way. Pooled over every capture the answer is not the
+    interesting one, because a capture belongs to one class and naming it well could be
+    naming the class; the row that matters is the class held fixed, where the captures
+    being told apart all carry the same label.
+
+    Returns one row per scope: how many captures were in play, what guessing would score,
+    and what the forest scored on the part of the draw it was not fitted on.
+    """
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import train_test_split
+
+    H = np.asarray(H)
+    capture_labels = np.asarray(capture_labels).astype(str)
+    class_labels = np.asarray(class_labels).astype(str)
+    rows = []
+
+    def one(mask, scope):
+        targets = capture_labels[mask]
+        distinct = np.unique(targets)
+        if len(distinct) < 2:
+            rows.append({"scope": scope, "captures": int(len(distinct)), "windows": int(mask.sum()),
+                         "chance": float("nan"), "accuracy": float("nan"),
+                         "note": "one capture here, so there is nothing to tell apart"})
+            return
+        train_H, test_H, train_y, test_y = train_test_split(
+            H[mask], targets, test_size=float(test_fraction),
+            random_state=int(seed), stratify=targets,
+        )
+        forest = RandomForestClassifier(
+            n_estimators=int(n_estimators), min_samples_leaf=int(min_samples_leaf),
+            n_jobs=-1, random_state=int(seed),
+        )
+        forest.fit(train_H, train_y)
+        forest.n_jobs = 1
+        rows.append({
+            "scope": scope,
+            "captures": int(len(distinct)),
+            "windows": int(mask.sum()),
+            "chance": 1.0 / len(distinct),
+            "accuracy": float((forest.predict(test_H) == test_y).mean()),
+            "note": "",
+        })
+
+    one(np.ones(len(capture_labels), dtype=bool), "pooled")
+    for label in sorted(set(class_labels.tolist())):
+        one(class_labels == label, f"within {label}")
+    return rows
+
+
+def probe_summary(rows) -> dict:
+    """The two figures the probe exists to produce, out of the per-scope rows."""
+    pooled = next((r for r in rows if r["scope"] == "pooled"), None)
+    within = [r for r in rows if r["scope"] != "pooled" and np.isfinite(r["accuracy"])]
+    return {
+        "pooled_accuracy": float(pooled["accuracy"]) if pooled else float("nan"),
+        "pooled_chance": float(pooled["chance"]) if pooled else float("nan"),
+        "class_held_fixed_accuracy": float(np.mean([r["accuracy"] for r in within])) if within else float("nan"),
+        "class_held_fixed_chance": float(np.mean([r["chance"] for r in within])) if within else float("nan"),
+        "n_classes": len(within),
+    }
