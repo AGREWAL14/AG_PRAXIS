@@ -81,8 +81,14 @@ def chance_rate(membership) -> float:
 
     A class with one capture in the set contributes 1.0, because there is nothing to tell
     apart; a class with none contributes nothing to the average.
+
+    Counted in double precision. The membership matrix is float32 because it ends up as a
+    layer's weights, and a reciprocal taken in float32 puts 1/7 out by about 1e-8, which
+    is enough to make this disagree with the same rate counted from the captures
+    themselves. The counts are small integers, so widening them first makes the two
+    routes to this number agree exactly rather than nearly.
     """
-    counts = np.asarray(membership).sum(axis=1)
+    counts = np.asarray(membership, dtype="float64").sum(axis=1)
     counts = counts[counts > 0]
     return float(np.mean(1.0 / counts))
 
