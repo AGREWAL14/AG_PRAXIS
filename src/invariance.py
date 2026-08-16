@@ -287,6 +287,7 @@ def fit_adversarial(
     epochs: int,
     batch_size: int,
     seed: int,
+    capture_weight: float = 1.0,
     rows=None,
     checkpoint_path=None,
     verbose: int = 2,
@@ -308,6 +309,15 @@ def fit_adversarial(
 
     `lambda` is not here. It lives on the reversal layer and is read from the model, so a
     sweep assigns it and calls this again without rebuilding anything.
+
+    `capture_weight` at 0 takes the capture loss out of the objective altogether, which is
+    not the same statement as lambda at 0 even though the two should coincide. Lambda at 0
+    leaves the adversary in the objective and multiplies by zero the gradient it sends back
+    through the reversal; the capture head still trains, on a loss that is still reported.
+    Weight at 0 removes the term, so the head does not train either and what is optimised
+    is the attack loss alone. That is the single-head model, and it is what a sweep over
+    lambda has to be read against. The branch is resolved when the step is traced, so the
+    weightless run does not carry the arithmetic it is not using.
     """
     import keras
     import tensorflow as tf
@@ -330,6 +340,7 @@ def fit_adversarial(
     if optimizer is None:
         raise ValueError("the model has no optimizer; compile it before fitting")
     optimizer.build(model.trainable_variables)
+    weight = float(capture_weight)
 
     @tf.function(reduce_retracing=True)
     def step(windows, classes, domain, attack_true, capture_true, n_domain):
@@ -345,9 +356,17 @@ def fit_adversarial(
             # contributes nothing rather than dividing by zero.
             weighted = tf.reduce_sum(capture_each * tf.squeeze(domain, axis=-1))
             capture_loss = weighted / n_domain
-            loss = attack_loss + capture_loss
+            # Resolved at trace time, so a run with no adversary traces a graph without it.
+            if weight == 0.0:
+                loss = attack_loss
+            else:
+                loss = attack_loss + weight * capture_loss
+        # With the capture loss out of the objective the adversary's own weights have no
+        # gradient at all, and handing the optimizer a None for them warns on every run.
+        # Filtering is resolved when the step is traced, so nothing is decided per batch.
+        gradients = tape.gradient(loss, model.trainable_variables)
         optimizer.apply_gradients(
-            zip(tape.gradient(loss, model.trainable_variables), model.trainable_variables)
+            [(g, v) for g, v in zip(gradients, model.trainable_variables) if g is not None]
         )
         correct = tf.reduce_sum(
             tf.cast(
@@ -400,11 +419,17 @@ def fit_adversarial(
             print(
                 f"  epoch {epoch + 1}/{epochs}  attack loss {history['attack_loss'][-1]:.4f}"
                 f"   capture loss {history['capture_loss'][-1]:.4f}"
-                f"   attack accuracy {history['attack_accuracy'][-1]:.4f}"
+                + ("  (not in the objective)" if weight == 0.0 else "")
+                + f"   attack accuracy {history['attack_accuracy'][-1]:.4f}"
                 f"   [{history['seconds'][-1]:,.0f}s, lambda {lam:g}]"
             )
 
     history["lambda"] = lam
+    history["capture_weight"] = weight
+    history["objective"] = (
+        "attack cross-entropy alone" if weight == 0.0
+        else f"attack cross-entropy plus {weight:g} times the capture cross-entropy"
+    )
     history["epochs"] = int(epochs)
     history["batch_size"] = int(batch_size)
     history["seed"] = int(seed)
