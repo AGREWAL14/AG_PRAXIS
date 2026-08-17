@@ -973,3 +973,39 @@ whose true class is one of the pair.
 | packets per row | the reading returned a negative. `separates_the_pair_classes` is false: 17 of 19 classes read a rounded Number median of 10, Benign reads 5 and Recon-OS_Scan 8, so the eight pair classes are not on one side of any division this reading found. Nothing is claimed from it |
 | artefacts | `data/processed/NB06d/pair_separability.json`, and two figures, `NB06d_record_against_window_mean.png` and `NB06d_separability_lost_by_pair.png` |
 | executed copy | `runs/AG_PRAXIS_NB06d_dosddos_pair_diagnosis_executed.ipynb` |
+
+### NB09b — threat mapping and surveillance coverage, re-run (2026-08-17)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB09b_threat_mapping.ipynb |
+| run date | 2026-08-17 |
+| git sha | 6912da6, working tree clean |
+| status | re-run for artefact consistency. No result changes. The pass mark written into the artefact is corrected from 13 to 15, which is the criterion PREREGISTRATION.md Amendment 20 fixed after the 2026-08-13 run |
+| supersedes | nothing. The 2026-08-13 entry above stands as written and records what that run produced |
+| reads | data/processed/NB09a, unchanged since 2026-08-13. No attribution was recomputed and no model was refitted |
+| rule files | config/shap_capec_map.yaml, config/capec_stride.yaml, config/stride_ground_truth.yaml, committed at 8f51f1f before any model trained |
+| k | 10 |
+| denominator | 18 attack classes, Benign excluded |
+| **H3, CAPEC resolution** | **18 of 18 classes resolved to a CAPEC pattern, 1.000, against a pass mark of 15 of 18** |
+| H3, forest | 18 of 18 resolved. The forest is the exactness check and H3 is not scored on it |
+| semantic agreement, sequence | 9 of 18, 0.500, against a majority-class baseline of 0.667 |
+| semantic agreement, forest | 6 of 18, 0.333 |
+| classes reaching no CAPEC pattern | none, for either model |
+| Kendall's tau | 19 classes over 10 seed pairs, per-class mean tau from 0.1450 on DDoS-ICMP to 0.7200 on MQTT-DDoS-Connect_Flood. Unchanged from 2026-08-13, whose entry records the overall mean as 0.4560 |
+| MAUDE window | 2019-01-01 to 2026-08-17, four days wider than the 2026-08-13 run |
+| MAUDE denominator | 829 reports across the 8 committed generic names, de-duplicated |
+| MAUDE keyword matches | 1, a share of 0.001206. The endpoint was queried again over the wider window and returned the same counts; the figures are re-measured, not carried over |
+| environment | tensorflow 2.20.0, keras 3.13.2, shap 0.52.0, scipy 1.16.3, cpu |
+| artefact | data/processed/NB09b/threat_mapping.json, regenerated |
+| executed copy | runs/AG_PRAXIS_NB09b_threat_mapping_executed.ipynb is now this run, under CLAUDE.md section 7. The 2026-08-13 executed copy is recoverable at 6912da6 |
+
+Four fields differ in `threat_mapping.json` against the 2026-08-13 artefact and nothing
+else does: `pass_mark` 13 to 15, `generated_on`, `git_sha`, and the closing date of the
+MAUDE window. Every measured figure is identical.
+
+The pass-mark divergence between the artefact and `PROJECT_RECORD.md` is closed. NB10's
+`known divergence` handling, recorded in its 2026-08-13 entry above, now has nothing to
+report, and NB10 has to be re-run to drop it from `manifest.json`. No expected value
+moves, so the agreement check stays at 43 of 43. That NB10 entry stood for as long as the
+divergence did and is not superseded retrospectively.
