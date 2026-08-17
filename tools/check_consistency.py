@@ -109,16 +109,23 @@ def check_executed_names():
 
 
 def check_processed_layout():
-    """Every artefact belongs in its notebook's subdirectory, and nothing sits loose.
+    """No artefact appears both in its notebook subdirectory and loose above it.
 
-    A regenerated file landing one directory up is invisible to everything that reads it
-    by path, and the stale copy it was meant to replace stays where it was.
+    A regenerated file downloaded one directory up leaves the stale copy sitting where
+    everything reads it by path, and both are well-formed, so nothing else notices. The
+    top-level files PROJECT_RECORD.md section 9 documents are left alone; what is caught
+    is a name existing in two places at once.
     """
-    loose = sorted(p.name for p in PROC.iterdir()
-                   if p.is_file() and not p.name.startswith("."))
-    if loose:
-        return False, f"{len(loose)} loose in data/processed: " + ", ".join(loose)
-    return True, "every artefact is in a notebook subdirectory"
+    shadows = []
+    for subdir in sorted(PROC.glob("NB*")):
+        if not subdir.is_dir():
+            continue
+        for artefact in sorted(subdir.iterdir()):
+            if artefact.is_file() and (PROC / artefact.name).is_file():
+                shadows.append(f"{artefact.name} in both {subdir.name}/ and data/processed/")
+    if shadows:
+        return False, "; ".join(shadows)
+    return True, "no artefact is shadowed by a loose copy above its subdirectory"
 
 
 CHECKS = [
@@ -126,7 +133,7 @@ CHECKS = [
     ("threat_mapping.json agrees with the latest NB09b ledger entry", check_ledger_figures),
     ("chapter4 manifest is clean and the gate is complete", check_manifest),
     ("executed copies follow CLAUDE.md section 7", check_executed_names),
-    ("data/processed holds no stray artefact", check_processed_layout),
+    ("no artefact is shadowed by a loose copy", check_processed_layout),
 ]
 
 
