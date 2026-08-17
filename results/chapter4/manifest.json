@@ -1,6 +1,6 @@
 {
   "written_on": "2026-08-17",
-  "tables": 19,
+  "tables": 21,
   "figures": 3,
   "values_checked_against_the_record": 43,
   "known_divergences": [],
@@ -152,9 +152,21 @@
       "file": "attack_pattern_and_category_by_class",
       "kind": "table",
       "rows": 18,
-      "caption": "Each attack class, the features its explanations rank highest, the attack pattern those features resolve to under the fixed mapping, the threat category that pattern carries, and the category documented for that class in the benchmark paper.",
-      "note": "The feature list shows the highest-ranked few of the ten the mapping reads. Every class reaches an attack pattern. Half reach the category documented for them. One class rests on a single mapping entry \u2014 the one linking the address-resolution protocol to identity spoofing \u2014 and one is the only route to its category and rests on forty test sequences, so neither should be read as evidence about the category.",
+      "caption": "Each attack class, the five features its explanations rank highest, the attack pattern the mapping resolves from the ten it reads, the threat category that pattern carries, and the category documented for that class in the benchmark paper.",
+      "note": "The feature column shows the highest five. The mapping reads ten, and all ten are in `feature_ranking_by_class` with their attribution weights. Every class reaches an attack pattern. Half reach the category documented for them. One class rests on a single mapping entry \u2014 the one linking the address-resolution protocol to identity spoofing \u2014 and one is the only route to its category and rests on forty test sequences, so neither should be read as evidence about the category.",
       "sources": [
+        "data/processed/NB09b/threat_mapping.json",
+        "config/capec_stride.yaml"
+      ]
+    },
+    {
+      "file": "feature_ranking_by_class",
+      "kind": "table",
+      "rows": 180,
+      "caption": "The ten features the mapping reads for each attack class, in rank order, with the mean absolute attribution behind each and its share of the ten.",
+      "note": "The share column is what says how much any assignment rests on one feature. Where the ten are near-flat, no single feature carries the pattern the class resolves to. The ranking is recomputed from the attribution matrix rather than read from threat_mapping.json, which stores only the highest five; the recomputed five reproduce that string for all eighteen classes.",
+      "sources": [
+        "data/processed/NB09a/attributions_seed_42.npz",
         "data/processed/NB09b/threat_mapping.json"
       ]
     },
@@ -165,6 +177,18 @@
       "caption": "The same mapping applied to the single-record forest, whose attributions are exact rather than approximate. Used as a check on the attribution method, not as a test of the mapping.",
       "note": "This model agrees with the documented category less often than the approximate one, which rules out approximation error as the explanation for the disagreements.",
       "sources": [
+        "data/processed/NB09b/threat_mapping.json",
+        "config/capec_stride.yaml"
+      ]
+    },
+    {
+      "file": "feature_ranking_by_class_exact_attributions",
+      "kind": "table",
+      "rows": 180,
+      "caption": "The same ranking for the forest, whose attributions are exact rather than approximate.",
+      "note": "Read against `feature_ranking_by_class`, this shows whether the two models rank the same features or reach the same pattern by different routes.",
+      "sources": [
+        "data/processed/NB09a/attributions_forest.npz",
         "data/processed/NB09b/threat_mapping.json"
       ]
     },

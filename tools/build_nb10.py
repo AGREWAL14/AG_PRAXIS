@@ -167,8 +167,10 @@ INPUTS = {
     # timing-excluded models and the threat mapping
     "attributions":       PROC / "NB09a" / "attributions.json",
     "attr_seed_42":       PROC / "NB09a" / "attributions_seed_42.npz",
+    "attr_forest":        PROC / "NB09a" / "attributions_forest.npz",
     "threat_mapping":     PROC / "NB09b" / "threat_mapping.json",
     "capec_map":          CFG / "shap_capec_map.yaml",
+    "capec_stride":       CFG / "capec_stride.yaml",
 }
 
 missing = {k: str(v) for k, v in INPUTS.items() if not v.exists()}
@@ -781,34 +783,91 @@ emit_table(
 code(r'''
 # The mapping, class by class, for each model.
 
+import yaml
+
 tm = load_json("threat_mapping")
 seq_arm = [a for a in tm["h3"] if a["model"].startswith("sequence")][0]
 for_arm = [a for a in tm["h3"] if a["model"].startswith("forest")][0]
+K_FEATURES = int(tm["k"])
+
+capec_names = yaml.safe_load(INPUTS["capec_stride"].read_text())["mapping"]
+
+def pattern_label(capec_id):
+    """The CAPEC id with the pattern's name, from the correspondence file."""
+    entry = capec_names.get(int(capec_id)) or capec_names.get(str(capec_id)) or {}
+    name = entry.get("name")
+    return "CAPEC-" + str(capec_id) + (" · " + name if name else "")
 
 def mapping_table(arm, name, caption, note):
     df = pd.DataFrame([{
         "class": r["class"],
-        "highest-ranked features": r["top_features"],
-        "attack pattern": "CAPEC-" + str(r["capec"]),
+        "five highest-ranked features": r["top_features"],
+        "attack pattern": pattern_label(r["capec"]),
         "category resolved": r["assigned"],
         "category documented for the class": r["truth"],
         "agrees": "yes" if r["agrees"] else "",
         "thin": thin_mark(r["class"]),
     } for r in arm["per_class"]])
     return emit_table(df, name, caption,
-                      sources=["data/processed/NB09b/threat_mapping.json"], note=note)
+                      sources=["data/processed/NB09b/threat_mapping.json",
+                               "config/capec_stride.yaml"], note=note)
+
+def ranking_table(arm, npz_key, name, caption, note):
+    """The ten features the mapping reads for each class, with their weights.
+
+    Recomputed from the attribution matrix, because threat_mapping.json stores only the
+    highest five and stores them as a string. The assert below is the reason that is safe:
+    the recomputed top five reproduce the stored string for every attack class, so this is
+    the same ranking the mapping read, extended to the full ten.
+    """
+    z = np.load(INPUTS[npz_key], allow_pickle=False)
+    A = z["attributions"]
+    classes = [str(c) for c in z["classes"]]
+    features = [str(f) for f in z["features"]]
+    rows = []
+    for r in arm["per_class"]:
+        i = classes.index(r["class"])
+        order = np.argsort(-A[i])[:K_FEATURES]
+        assert [features[j] for j in order[:5]] == \
+               [s.strip() for s in r["top_features"].split(",")], \
+               "the recomputed ranking does not match the stored top five for " + r["class"]
+        mass = float(A[i][order].sum())
+        for rank, j in enumerate(order, start=1):
+            rows.append({
+                "class": r["class"],
+                "rank": rank,
+                "feature": features[j],
+                "mean absolute attribution": round(float(A[i][j]), 6),
+                "share of the ten": round(float(A[i][j]) / mass, 4) if mass else None,
+            })
+    return emit_table(pd.DataFrame(rows), name, caption,
+                      sources=["data/processed/NB09a/" + INPUTS[npz_key].name,
+                               "data/processed/NB09b/threat_mapping.json"], note=note)
 
 mapping_table(
     seq_arm,
     "attack_pattern_and_category_by_class",
-    "Each attack class, the features its explanations rank highest, the attack pattern "
-    "those features resolve to under the fixed mapping, the threat category that pattern "
+    "Each attack class, the five features its explanations rank highest, the attack "
+    "pattern the mapping resolves from the ten it reads, the threat category that pattern "
     "carries, and the category documented for that class in the benchmark paper.",
-    "The feature list shows the highest-ranked few of the ten the mapping reads. Every "
-    "class reaches an attack pattern. Half reach the category documented for them. One "
-    "class rests on a single mapping entry — the one linking the address-resolution "
-    "protocol to identity spoofing — and one is the only route to its category and rests "
-    "on forty test sequences, so neither should be read as evidence about the category.",
+    "The feature column shows the highest five. The mapping reads ten, and all ten are in "
+    "`feature_ranking_by_class` with their attribution weights. Every class reaches an "
+    "attack pattern. Half reach the category documented for them. One class rests on a "
+    "single mapping entry — the one linking the address-resolution protocol to identity "
+    "spoofing — and one is the only route to its category and rests on forty test "
+    "sequences, so neither should be read as evidence about the category.",
+)
+
+ranking_table(
+    seq_arm, "attr_seed_42",
+    "feature_ranking_by_class",
+    "The ten features the mapping reads for each attack class, in rank order, with the "
+    "mean absolute attribution behind each and its share of the ten.",
+    "The share column is what says how much any assignment rests on one feature. Where "
+    "the ten are near-flat, no single feature carries the pattern the class resolves to. "
+    "The ranking is recomputed from the attribution matrix rather than read from "
+    "threat_mapping.json, which stores only the highest five; the recomputed five "
+    "reproduce that string for all eighteen classes.",
 )
 
 mapping_table(
@@ -819,6 +878,15 @@ mapping_table(
     "the mapping.",
     "This model agrees with the documented category less often than the approximate one, "
     "which rules out approximation error as the explanation for the disagreements.",
+)
+
+ranking_table(
+    for_arm, "attr_forest",
+    "feature_ranking_by_class_exact_attributions",
+    "The same ranking for the forest, whose attributions are exact rather than "
+    "approximate.",
+    "Read against `feature_ranking_by_class`, this shows whether the two models rank the "
+    "same features or reach the same pattern by different routes.",
 )
 ''')
 

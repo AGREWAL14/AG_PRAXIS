@@ -79,15 +79,27 @@ Note. The two rows are scored on different units. Removing the same four columns
 
 ## attack_pattern_and_category_by_class
 
-Each attack class, the features its explanations rank highest, the attack pattern those features resolve to under the fixed mapping, the threat category that pattern carries, and the category documented for that class in the benchmark paper.
+Each attack class, the five features its explanations rank highest, the attack pattern the mapping resolves from the ten it reads, the threat category that pattern carries, and the category documented for that class in the benchmark paper.
 
-Note. The feature list shows the highest-ranked few of the ten the mapping reads. Every class reaches an attack pattern. Half reach the category documented for them. One class rests on a single mapping entry — the one linking the address-resolution protocol to identity spoofing — and one is the only route to its category and rests on forty test sequences, so neither should be read as evidence about the category.
+Note. The feature column shows the highest five. The mapping reads ten, and all ten are in `feature_ranking_by_class` with their attribution weights. Every class reaches an attack pattern. Half reach the category documented for them. One class rests on a single mapping entry — the one linking the address-resolution protocol to identity spoofing — and one is the only route to its category and rests on forty test sequences, so neither should be read as evidence about the category.
+
+## feature_ranking_by_class
+
+The ten features the mapping reads for each attack class, in rank order, with the mean absolute attribution behind each and its share of the ten.
+
+Note. The share column is what says how much any assignment rests on one feature. Where the ten are near-flat, no single feature carries the pattern the class resolves to. The ranking is recomputed from the attribution matrix rather than read from threat_mapping.json, which stores only the highest five; the recomputed five reproduce that string for all eighteen classes.
 
 ## attack_pattern_and_category_by_class_exact_attributions
 
 The same mapping applied to the single-record forest, whose attributions are exact rather than approximate. Used as a check on the attribution method, not as a test of the mapping.
 
 Note. This model agrees with the documented category less often than the approximate one, which rules out approximation error as the explanation for the disagreements.
+
+## feature_ranking_by_class_exact_attributions
+
+The same ranking for the forest, whose attributions are exact rather than approximate.
+
+Note. Read against `feature_ranking_by_class`, this shows whether the two models rank the same features or reach the same pattern by different routes.
 
 ## attack_pattern_resolution_summary
 
