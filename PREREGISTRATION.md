@@ -1201,3 +1201,67 @@ nothing about it is outstanding.
 It changes no class set, no denominator and no reference standard. The denominator stays 18
 attack classes with Benign excluded, and `config/stride_ground_truth.yaml` remains the
 standard semantic agreement is measured against.
+
+---
+
+# Amendment 21 — 2026-08-16
+
+Records that the objectives, research questions and hypotheses were restated in plain
+register, and fixes that no measured quantity moved with them. Made after all runs
+were complete and before any chapter text was drafted against the restated wording.
+
+## What changed
+
+The praxis title, the thesis statement and the wording of the three research
+objectives, research questions and hypotheses were restated. The restatement is one
+of register: it replaces evaluation-protocol framing with a statement of what the
+detector does and what it produces. PROJECT_RECORD.md v1.10 carries the restated
+text and is the source of truth for it.
+
+## What did not change
+
+No class set, threshold, comparator, tolerance, model, feature count or pass mark
+moves.
+
+H1 is measured on the five classes fixed in Amendment 6, where the set is labelled
+H2's before the renumbering in Amendment 12, and against the F1 0.50 threshold fixed
+in Amendment 5. Both stand.
+
+H2 is measured on saturation as Amendment 12 fixes it, with epsilon 0.02. The budget
+grid {5, 10, 25, 50} and the censoring rule are fixed in Amendment 11, the low-rate
+and volumetric group definitions in Amendment 4 and PROJECT_RECORD.md Section 3, and
+the Recon-Ping_Sweep exclusion in Amendment 4. All stand. No numeric multiple is
+stated, as Amendment 12 records.
+
+H3 is measured on the timing-excluded sequence model at 40 features, with mean
+absolute aggregation, k of 10, a SHAP background of 200 windows held fixed across
+seeds and nsamples of 50, as Amendments 18 and 19 fix them, and on chain resolution
+as Amendment 20 restates it. All stand. The reference standard remains
+`config/stride_ground_truth.yaml`, `config/shap_capec_map.yaml`,
+`config/capec_stride.yaml` and `config/maude_keywords.yaml`.
+
+No run is invalidated and nothing re-executes on the back of this amendment.
+
+## One difference in form, not in substance
+
+Amendment 20 states H3's criterion as a percentage of attack classes. The restated
+H3 in PROJECT_RECORD.md Section 3 states it as fifteen of the eighteen attack
+classes, with the percentage alongside. These are the same criterion: 80% of 18 is
+14.4, and 15 is the pass mark Amendment 20 states. The count is given first because
+the restated table is written in plain register. Recorded here so a reader comparing
+the two documents finds the difference explained rather than has to derive that they
+coincide.
+
+## Two items closed without execution
+
+Leave-one-family-out generalisation is dropped rather than run. It was named in
+PROJECT_RECORD.md Section 3 as a reported result and in the cross-dataset scope
+exclusion as the generalisation test replacing the transfer that failed. No artefact
+for it exists. It is not load-bearing for any hypothesis and no hypothesis rests on a
+substitute. Both the Section 3 row and the exclusion wording are corrected in
+PROJECT_RECORD.md v1.10.
+
+Cost-asymmetric threshold analysis is deferred to future work rather than run. It
+would require a fourth research question and is outside the three objectives fixed
+above. It is recorded in Chapter 5 as a recommendation. No hypothesis is added,
+withdrawn or altered.
