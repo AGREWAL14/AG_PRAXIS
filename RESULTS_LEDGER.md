@@ -1009,3 +1009,34 @@ The pass-mark divergence between the artefact and `PROJECT_RECORD.md` is closed.
 report, and NB10 has to be re-run to drop it from `manifest.json`. No expected value
 moves, so the agreement check stays at 43 of 43. That NB10 entry stood for as long as the
 divergence did and is not superseded retrospectively.
+
+### NB10 — results consolidation, re-run (2026-08-17)
+
+| field | value |
+|---|---|
+| notebook | AG_PRAXIS_NB10_results_consolidation.ipynb |
+| run date | 2026-08-17 |
+| git sha | c034b8b at run time, with `tools/build_nb10.py` modified in the working tree; that state was committed as e920687 |
+| run on | the Mac, through `jupyter nbconvert --to notebook --execute`. No accelerator, no Colab session, no Drive mount, no network call |
+| status | consolidation, not a result. No model is fitted, no prediction is made, and no metric is computed that is not already recorded |
+| why it was re-run | the pass-mark divergence closed when `data/processed/NB09b/threat_mapping.json` was regenerated on 2026-08-17, so the consolidation was re-run to drop it from `manifest.json`. Two additions to the Chapter 4 tables were made in the same pass |
+| supersedes | nothing. The 2026-08-13 entry above stands as written and records what that run produced |
+| reads | 29 inputs, two more than the 2026-08-13 run: `config/capec_stride.yaml` for the pattern names and `data/processed/NB09a/attributions_forest.npz` for the forest ranking |
+| writes | `results/chapter4`: 21 tables as CSV and Markdown, 3 figures as PNG at 300 dpi and as PDF, `captions.md` and `manifest.json` |
+| added, CAPEC names | both mapping tables now show the pattern name beside the id, `CAPEC-298 · UDP Ping` rather than `CAPEC-298`, joined from `config/capec_stride.yaml`. The feature column is relabelled "five highest-ranked features" and its caption points at the ranking table |
+| added, feature rankings | `feature_ranking_by_class` and `feature_ranking_by_class_exact_attributions`, 180 rows each, giving all ten features the mapping reads per class with the mean absolute attribution behind each and its share of the ten. Recomputed from `attributions_seed_42.npz` and `attributions_forest.npz`, because `threat_mapping.json` stores only the highest five and stores them as a string |
+| the recomputation is checked | the build asserts, per class and for both models, that the recomputed top five reproduce the stored `top_features`. It halts if they ever stop agreeing, so the ranking published is the ranking the mapping read |
+| table count | 19 to 21, counted from `MANIFEST` rather than declared |
+| agreement check | 43 of 43, unchanged. No value is recorded by the new tables and no existing value moved |
+| known divergences | none. `manifest.json` records an empty list |
+| reproducibility, tables | `emit_table` now formats every cell itself and sets column alignment from the frame's dtypes, with tabulate's own inference turned off. Rendering had been taking library defaults, so the same frame gave different files on different machines |
+| reproducibility, figures | `emit_figure` now suppresses the PDF `CreationDate` as well as `Creator` and `Producer`. Matplotlib stamps it from the clock, so the three PDFs changed on every re-run with no content change |
+| what the pins cost | sixteen tables re-rendered as a one-time reformat. No value moved in any table, verified cell by cell rather than by byte |
+| what the pins bought | two consecutive runs now leave all 21 tables and all 6 figure files byte-identical |
+| the limit | reproducibility is confirmed within one environment. PNG compression differed between machines earlier in the day and is not pinnable through `savefig` arguments. If it recurs, the answer is to settle on one machine for consolidation runs rather than to pin further |
+| checked by | `tools/check_consistency.py`, which reads the pass mark, the ledger figures, the manifest and the gate count and fails if they disagree |
+| executed copy | `runs/AG_PRAXIS_NB10_results_consolidation_executed.ipynb` |
+
+The generator, `tools/build_nb10.py`, still uses the standard library only. The numpy,
+pandas and yaml imports it gained are inside the cells it emits, which run in the
+notebook, not in the generator.
