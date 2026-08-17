@@ -1,8 +1,8 @@
 | class                   |   mean rank agreement |   lowest pair |   highest pair | thin   |
 |:------------------------|----------------------:|--------------:|---------------:|:-------|
-| DDoS-ICMP               |                0.145  |        0      |         0.4545 |        |
+| DDoS-ICMP               |                 0.145 |             0 |         0.4545 |        |
 | DDoS-TCP                |                0.1712 |       -0.1795 |         0.3818 |        |
-| MQTT-DDoS-Publish_Flood |                0.2307 |       -0.1515 |         0.6    |        |
+| MQTT-DDoS-Publish_Flood |                0.2307 |       -0.1515 |            0.6 |        |
 | DDoS-UDP                |                0.3033 |        0.1026 |         0.5152 |        |
 | DoS-ICMP                |                0.3044 |        0.1429 |         0.5273 |        |
 | DoS-TCP                 |                0.3074 |        0.0549 |         0.6667 |        |
@@ -13,11 +13,11 @@
 | Recon-VulScan           |                0.5111 |        0.3091 |         0.6667 | yes    |
 | Recon-Port_Scan         |                0.5467 |        0.2364 |         0.7778 |        |
 | DDoS-SYN                |                0.5665 |        0.2889 |         0.7818 |        |
-| Benign                  |                0.5878 |        0.359  |         0.7778 |        |
+| Benign                  |                0.5878 |         0.359 |         0.7778 |        |
 | MQTT-DoS-Publish_Flood  |                0.5964 |        0.4667 |         0.7333 |        |
 | DoS-SYN                 |                0.6182 |        0.4222 |         0.8182 |        |
-| MQTT-Malformed_Data     |                0.6648 |        0.6    |         0.7576 | yes    |
+| MQTT-Malformed_Data     |                0.6648 |           0.6 |         0.7576 | yes    |
 | MQTT-DoS-Connect_Flood  |                0.7133 |        0.6061 |         0.8182 |        |
-| MQTT-DDoS-Connect_Flood |                0.72   |        0.6061 |         0.8545 |        |
+| MQTT-DDoS-Connect_Flood |                  0.72 |        0.6061 |         0.8545 |        |
 
 Mean across the nineteen classes 0.4560. No pass mark applies to this measurement; it is reported alongside the mapping so a reader can see how stable the explanations the mapping reads actually are.

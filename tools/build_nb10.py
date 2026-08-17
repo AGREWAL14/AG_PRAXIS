@@ -87,12 +87,33 @@ CAPTIONS = {}   # filename -> caption text
 MANIFEST = []   # one record per emitted file, with the artifacts behind it
 EMITTED  = {}   # named values this notebook hands to the chapter, for the check at the end
 
+def render_cell(v):
+    """One value as the string the table will show, decided here rather than by a library.
+
+    Shortest round-trip decimal, never scientific notation, empty for a missing value.
+    """
+    if v is None or (isinstance(v, float) and v != v):
+        return ""
+    if isinstance(v, (float, np.floating)):
+        return np.format_float_positional(float(v), trim="-")
+    return str(v)
+
+
 def emit_table(df, name, caption, sources, note=None):
-    """Write a table as CSV and as Markdown, and record where it came from."""
+    """Write a table as CSV and as Markdown, and record where it came from.
+
+    The Markdown is rendered explicitly rather than left to library defaults. tabulate
+    infers alignment and number formatting from the values handed to it, and that
+    inference differs between versions, so the same frame rendered on two machines gave
+    two files with identical values and different columns. Formatting every cell here and
+    turning the inference off makes the output a function of the data alone.
+    """
     csv_path = OUT_TABLES / (name + ".csv")
     md_path  = OUT_TABLES / (name + ".md")
     df.to_csv(csv_path, index=False)
-    lines = [df.to_markdown(index=False)]
+    shown = df.apply(lambda col: col.map(render_cell))
+    align = ["right" if pd.api.types.is_numeric_dtype(df[c]) else "left" for c in df.columns]
+    lines = [shown.to_markdown(index=False, colalign=align, disable_numparse=True)]
     if note:
         lines += ["", note]
     md_path.write_text("\n".join(lines) + "\n")
