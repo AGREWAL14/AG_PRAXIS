@@ -986,3 +986,96 @@ provenance, and Section 11 under the DoS-ICMP row, and `RESULTS_LEDGER.md` under
 is positioned, and Chapter 4, where the per-class figures are reported.
 
 **Added:** 2026-08-15
+
+---
+
+## Chapter 1 — problem statement
+
+### 1.3 Problem statement — approved wording, 2026-08-16
+
+Hospitals now run thousands of connected medical devices — infusion pumps, patient
+monitors, imaging systems — on the same networks that carry clinical data. These
+devices are hard to patch, run for years, and are attractive targets. Intrusion
+detection systems are the practical defense, and machine learning models are
+increasingly used to build them.
+
+Two problems limit these systems today. First, detection models are usually trained
+on single network records, one at a time. This works well for loud attacks such as
+denial of service, which change traffic volume immediately, but it works poorly for
+quiet attacks such as scanning and reconnaissance, which look like ordinary traffic
+in any single record. On the CICIoMT2024 benchmark, the published detection model
+scores below an F1 of 0.50 on five of the nineteen classes. Reconnaissance is the
+stage where an attacker is still looking around, before any damage is done, so these
+are the classes a defender most wants to catch. Reading records in sequence is the
+obvious remedy, but whether it helps, which classes it helps, and what it costs on
+the classes that were already detected are open questions.
+
+Second, detection models report an attack class but not what the attack means. A
+security team is told that traffic is "Recon-OS_Scan" and is left to decide on its
+own what kind of threat that is and what to do about it. Threat modeling frameworks
+such as CAPEC and STRIDE exist to answer that question, but they are normally built
+by hand at design time, from assumptions about how a system might be attacked, rather
+than from traffic that was actually observed, and no automated route runs from a
+detector's output to a structured threat record.
+
+**Wording notes.** "Scores below an F1 of 0.50 on five of nineteen" rather than "fails
+to detect five of nineteen": three of the five are non-zero, and 0.50 is the threshold
+fixed in Amendment 5. The five-class count is a measurement of this work, not a figure
+Dadkhah et al. state — phrase it as a finding of this research, not as a cited claim.
+The closing clause of paragraph two states a gap in method, which this work fills; an
+earlier draft said "nothing converts an observed attack into a structured threat
+record," which claims more than the semantic-agreement result of 9 of 18 supports. The
+device framing over Wi-Fi, Bluetooth and home networks was removed: CICIoMT2024 as
+modelled here is Wi-Fi and MQTT only, and that framing sets up a scope Chapter 1.8
+then has to walk back.
+
+---
+
+## Chapter 4 — reporting
+
+### Caveats that must travel with the H1 claim
+
+**Claim:** three things travel with the four-of-five result wherever it appears.
+
+Two of the four recovered classes rest on very few test sequences: Recon-VulScan on 18
+and MQTT-Malformed_Data on 40. The caveat appears wherever the four-of-five result
+appears.
+
+The cost side is not one class. Nine classes gained F1 and ten lost. Gains sum to
++2.0566, losses to -2.0033, a net of +0.0533 over nineteen classes, which is the
++0.0028 macro-F1 difference. The five largest losses are all volumetric — DoS-ICMP,
+DoS-TCP, DDoS-ICMP, DoS-SYN, DDoS-TCP — summing -1.7662, which is 88% of the total
+negative movement. DoS-ICMP alone falls 0.9960 to 0.3178. The honest headline for RQ1
+is that sequence context trades volumetric precision for reconnaissance coverage,
+which is why the aggregate metric shows nothing.
+
+Recon-VulScan reaches 0.5385 from 0.0000 and is one of the four classes that cross the
+threshold. The class not recovered is MQTT-DDoS-Publish_Flood, 0.1858 to 0.0796. The
+two are not interchangeable and no chapter text should pair them as jointly undetected.
+
+**Rests on:** `PROJECT_RECORD.md` Section 5 under the sequence model, which carries the
+per-class table, the gain and loss sums and the volumetric share, and
+`PREREGISTRATION.md` Amendment 4 for the thin-class caveat.
+
+**Serves:** Chapter 4, where H1 is reported, and Chapter 5, where the trade is
+interpreted.
+
+**Added:** 2026-08-16
+
+### Caveat that must travel with the H3 claim
+
+**Claim:** H3 passes on assignment: 18 of 18 classes resolve to a CAPEC pattern against
+a pass mark of 15. Semantic agreement is a separate count and is reported alongside
+every time: 9 of 18 for the sequence model, 0.500, against a majority-class baseline of
+0.667; 6 of 18 for the forest. The threat records are produced reliably in form and are
+no better than the majority guess in substance. Assignment and agreement are never
+merged into one figure.
+
+**Rests on:** `PROJECT_RECORD.md` Section 3, which carries both counts and the baseline,
+and `data/processed/NB09b/threat_mapping.json`, from which both were read.
+`PREREGISTRATION.md` Amendment 20 fixes H3 as chain resolution and the pass mark at 15
+of 18.
+
+**Serves:** Chapter 4, where H3 is reported.
+
+**Added:** 2026-08-16
