@@ -1593,3 +1593,61 @@ neither does this entry.
 **What this does not change:** no hypothesis, no comparator, no threshold, no class set,
 no feature set and no figure. Every per-class score stands as recorded. The diagnosis
 explains a number already in the record rather than replacing it.
+
+---
+
+## 2026-08-16 — Framing restated to a threat-model deliverable
+
+The project's stated contribution moves from an account of evaluation protocol to a
+per-class threat model table linking detector explanations to CAPEC attack patterns
+and STRIDE threat categories. The title, thesis statement and the RO/RQ/H table are
+restated in plain register to match. PREREGISTRATION.md Amendment 21 fixes that no
+measured quantity moves with the restatement.
+
+Reason. The three hypotheses are measured and the artefacts exist. Stated as an
+evaluation account, the praxis reports what is wrong with how detectors on this
+benchmark are assessed; stated as a threat-model deliverable, it reports what the
+detector produces and what a security team can do with it. The second is the stronger
+claim for a Doctor of Engineering praxis, and it is supported by results already on
+disk without further execution. NeCamp (2026), verified against the source PDF on
+this date, establishes the register and structural scale: two research questions, two
+hypotheses, one dataset, a comparative claim.
+
+The session-provenance result is not withdrawn and its evidential status is unchanged.
+It moves from thesis to methods justification, and remains the stated reason H3 is
+scored on the timing-excluded model at 40 features. PROJECT_RECORD.md Section 3
+records it in that role under notebook 03. Chapter 3 must state that timing features
+were excluded before explanations were computed; without that, the claim that the
+threat model is grounded in observed traffic asserts more than the design supports.
+
+---
+
+## 2026-08-16 — Cost-asymmetric threshold analysis deferred
+
+Considered and deferred to future work rather than run. It would test how detection
+thresholds should be set when the cost of a missed attack differs from the cost of a
+false alarm in a clinical setting, using a committed cost-weight config and fresh
+inference against the saved models to recover predicted probabilities.
+
+Reason. It fits none of the three research objectives and would require a fourth
+research question. It is the one candidate addition that would make the praxis
+prescriptive rather than descriptive, and that is why it was considered; it is
+deferred because adding it reverses the simplification this restatement performs.
+Recorded in Chapter 5 as a future-work recommendation. No notebook number is reserved
+for it.
+
+---
+
+## 2026-08-16 — Leave-one-family-out dropped rather than run
+
+Dropped. PROJECT_RECORD.md Section 3 listed it as a reported result and the
+cross-dataset scope exclusion named it as the generalisation test replacing the
+transfer that failed. Neither was true: no artefact exists and the NB08 ledger entry
+records seven trained runs, three budgets and four seeds, none of them a family
+holdout.
+
+Reason. It is not load-bearing for any hypothesis, and under the restated framing
+nothing depends on it. Running it would also be interpretable only at binary
+granularity, since a nineteen-class model cannot predict a class it never saw, which
+sits against the zero-day scope exclusion. The Section 3 row is deleted and the
+exclusion is reworded to claim no substitute.
