@@ -1,7 +1,7 @@
 {
   "generated_by": "AG_PRAXIS_NB09b_threat_mapping.ipynb",
-  "generated_on": "2026-08-13",
-  "git_sha": "3572283",
+  "generated_on": "2026-08-17",
+  "git_sha": "6912da6",
   "git_dirty": false,
   "is_fast_pass": false,
   "reads": {
@@ -18,7 +18,7 @@
     "committed_at": "8f51f1f, before any model trained"
   },
   "k": 10,
-  "pass_mark": 13,
+  "pass_mark": 15,
   "n_attack_classes": 18,
   "majority_class_baseline": 0.667,
   "h3": [
@@ -480,7 +480,7 @@
   "maude": {
     "window": [
       "2019-01-01",
-      "2026-08-13"
+      "2026-08-17"
     ],
     "endpoint": "https://api.fda.gov/device/event.json",
     "per_generic_name": [
