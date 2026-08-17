@@ -29,3 +29,4 @@ anaconda_projects/
 # table, small enough to keep, and without them the consolidation cannot run from
 # a fresh clone.
 !data/processed/NB09a/*.npz
+legacy_review/
