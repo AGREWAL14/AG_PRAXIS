@@ -1,13 +1,13 @@
 # AG_PRAXIS — Project Record
 
-**A Proactive Threat Modeling Framework for Connected Medical Devices Using
-Sequence-Based Detection and Explainable AI**
+**Sequence-Based Intrusion Detection and Threat Modeling for Internet of Medical
+Things Networks**
 
 Doctoral praxis · GWU SEAS/EMSE
 Dataset: CICIoMT2024 · Foundation model: Mohammadi et al. (2024), arXiv:2410.23306
-Prior praxis in program: Bogan (2025)
+Structural exemplars: Bogan (2025), the prior praxis in this program; NeCamp (2026)
 
-**Version 1.9 · 15 August 2026**
+**Version 1.10 · 16 August 2026**
 
 ---
 
@@ -21,19 +21,21 @@ Prior praxis in program: Bogan (2025)
 
 ## 1. Thesis statement
 
-Traditionally, threat modeling for IoMT networks is built at design time against assumed
-adversaries. This research grounds it in observed traffic, establishing how much
-observation each threat class needs before further observation stops improving detection,
-whether sequence context helps, and whether detector explanations resolve to CAPEC attack
-patterns and STRIDE threat categories. *(52 words)*
+A sequence-based detection model detects attacks on medical device networks that
+single-record models miss, at an observation cost that differs by attack class, and
+its explanations can be translated into a standard threat model. Reading consecutive
+records gives the model temporal context that quiet attacks reveal only over time, and
+matching the features that drove each detection to published attack patterns turns a
+class label into threat information a security team can act on. *(74 words)*
 
 | Field | Value |
 |---|---|
-| Research Product | ML-driven threat modeling pipeline |
-| Format | Git repository: Python modules, notebooks, versioned artifacts, CAPEC/STRIDE mapping tables |
-| Deliverable Usage | Security teams convert detection events into structured CAPEC/STRIDE threat records; researchers evaluate IoMT detectors under capture-aware protocols |
+| Research Product | ML-driven threat modeling pipeline: a sequence-based IoMT detector whose explanations resolve to CAPEC attack patterns and STRIDE threat categories |
+| Format | Git repository: Python modules, notebooks, versioned result artifacts, CAPEC/STRIDE mapping tables |
+| Deliverable Usage | Converts detection events into structured CAPEC/STRIDE threat records, and sizes the traffic needed to detect each attack class |
 | Industry | Biotech / medical devices |
-| Scope | The evaluation protocol applies to any intrusion-detection benchmark built from per-class capture sessions. The mapping method applies to any attack corpus with published attack semantics |
+| Scope | The mapping method applies to any attack corpus with published attack semantics; the observation-budget method applies to any per-class labelled traffic benchmark |
+| Deliverable | Per-class threat model table: attack class, features that drove detection, CAPEC attack pattern, STRIDE threat category. Chapter 4, numbered table |
 
 ---
 
@@ -44,15 +46,19 @@ assumed adversaries, while the attack surface moves: IoT devices carrying
 vulnerabilities grew 136% in one year, and 80% of IoMT vulnerabilities are critical
 (Forescout, 2024). Twenty-eight percent of healthcare organizations attacked reported
 increased patient mortality (Ponemon & Proofpoint, 2024), and Section 524B now mandates
-postmarket monitoring, yet nothing converts an observed attack into a threat record.
+postmarket monitoring, yet no automated route runs from detection output to a structured
+threat record.
 
-**Elaboration 1.** Operating over Wi-Fi, Bluetooth, and mobile apps in home networks
-the manufacturer does not control, these devices face conditions no design-time model
-anticipated.
+**Elaboration 1.** Detection models trained on single network records catch volumetric
+attacks but score below F1 0.50 on five of the nineteen CICIoMT2024 classes, including
+the reconnaissance classes that mark the stage before damage is done. Reading records in
+sequence is the obvious remedy, but which classes it helps and what it costs on the
+classes already detected are open questions.
 
-**Elaboration 2.** Detection models that could close that loop are evaluated on
-benchmarks whose recording structure lets features identify the session rather than the
-attack, and FDA postmarket surveillance has no cybersecurity category.
+**Elaboration 2.** Detectors report a class label without saying what threat it
+represents, leaving security teams to map output to CAPEC and STRIDE by hand, and FDA
+postmarket surveillance has no cybersecurity category under which the result could be
+recorded.
 
 **References**
 - Forescout Technologies. (2024). *The Riskiest Connected Devices in 2024.*
@@ -65,9 +71,9 @@ attack, and FDA postmarket surveillance has no cybersecurity category.
 
 | | Research Objective | Research Question | Hypothesis | Metric | Notebooks |
 |---|---|---|---|---|---|
-| **1** | Establish how reliably IoMT attack classes can be detected from network traffic, and where detection is hardest. | Does modelling traffic as sequences improve detection of attack classes that single-record models detect poorly? | Sequence-based modelling improves detection of specific hard-to-detect classes relative to single-record models. | Per-class F1 change, sequence against single-record; classes recovered against lost across the detection floor. Macro-F1 reported as context (near-flat, +0.0028 against the published CNN — the aggregate that conceals the per-class trade) | 05, 06, 07, 08 |
-| **2** | Determine how much observation reliable detection requires across different attack types. | How much traffic must be observed before each attack class stops improving with further observation, and does this differ across classes? | Low-rate classes require more observation to reach detection saturation than volumetric classes. | Observation budget to reach each class's saturation point, within epsilon = 0.02 of its achievable ceiling; group medians compared | 04, 06, 08 |
-| **3** | Develop an automated pipeline that assigns SHAP-based feature explanations to CAPEC attack patterns and STRIDE threat categories, and assess whether postmarket surveillance captures the threats so identified. | Can model explanations be resolved to CAPEC attack patterns and STRIDE threat categories through a deterministic pipeline? | For at least 80% of attack classes, the top-10 SHAP features of the timing-excluded sequence model will resolve to a CAPEC attack pattern and therefore a STRIDE category under the deterministic mapping. | Proportion of the 18 attack classes receiving a CAPEC assignment; pass mark 15 of 18 | 09a, 09b |
+| **1** | Build a sequence-based intrusion detection model for medical device networks and establish which attack classes it detects that single-record models miss. | Does a sequence-based model detect attack classes that a single-record model fails to detect? | A sequence-based model will detect attack classes that the published single-record model fails to detect, raising them above an F1 score of 0.50. | Per-class F1 change, sequence against single-record; classes recovered against lost across the F1 0.50 detection floor. Macro-F1 reported as context (near-flat, +0.0028 against the published CNN — the aggregate that conceals the per-class trade) | 05, 06, 07, 08 |
+| **2** | Measure how much network traffic must be observed before each attack class can be detected. | How much traffic must be observed before detection of each attack class stops improving with further observation, and does this differ between quiet and loud attacks? | Quiet, low-rate attack classes will require more observed traffic than loud, volumetric attack classes before detection stops improving. | Observation budget to reach each class's saturation point, within epsilon = 0.02 of its achievable ceiling; low-rate against volumetric group medians compared | 04, 06, 08 |
+| **3** | Translate the model's explanations into a standard threat model that a security team can act on. | Do the features driving the model's detections match published attack patterns closely enough to produce a threat model? | For at least fifteen of the eighteen attack classes (80%), the top-10 features of the timing-excluded sequence model will match a published CAPEC attack pattern, and each matched pattern will resolve to a STRIDE threat category. | Proportion of the 18 attack classes receiving a CAPEC assignment; pass mark 15 of 18. Semantic agreement with documented attack semantics reported alongside, against a majority-class baseline | 09a, 09b |
 
 The runs H1 compares are scored on different units and different splits, 49,159 windows
 against 1,614,182 and 1,229,711 records, so they are four runs' own scores rather than a
@@ -106,7 +112,6 @@ applies to the H1 class set under Amendment 6.
 | Duration ablation, capture identification with the TTL column removed | 03b | Measures Duration's contribution to the NB03 figures, under `PREREGISTRATION.md` Amendment 13 |
 | Baseline reproduction, macro vs weighted | 05 | Comparison point |
 | Class-imbalance interventions, per-class costs | 07 | Per-class benefit, which classes gain most from intervention |
-| Leave-one-family-out generalisation | 08 | Robustness |
 | Attribution stability, Kendall's tau | 09b | Reported with the mapping |
 | Semantic agreement of the resolved STRIDE category | 09b | Whether the category the pipeline resolves matches the attack semantics documented in the benchmark paper. 9 of 18 for the sequence model, 0.500, against a majority-class baseline of 0.667; 6 of 18 for the forest, 0.333 |
 | MAUDE cyber-attributable share | 09b | Surveillance coverage |
@@ -144,8 +149,8 @@ work; they do not test it. Section 6 carries the detail.
 - **Cross-dataset transfer** — zero-shot transfer between CICIoMT2024 and a second IoMT
   corpus was tested and did not generalise: macro-F1 0.477 and 0.410 across the two
   directions, with one direction failing to beat a majority-class baseline. Protocol
-  encodings differ substantially between the corpora. Leave-one-family-out within
-  CICIoMT2024 is the generalisation test.
+  encodings differ substantially between the corpora. No substitute generalisation test
+  is claimed in its place, and no hypothesis rests on one.
 - **Conformal prediction** — run as a feasibility probe in `NB06b_cp_scores` and
   `NB06c_cp_feasibility`, whose executed copies are in `runs/`. The probe returned a
   negative and conformal prediction was dropped. `DECISIONS.md` under 2026-08-09
@@ -745,6 +750,18 @@ abbreviations list where every other reference is `SKF`, defined as Stratified K
 labelling is a typographical error confined to that table, and plain stratified k-fold is
 what was used. Section 11 records the checks the finding rests on.
 
+### Structural exemplar — NeCamp (2026)
+
+*AI-Based Intrusion Detection Systems for IoMT Devices*, GWU SEAS/EMSE, praxis
+director Ould Vadel, final examination passed 1 April 2026. Verified against the
+source PDF on 2026-08-16. Two research questions, two hypotheses, one dataset
+(WUSTL-EHMS-2020), four models — Random Forest, XGBoost, Support Vector Machine and
+an autoencoder — and binary classification. NeCamp uses Shapley values for feature
+selection — choosing which features to train on. This work uses SHAP for explanation
+— what the trained model relied on — and then translates those attributions into
+CAPEC and STRIDE. The distinction is stated explicitly in Chapter 2 so the two are
+not read as the same method.
+
 ### Benchmark baselines — Dadkhah et al. (2024)
 
 **Verified 2026-08-07** against the source PDF rather than through Mohammadi et al.'s
@@ -1004,7 +1021,10 @@ position; the pre-registration states how it was reached.
 | Citations awaiting PDF review, closed | All seven were read against their primary sources on 2026-08-15 and the row closes. Doménech, J., León, O., Siddiqui, M. S., and Pegueroles, J. (2025), *Internet of Things* 32:101631, DOI 10.1016/j.iot.2025.101631. Chikezie, C. I., Usman, A. U., David, M., Zubair, S., Ohize, H. O., and Ojeniyi, J. (2026), *Future Internet* 18(6):287, DOI 10.3390/fi18060287, the split governance paper. Abo-Haat, M., and Zuhair, H. (2026), *International Journal of Intelligent Engineering and Systems* 19(3):338-359, DOI 10.22266/ijies2026.0331.21, the device-disjoint paper, whose reference was not located until this reading. Ahmad, T., Truscan, D., Vain, J., and Porres, I. (2022), 2022 IEEE ICSTW 30-39, DOI 10.1109/icstw55395.2022.00020, which is the published form of arXiv 2201.11628 and is cited in place of the preprint. Djaidja, T. E. T., Brik, B., Senouci, S. M., Boualouache, A., and Ghamri-Doudane, Y. (2024), IEEE TIFS 19:7783-7793, DOI 10.1109/TIFS.2024.3441862. Panopoulos, I., Bartsioka, M. L. A., Nikolaidis, S., Venieris, S. I., Kaklamani, D. I., and Venieris, I. S. (2026), A-THENA, arXiv:2604.21623, accepted to *ACM Transactions on AI Security and Privacy*, DOI 10.1145/3811033. Goldschmidt, P., and Chudá, D. (2025), *Computers & Security* 156:104510, DOI 10.1016/j.cose.2025.104510, no longer a preprint, and the outstanding TTL sentence is located to their Section 6.3. What each verification changed, narrowed or contradicted is recorded in `DECISIONS.md` under 2026-08-15 and positioned in `NOTES_FOR_WRITING.md`. Two findings from Doménech et al. are promoted out of this row because they are dataset facts rather than pending citations: their Table A.9 gives the Duration feature's description as TTL, which is carried in the Duration entries in `DECISIONS.md` and in `config/feature_families.yaml`, and their Section 5.1.1 records the differing extraction windows, which is carried in Section 4 above |
 | "Detection ceiling", resolved | The phrase sat in two places, the Section 1 thesis statement and the RO2 row of Section 3, and described neither: saturation marks where a class stops improving with more observation, not where it becomes reliably detectable, and eight of nineteen classes saturate at an F1 below 0.80. Both were restated on 2026-08-14. The thesis statement now reads as how much observation each threat class needs before further observation stops improving detection. The RO2 research question now asks how much traffic must be observed before each attack class stops improving with further observation, and whether that differs across classes, which matches the saturation point its own metric column already named. The objective, hypothesis, metric and notebook columns of that row are unchanged, as is H2, whose statement and comparator sit in `PREREGISTRATION.md` Amendment 12. The phrase appears nowhere else in this file. `NOTES_FOR_WRITING.md` carries the entry under Chapter 5, which records the wording as unresolved and is superseded on that point by this row |
 | Packets per row: Section 4's extraction windows against this project's own reading | Section 4 records, from Doménech et al. (2025) Section 5.1.1 read against the primary PDF, that the dataset's authors extracted features over 100-packet windows for DDoS and DoS traffic and 10-packet windows for everything else. The pair diagnosis read the Number column back through the split's scaler and did not reproduce that division. Seventeen of the nineteen classes return a median of 9.500000, all eight DDoS and DoS classes among them; Benign returns 5.499998 and Recon-OS_Scan 8.250000, and the artefact records `separates_the_pair_classes` as false. Section 4 stands as written and is not edited. A published appendix and one column read on standardised values are different kinds of evidence, and the likelier account is that Number does not measure the extraction window rather than that the division is absent: a 100-packet extraction window and a Number median near 10 only conflict if Number counts the packets a row was built from, which nothing here establishes. Which reading governs is unresolved and has to be settled before either statement reaches a chapter, because the two cannot both describe what a row summarises. `data/processed/NB06d/pair_separability.json` under `packets_per_row` carries the per-class figures |
-| Title and thesis statement | Update pending. Handled outside this pass |
+| Framing restated to a threat-model deliverable | On 2026-08-16 the project's stated contribution moved from an account of evaluation protocol to a per-class threat model table linking detector explanations to CAPEC patterns and STRIDE categories. The session-provenance result is not withdrawn or downgraded in evidential status; it moves from thesis to methods justification, and remains the stated reason H3 is scored on the timing-excluded model at 40 features. Section 3's reported-results table already records it in that role under notebook 03. Chapter 3 must state that timing features were excluded before explanations were computed, or "grounded in observed traffic" claims more than the design supports |
+| Cost-asymmetric threshold analysis, deferred | Considered on 2026-08-16 and deferred to future work rather than run. It would test how detection thresholds should be set when the cost of a missed attack differs from the cost of a false alarm in a clinical setting. It fits none of RO1, RO2 or RO3 and would require a fourth research question, a new notebook, fresh inference against the saved models to recover predicted probabilities, and a committed cost-weight config. Recorded in Chapter 5 as a future-work recommendation. No artifact exists and none is promised |
+| Recon-VulScan status, recorded | Stated here because it was misreported in conversation on 2026-08-16 and the H1 claim rests on it. Recon-VulScan reaches F1 0.5385 under the sequence model, from 0.0000 in the published run, and is one of the four of five classes that cross the 0.50 threshold. The class that is not recovered is MQTT-DDoS-Publish_Flood, 0.1858 to 0.0796. The two are not interchangeable and any chapter text pairing them as jointly undetected is wrong. Section 5's table at the five-class comparison is correct as written and is the reference |
+| Title and thesis statement, resolved | Settled on 2026-08-16. The title is *Sequence-Based Intrusion Detection and Threat Modeling for Internet of Medical Things Networks*. "Proactive" is dropped: it promised prediction ahead of impact, which the lookahead exclusion rules out. "Framework" is dropped: it promised a built artifact where the deliverable is a per-class threat model table. The thesis statement in Section 1 is restated to match, and the RO/RQ/H table in Section 3 is restated in the plain register of the NeCamp exemplar. No measured quantity moves: H1's class set and 0.50 threshold, H2's saturation comparator and epsilon, and H3's pass mark of 15 of 18 are unchanged and remain fixed in `PREREGISTRATION.md` |
 | Abstract | Section 1a to be added. Handled outside this pass |
 | Hypothesis approval marking | Sign-off obtained from the advisory committee. Section 3 records no approval status; the approval marking and its date are added in a later pass |
-| Leave-one-family-out generalisation, open | Listed in Section 3 as a reported result under notebook 08, and named in the cross-dataset scope exclusion as the generalisation test that replaces the transfer that failed. It has not been executed. The NB08 ledger entry records seven trained runs, three budgets and four seeds, none of them a family holdout, and no artefact for it exists. Deferred rather than resolved: it is not load-bearing for any hypothesis, and the choice between running it and dropping the claim is open. Sections 3 and 5 are left as written until that choice is made, so nothing here depends on which way it goes. If it is dropped, both the Section 3 row and the cross-dataset exclusion need rewording, since the exclusion currently offers a substitute that does not exist. If it is run, note that a nineteen-class model cannot predict a class it never saw, so the measurement is only interpretable at binary granularity, which sits against the zero-day scope exclusion and would require amending it |
+| Leave-one-family-out generalisation, resolved | Dropped on 2026-08-16 rather than run. It was not load-bearing for any hypothesis, and under the restated framing nothing depends on it. The Section 3 reported-results row is deleted and the cross-dataset scope exclusion is reworded so it no longer offers a substitute generalisation test that does not exist |
