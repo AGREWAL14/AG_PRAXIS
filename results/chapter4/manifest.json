@@ -1,16 +1,9 @@
 {
-  "written_on": "2026-08-13",
+  "written_on": "2026-08-17",
   "tables": 19,
   "figures": 3,
   "values_checked_against_the_record": 43,
-  "known_divergences": [
-    {
-      "what": "pass mark for attack-pattern resolution",
-      "in the artifact": 13,
-      "in the record": 15,
-      "handling": "the record's figure is reported; the artifact predates the restatement"
-    }
-  ],
+  "known_divergences": [],
   "items": [
     {
       "file": "model_comparison_nineteen_class",
