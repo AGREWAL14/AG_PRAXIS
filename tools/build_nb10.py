@@ -124,11 +124,19 @@ def emit_table(df, name, caption, sources, note=None):
     return df
 
 def emit_figure(fig, name, caption, sources, note=None):
-    """Write a figure as PNG and PDF, and record where it came from."""
+    """Write a figure as PNG and PDF, and record where it came from.
+
+    The metadata arguments suppress the fields the writers stamp from the environment
+    rather than from the figure: the PNG's software string, and the PDF's creator,
+    producer and creation date. Without the last of those the three PDFs changed on every
+    re-run with no content change, which is churn the consistency check cannot tell from a
+    real difference.
+    """
     png = OUT_FIGS / (name + ".png")
     pdf = OUT_FIGS / (name + ".pdf")
     fig.savefig(png, bbox_inches="tight", metadata={"Software": None})
-    fig.savefig(pdf, bbox_inches="tight", metadata={"Creator": None, "Producer": None})
+    fig.savefig(pdf, bbox_inches="tight",
+                metadata={"Creator": None, "Producer": None, "CreationDate": None})
     plt.close(fig)
     CAPTIONS[name] = caption
     MANIFEST.append({"file": name, "kind": "figure", "rows": None,
