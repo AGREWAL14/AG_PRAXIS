@@ -3,12 +3,15 @@
 Append only. Corrections are appended as new entries, never edited in.
 
 Material needed when the chapters are drafted that has no home in the existing governance
-files. This is not a draft and holds no prose. Each entry states a claim, what the claim
-rests on, and which chapter it serves.
+files. It holds two kinds of content. Most entries are positioning: each states a claim,
+what the claim rests on, and which chapter it serves. Some are approved chapter wording,
+set down verbatim once it is settled and marked as such in its heading, with the notes on
+why it is phrased that way kept beside it.
 
 `PROJECT_RECORD.md` remains the single source of truth for results. Nothing here is a
-result, and no figure originates here. This file holds positioning and interpretation
-only, and where an entry quotes a figure it names the artifact the figure comes from.
+result, and no figure originates here. This file holds positioning, interpretation and
+settled wording, and where an entry quotes a figure it names the artifact the figure
+comes from.
 
 ---
 
@@ -1079,3 +1082,29 @@ of 18.
 **Serves:** Chapter 4, where H3 is reported.
 
 **Added:** 2026-08-16
+
+---
+
+## This file — what it holds
+
+### The header was corrected once the file began holding approved wording
+
+**Claim:** the header stated that this file "is not a draft and holds no prose" and that
+it holds "positioning and interpretation only". Both stopped being true when the approved
+1.3 problem statement was added under Chapter 1 on 2026-08-16. The header was corrected
+in place rather than superseded by a later entry, because a header describes the file to
+whoever opens it and a reader who takes it at its word would be misled by every copy of
+the file from that point on. The append-only rule governs entries, which record claims
+about the work and are never rewritten; this entry exists so the header change is not
+silent, and so the two sentences that were replaced are recoverable from the history.
+
+What the header now says is that the file holds two kinds of content: positioning entries
+in the Claim, Rests on, Serves, Added structure, and approved chapter wording set down
+verbatim once settled, marked as such in its heading and carrying the notes on why it is
+phrased that way.
+
+**Rests on:** nothing measured. It records an edit to this file, made on 2026-08-17.
+
+**Serves:** reading this file.
+
+**Added:** 2026-08-17
