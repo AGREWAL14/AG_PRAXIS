@@ -1685,3 +1685,39 @@ confusion rather than evidence of anything.
 **What guards it now.** `tools/check_consistency.py` reads the pass mark
 from the artefact and from both notebooks and fails on a mismatch, so this
 particular divergence cannot reappear silently.
+
+---
+
+## 2026-08-18 — the praxis title
+
+**Decision:** recorded here after the fact. The title is "Explainable Sequence-Based
+Intrusion Detection for Threat Modeling in Internet of Medical Things Networks", the
+wording carried in `PROJECT_RECORD.md`'s header. It was settled on 2026-08-16 and revised
+on 2026-08-17, and `PROJECT_RECORD.md` Section 11 records both under a resolved item. The
+entry of 2026-08-16 restated the framing and noted that the title was restated with it,
+without recording the wording; this entry records it. The earlier title, "A Proactive
+Threat Modeling Framework for Connected Medical Devices Using Sequence-Based Detection and
+Explainable AI", is not used and appears nowhere in the repository.
+
+**Why the earlier title was dropped.** "Proactive" claims something the work excludes.
+Section 3 places lookahead prediction and zero-day detection out of scope: each capture
+holds a single class throughout, so the label at t+L equals the label at t almost
+everywhere, and nothing is unseen at training time across the nineteen labelled classes. A
+title promising anticipation invites a question the scope has already answered in the
+negative. "Framework" promised a built artifact, where the deliverable is a per-class
+threat model table.
+
+**What the 2026-08-17 revision added.** "Explainable" was added because RO3 is the
+objective that distinguishes the work and the 2026-08-16 wording left it implicit: the
+threat model table is built from detector explanations, so the explanation step is what
+carries the contribution. "for Threat Modeling in" replaced "and Threat Modeling for" so
+the detection reads as serving the threat model rather than standing beside it as a second
+contribution.
+
+**What the title does not carry.** It names the apparatus rather than a finding, and the
+session-provenance result does not appear in it. Under the 2026-08-16 restatement that
+result is methods justification rather than the thesis, and it remains the stated reason
+H3 is scored on the timing-excluded model at 40 features; `PROJECT_RECORD.md` Section 3
+records it under notebook 03 and requires Chapter 3 to state that timing features were
+excluded before explanations were computed. Recorded here so the omission is read as a
+consequence of the framing rather than rediscovered later as an oversight.
