@@ -1651,3 +1651,37 @@ nothing depends on it. Running it would also be interpretable only at binary
 granularity, since a nineteen-class model cannot predict a class it never saw, which
 sits against the zero-day scope exclusion. The Section 3 row is deleted and the
 exclusion is reworded to claim no substitute.
+
+---
+
+## 2026-08-18 — the pass mark divergence was resolved by re-running, not by holding
+
+**Decision:** recorded here after the fact. The entry of 2026-08-13 held the
+divergence as a known one on the reasoning that reconciling it would hide that the
+criterion changed. That reading stood for as long as the divergence did and is not
+superseded retrospectively; it stops governing on 2026-08-17, and this entry records
+what replaced it.
+
+`data/processed/NB09b/threat_mapping.json` was emitted with `pass_mark: 13`,
+ceil(0.70 x 18), the threshold H3 carried under Amendment 9 when the mapping
+run executed. `PREREGISTRATION.md` Amendment 20 restated H3 at 80% after
+that run, making the pass mark 15 of 18.
+
+On 2026-08-17 the notebook was re-run and the artefact regenerated at
+pass_mark 15, committed at 7f152fc. `RESULTS_LEDGER.md` carries the re-run
+as its own dated entry: four fields changed and no measured figure moved.
+The result is 18 of 18 either way, so no outcome turned on the change. The
+consolidation notebook was re-run in turn and
+`results/chapter4/manifest.json` now records no divergences.
+
+**Why re-running was preferred.** The earlier reading treated the artefact
+as the only place the criterion change was visible. It is not. Amendment 20
+records the restatement permanently, in an append-only file, with the date
+and the reason. The criterion change is therefore preserved whether or not
+the artefact carries the old mark, and an artefact that disagrees with the
+record on a field the record is authoritative for is a standing source of
+confusion rather than evidence of anything.
+
+**What guards it now.** `tools/check_consistency.py` reads the pass mark
+from the artefact and from both notebooks and fails on a mismatch, so this
+particular divergence cannot reappear silently.
